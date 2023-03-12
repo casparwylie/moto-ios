@@ -16,6 +16,14 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if (global_width < global_height) {
+            let fwidth = global_width
+            global_width = global_height
+            global_height = fwidth
+        }
+        print(global_width)
+        print(global_height)
         self.renderUI()
     }
     

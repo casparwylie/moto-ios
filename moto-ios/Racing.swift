@@ -107,17 +107,18 @@ class MenuComponent {
 
 class ControlPanelComponent {
     var view: UIView!
-    let width = global_width / 2;
+    let width = global_width
     
     init() {
         self.view = UIView(
             frame: CGRect(
-                x: 0,
+                x: _get_center_x(width: self.width),
                 y: 0,
-                width: global_width,
+                width: self.width,
                 height: 100
             )
         )
+        self.view.backgroundColor = .red
     }
     
     func render(parentView: UIView) {
