@@ -12,19 +12,26 @@ import SwiftUI
 var global_width = Int(UIScreen.main.bounds.size.width)
 var global_height = Int(UIScreen.main.bounds.size.height)
 
+func switchRenderOrientation() {
+    if (global_width < global_height) {
+        let fwidth = global_width
+        global_width = global_height
+        global_height = fwidth
+    }
+}
+
 class ViewController: UIViewController {
+    
+    var racingContext: Racing!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if (global_width < global_height) {
-            let fwidth = global_width
-            global_width = global_height
-            global_height = fwidth
-        }
-        print(global_width)
-        print(global_height)
-        self.renderUI()
+        self.initialSetup()
+        let racingApiClient = RacingApiClient(
+            base_url: "https://whatbikeswin.com/api/racing")
+        self.racingContext = Racing(
+            apiClient: racingApiClient, view: self.view)
+        self.racingContext.renderUI()
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -34,12 +41,25 @@ class ViewController: UIViewController {
     override var shouldAutorotate: Bool {
         return true
     }
-
-    func renderUI() {
+    
+    func initialSetup() {
+        // Ensure landscape orientation
+        switchRenderOrientation()
+        
+        // Set basic UI
         self.view.backgroundColor = .white
-        let controlPanel = ControlPanelComponent()
-        controlPanel.render(parentView: self.view)
+        
+        // Setup Keyboard dismissing
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        self.view.addGestureRecognizer(tap)
+        
     }
+
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        self.view.endEditing(true)
+    }
+
 
 }
 

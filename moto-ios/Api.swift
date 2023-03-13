@@ -1,0 +1,91 @@
+//
+//  Api.swift
+//  moto-ios
+//
+//  Created by Caspar Wylie on 13/03/2023.
+//
+import UIKit
+
+struct SignupRequestModel: Codable {
+    var username: String
+    var email: String
+    var password: String
+}
+
+struct SignupResponseModel: Decodable {
+    var success: Bool
+    var errors: [String]
+}
+
+struct RacerModel: Decodable {
+    var model_id: Int
+    var name: String
+    var full_name: String
+    var make_name: String
+    var style: String
+    var year: String
+    var power: String
+    var torque: String
+    var weight: String
+    var weight_type: String
+}
+
+class BaseApiClient {
+    var base_url: String!
+    init (base_url: String) {
+        self.base_url = base_url
+    }
+    
+    func _make_get_request<ResponseModel: Decodable> (
+        path: String, queryItems: [URLQueryItem], responseModel: ResponseModel.Type
+    ) async -> ResponseModel {
+        var url = URLComponents(url: URL(string: self.base_url + path)!, resolvingAgainstBaseURL: true)!
+        url.queryItems = queryItems
+        var request = URLRequest(url: url.url!)
+        request.httpMethod = "GET"
+        let (data, _)  = try! await URLSession.shared.data(for: request)
+        return try! JSONDecoder().decode(responseModel, from: data)
+    }
+    
+    func _make_post_request<ResponseModel: Decodable> (
+        path: String, body: Codable, responseModel: ResponseModel.Type
+    ) async -> ResponseModel {
+        let url = URL(string: base_url + path)!
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = try? JSONEncoder().encode(body)
+        let (data, _)  = try! await URLSession.shared.data(for: request)
+        return try! JSONDecoder().decode(responseModel, from: data)
+    }
+}
+
+
+class RacingApiClient: BaseApiClient {
+    func searchRacers(make: String, model: String, year: String) async -> [RacerModel] {
+        let result = await self._make_get_request(
+            path: "/race/search", queryItems: [
+                URLQueryItem(name: "make", value: make),
+                URLQueryItem(name: "model", value: model),
+                URLQueryItem(name: "year", value: year)
+            ] , responseModel: [RacerModel].self
+        )
+        return result
+    }
+}
+
+
+class UserApiClient: BaseApiClient {
+    /*
+     EXAMPLE:
+     func signupUser() {
+         let request = SignupRequestModel(username: "test", email: "test@test.com", password: "test123")
+         Task {
+             let result = await self._make_post_request(
+                 path: "/signup", body: request, responseModel: SignupResponseModel.self
+             )
+             print("Response data:\n \(String(describing: result))")
+         }
+     }
+     */
+}

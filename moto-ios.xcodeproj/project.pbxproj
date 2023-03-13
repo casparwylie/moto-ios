@@ -17,6 +17,7 @@
 		B0227DB229BE1D080024F775 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227DB129BE1D080024F775 /* Utils.swift */; };
 		B0227DB429BE250C0024F775 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = B0227DB329BE250C0024F775 /* fonts */; };
 		B0227DB629BE3DDA0024F775 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227DB529BE3DDA0024F775 /* Extensions.swift */; };
+		B044EFB029BF8BFA00AF6813 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = B044EFAF29BF8BFA00AF6813 /* Api.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		B0227DB129BE1D080024F775 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B0227DB329BE250C0024F775 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		B0227DB529BE3DDA0024F775 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		B044EFAF29BF8BFA00AF6813 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 				B0227DA429BE1A350024F775 /* Assets.xcassets */,
 				B0227DA629BE1A350024F775 /* LaunchScreen.storyboard */,
 				B0227DA929BE1A350024F775 /* Info.plist */,
+				B044EFAF29BF8BFA00AF6813 /* Api.swift */,
 			);
 			path = "moto-ios";
 			sourceTree = "<group>";
@@ -156,6 +159,7 @@
 				B0227DA029BE1A350024F775 /* ViewController.swift in Sources */,
 				B0227D9C29BE1A350024F775 /* AppDelegate.swift in Sources */,
 				B0227D9E29BE1A350024F775 /* SceneDelegate.swift in Sources */,
+				B044EFB029BF8BFA00AF6813 /* Api.swift in Sources */,
 				B0227DB029BE1B330024F775 /* Racing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
