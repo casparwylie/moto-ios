@@ -17,7 +17,13 @@
 		B0227DB229BE1D080024F775 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227DB129BE1D080024F775 /* Utils.swift */; };
 		B0227DB429BE250C0024F775 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = B0227DB329BE250C0024F775 /* fonts */; };
 		B0227DB629BE3DDA0024F775 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227DB529BE3DDA0024F775 /* Extensions.swift */; };
+		B0281DB529C35B40008317E2 /* images in Resources */ = {isa = PBXBuildFile; fileRef = B0281DB429C35B40008317E2 /* images */; };
+		B0281DB829C35BDD008317E2 /* SwiftSVG in Frameworks */ = {isa = PBXBuildFile; productRef = B0281DB729C35BDD008317E2 /* SwiftSVG */; };
 		B044EFB029BF8BFA00AF6813 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = B044EFAF29BF8BFA00AF6813 /* Api.swift */; };
+		B0488A0629CA38F6007F576C /* GeneralComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0529CA38F6007F576C /* GeneralComponents.swift */; };
+		B0488A0829CA4786007F576C /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0729CA4786007F576C /* Menu.swift */; };
+		B0488A0A29CA4DD0007F576C /* Introduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0929CA4DD0007F576C /* Introduction.swift */; };
+		B0488A0F29CA5540007F576C /* Insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0E29CA5540007F576C /* Insights.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +39,12 @@
 		B0227DB129BE1D080024F775 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B0227DB329BE250C0024F775 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		B0227DB529BE3DDA0024F775 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		B0281DB429C35B40008317E2 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
 		B044EFAF29BF8BFA00AF6813 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
+		B0488A0529CA38F6007F576C /* GeneralComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralComponents.swift; sourceTree = "<group>"; };
+		B0488A0729CA4786007F576C /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
+		B0488A0929CA4DD0007F576C /* Introduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction.swift; sourceTree = "<group>"; };
+		B0488A0E29CA5540007F576C /* Insights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insights.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0281DB829C35BDD008317E2 /* SwiftSVG in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,20 +78,41 @@
 		B0227D9A29BE1A350024F775 /* moto-ios */ = {
 			isa = PBXGroup;
 			children = (
+				B0488A0D29CA5483007F576C /* Apis */,
+				B0488A0B29CA544C007F576C /* Managers */,
+				B0281DB429C35B40008317E2 /* images */,
 				B0227DB329BE250C0024F775 /* fonts */,
 				B0227D9B29BE1A350024F775 /* AppDelegate.swift */,
 				B0227DB529BE3DDA0024F775 /* Extensions.swift */,
 				B0227D9D29BE1A350024F775 /* SceneDelegate.swift */,
 				B0227DB129BE1D080024F775 /* Utils.swift */,
-				B0227DAF29BE1B330024F775 /* Racing.swift */,
+				B0488A0529CA38F6007F576C /* GeneralComponents.swift */,
 				B0227D9F29BE1A350024F775 /* ViewController.swift */,
 				B0227DA129BE1A350024F775 /* Main.storyboard */,
 				B0227DA429BE1A350024F775 /* Assets.xcassets */,
 				B0227DA629BE1A350024F775 /* LaunchScreen.storyboard */,
 				B0227DA929BE1A350024F775 /* Info.plist */,
-				B044EFAF29BF8BFA00AF6813 /* Api.swift */,
 			);
 			path = "moto-ios";
+			sourceTree = "<group>";
+		};
+		B0488A0B29CA544C007F576C /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				B0227DAF29BE1B330024F775 /* Racing.swift */,
+				B0488A0929CA4DD0007F576C /* Introduction.swift */,
+				B0488A0729CA4786007F576C /* Menu.swift */,
+				B0488A0E29CA5540007F576C /* Insights.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		B0488A0D29CA5483007F576C /* Apis */ = {
+			isa = PBXGroup;
+			children = (
+				B044EFAF29BF8BFA00AF6813 /* Api.swift */,
+			);
+			path = Apis;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -98,6 +131,9 @@
 			dependencies = (
 			);
 			name = "moto-ios";
+			packageProductDependencies = (
+				B0281DB729C35BDD008317E2 /* SwiftSVG */,
+			);
 			productName = "moto-ios";
 			productReference = B0227D9829BE1A350024F775 /* moto-ios.app */;
 			productType = "com.apple.product-type.application";
@@ -126,6 +162,9 @@
 				Base,
 			);
 			mainGroup = B0227D8F29BE1A350024F775;
+			packageReferences = (
+				B0281DB629C35BDD008317E2 /* XCRemoteSwiftPackageReference "SwiftSVG" */,
+			);
 			productRefGroup = B0227D9929BE1A350024F775 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -140,6 +179,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0281DB529C35B40008317E2 /* images in Resources */,
 				B0227DA829BE1A350024F775 /* LaunchScreen.storyboard in Resources */,
 				B0227DA529BE1A350024F775 /* Assets.xcassets in Resources */,
 				B0227DA329BE1A350024F775 /* Main.storyboard in Resources */,
@@ -155,11 +195,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0227DB229BE1D080024F775 /* Utils.swift in Sources */,
+				B0488A0A29CA4DD0007F576C /* Introduction.swift in Sources */,
 				B0227DB629BE3DDA0024F775 /* Extensions.swift in Sources */,
 				B0227DA029BE1A350024F775 /* ViewController.swift in Sources */,
 				B0227D9C29BE1A350024F775 /* AppDelegate.swift in Sources */,
 				B0227D9E29BE1A350024F775 /* SceneDelegate.swift in Sources */,
+				B0488A0F29CA5540007F576C /* Insights.swift in Sources */,
 				B044EFB029BF8BFA00AF6813 /* Api.swift in Sources */,
+				B0488A0829CA4786007F576C /* Menu.swift in Sources */,
+				B0488A0629CA38F6007F576C /* GeneralComponents.swift in Sources */,
 				B0227DB029BE1B330024F775 /* Racing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -382,6 +426,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B0281DB629C35BDD008317E2 /* XCRemoteSwiftPackageReference "SwiftSVG" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mchoe/SwiftSVG.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B0281DB729C35BDD008317E2 /* SwiftSVG */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0281DB629C35BDD008317E2 /* XCRemoteSwiftPackageReference "SwiftSVG" */;
+			productName = SwiftSVG;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B0227D9029BE1A350024F775 /* Project object */;
 }

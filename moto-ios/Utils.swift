@@ -75,3 +75,12 @@ func _make_text_input(text: String) -> TextField {
     return textField
 }
 
+
+func _hide(view: UIView) {
+    view.isHidden = true
+}
+
+
+func _show(view: UIView) {
+    view.isHidden = false
+}

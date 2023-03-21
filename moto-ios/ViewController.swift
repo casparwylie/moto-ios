@@ -20,18 +20,30 @@ func switchRenderOrientation() {
     }
 }
 
+
 class ViewController: UIViewController {
     
-    var racingContext: Racing!
+    var racingManager: Racing!
+    var menuManager: Menu!
+    var introductionManager: Introduction!
+    var insightManager: Insights!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initialSetup()
         let racingApiClient = RacingApiClient(
             base_url: "https://whatbikeswin.com/api/racing")
-        self.racingContext = Racing(
-            apiClient: racingApiClient, view: self.view)
-        self.racingContext.renderUI()
+        
+        self.racingManager = Racing(
+            apiClient: racingApiClient, parentView: self.view)
+        self.racingManager.render()
+        
+        self.menuManager = Menu(viewController: self)
+        self.menuManager.render()
+        
+        self.introductionManager = Introduction(parentView: self.view)
+        
+        self.insightManager = Insights(parentView: self.view, apiClient: racingApiClient)
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

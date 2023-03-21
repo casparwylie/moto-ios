@@ -30,6 +30,21 @@ struct RacerModel: Decodable {
     var weight_type: String
 }
 
+
+struct RaceModel: Decodable {
+    var race_id: Int
+    var racers: [RacerModel]
+    var user_id: Int?
+    var race_unique_id: String
+    
+}
+
+
+struct RaceListingModel: Decodable {
+    var races: [RaceModel]
+}
+
+
 class BaseApiClient {
     var base_url: String!
     init (base_url: String) {
@@ -38,7 +53,7 @@ class BaseApiClient {
     
     func _make_get_request<ResponseModel: Decodable> (
         path: String, queryItems: [URLQueryItem], responseModel: ResponseModel.Type
-    ) async -> ResponseModel {
+    ) async -> ResponseModel? {
         var url = URLComponents(url: URL(string: self.base_url + path)!, resolvingAgainstBaseURL: true)!
         url.queryItems = queryItems
         var request = URLRequest(url: url.url!)
@@ -62,7 +77,7 @@ class BaseApiClient {
 
 
 class RacingApiClient: BaseApiClient {
-    func searchRacers(make: String, model: String, year: String) async -> [RacerModel] {
+    func searchRacers(make: String, model: String, year: String) async -> [RacerModel]? {
         let result = await self._make_get_request(
             path: "/race/search", queryItems: [
                 URLQueryItem(name: "make", value: make),
@@ -71,6 +86,22 @@ class RacingApiClient: BaseApiClient {
             ] , responseModel: [RacerModel].self
         )
         return result
+    }
+    func getRacer(make: String, model: String, year: String) async -> RacerModel? {
+        let result = await self._make_get_request(
+            path: "/racer", queryItems: [
+                URLQueryItem(name: "make", value: make),
+                URLQueryItem(name: "model", value: model),
+                URLQueryItem(name: "year", value: year)
+            ] , responseModel: RacerModel.self
+        )
+        return result
+    }
+    
+    func getRaceInsights(pathName: String) async -> RaceListingModel? {
+        return await self._make_get_request(
+            path: "/insight\(pathName)", queryItems: [] , responseModel: RaceListingModel.self
+        )
     }
 }
 
