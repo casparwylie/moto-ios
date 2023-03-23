@@ -58,8 +58,10 @@ class BaseApiClient {
         url.queryItems = queryItems
         var request = URLRequest(url: url.url!)
         request.httpMethod = "GET"
-        let (data, _)  = try! await URLSession.shared.data(for: request)
-        return try! JSONDecoder().decode(responseModel, from: data)
+        if let (data, _)  = try? await URLSession.shared.data(for: request) {
+            return try? JSONDecoder().decode(responseModel, from: data)
+        }
+        return nil
     }
     
     func _make_post_request<ResponseModel: Decodable> (

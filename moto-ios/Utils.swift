@@ -84,3 +84,16 @@ func _hide(view: UIView) {
 func _show(view: UIView) {
     view.isHidden = false
 }
+
+
+func _expand_as_list(views: [UIView], startY: CGFloat = 0, spacing: CGFloat = 5) -> CGFloat {
+    var lastHeight: CGFloat = 0
+    var lastY: CGFloat = startY
+    for view in views {
+        view.frame.origin.y = lastY
+        lastHeight = view.frame.size.height
+        lastY += (lastHeight + spacing)
+    }
+    return lastY
+}
+

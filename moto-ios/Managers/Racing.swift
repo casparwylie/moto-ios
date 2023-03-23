@@ -119,18 +119,22 @@ class RacerInputsComponent {
     }
     
     @objc func onAddPress() {
-        self.addInput()
+        _ = self.addInput()
     }
     
-    func addInput() {
+    func addInput() -> Int {
         let makeIn = _make_text_input(text: "Make...")
         let modelIn = _make_text_input(text: "Model...")
         let yearIn = _make_text_input(text: "Year...")
+        let rowId = allInputs.count
         modelIn.addTarget(
             self, action: #selector(self.onModelChange), for: .editingChanged
         )
+        modelIn.addTarget(
+            self, action: #selector(self.onModelChange), for: .editingDidBegin
+        )
         let y = self.getRowY()
-        modelIn.group = allInputs.count
+        modelIn.group = rowId
         self.allInputs.append([makeIn, modelIn, yearIn])
 
         for (index, input) in self.allInputs.last!.enumerated() {
@@ -146,7 +150,7 @@ class RacerInputsComponent {
         self.view.addSubview(makeIn)
         self.view.addSubview(modelIn)
         self.view.addSubview(yearIn)
-        
+        return rowId
     }
     
     func updateFrames() {
@@ -196,19 +200,36 @@ class RacerInputsComponent {
         self.reset()
     }
     
-    func reset() {
+    func reset(addInputs: Bool = true) {
         self.allInputs = []
         for row in self.view.subviews {
             row.removeFromSuperview()
         }
-        self.addInput()
-        self.addInput()
+        if addInputs {
+            _ = self.addInput()
+            _ = self.addInput()
+        }
     }
     
     func setInputRow(inputRow: Int, racer: PartialRacer) {
         self.allInputs[inputRow][0].text = racer.make
         self.allInputs[inputRow][1].text = racer.model
         self.allInputs[inputRow][2].text = racer.year
+    }
+    
+    func setInputRows(racers: [RacerModel]) {
+        self.reset(addInputs: false)
+        for racer in racers {
+            let inputRow = self.addInput()
+            let partialRacer = PartialRacer(
+                make: racer.make_name, model: racer.name, year: racer.year
+            )
+            self.setInputRow(
+                inputRow: inputRow,
+                racer: partialRacer
+            )
+            
+        }
     }
 }
 
@@ -219,7 +240,7 @@ class RacerRecommenderComponent {
     var racerRecommendingController: RacerRecommendingController?
     var rows: [String: PartialRacer] = [:]
     let rowHeight = 25
-    let recommenderHieght = 150
+    let recommenderHeight = 150
     
     init() {
         self.view = UIScrollView(
@@ -257,9 +278,10 @@ class RacerRecommenderComponent {
             self, action: #selector(self.onRowSelect), for: .touchUpInside
         )
         self.rows[text] = racer
-        self.view.frame.size.height = CGFloat(self.recommenderHieght)
+        self.view.frame.size.height = CGFloat(self.recommenderHeight)
         self.view.contentSize = CGSize(
-            width: CGFloat(self.width), height: CGFloat(self.rows.count * self.rowHeight)
+            width: CGFloat(self.width),
+            height: CGFloat(self.rows.count * self.rowHeight)
         )
     }
     
@@ -298,11 +320,15 @@ class RacerRecommendingController {
         self.currentInputRow = inputRow
         Task {
             self.racerRecommenderComponent.clear()
-            let results = await apiClient.searchRacers(make: racer.make, model: racer.model, year: racer.year)
+            let results = await apiClient.searchRacers(
+                make: racer.make, model: racer.model, year: racer.year
+            )
             if let results = results {
                 for result in results {
                     self.racerRecommenderComponent.addRacer(
-                        racer: PartialRacer(make: result.make_name, model: result.name, year: result.year)
+                        racer: PartialRacer(
+                            make: result.make_name, model: result.name, year: result.year
+                        )
                     )
                 }
             }
@@ -352,9 +378,18 @@ class RacerComponent {
     static let racerSize = Double(global_height) / 12
     
     var timer: Timer? = nil
+    
+    var resolvedWeight: Double!
 
     init (racer: RacerModel) {
         self.racer = racer
+        
+        // ** Manual dry weight adjustment **
+        if self.racer.weight_type == "dry" {
+            self.resolvedWeight = Double(self.racer.weight)! + 20
+        } else {
+            self.resolvedWeight = Double(self.racer.weight)!
+        }
         self.makeRacerImage()
         self.makeRacerLabel()
     }
@@ -396,14 +431,14 @@ class RacerComponent {
     
     func move(onFinish: @escaping (RacerModel) -> Void) {
         var progress = Double(self.racer.torque)! / 25
-        let acc = Double(self.racer.torque)! / Double(self.racer.weight)!
-        let ptw = Double(self.racer.power)! / Double(self.racer.weight)!
+        let acc = Double(self.racer.torque)! / self.resolvedWeight
+        let ptw = Double(self.racer.power)! / self.resolvedWeight
 
     
         self.timer = Timer.scheduledTimer(withTimeInterval: 0.040, repeats: true, block: { _ in
             let momentum = (acc * progress) + 1 + (ptw * 7)
-            progress += 0.001
-            self.view.frame.origin.x += momentum
+            progress += 0.01
+            self.view.frame.origin.x += CGFloat(Int(momentum))
             if Double(self.view.frame.origin.x) >= Double(global_width) * 0.8 {
                 self.stopMove()
                 onFinish(self.racer)
@@ -440,18 +475,18 @@ class RaceViewComponent {
     
     func render(parentView: UIView) {
         self.view.removeFromSuperview()
-        let height = RacerComponent.getFullHeight()
-        for (index, racerComponent) in self.racerComponents.enumerated() {
-            racerComponent.view.frame.origin.y = CGFloat(index * height)
-            racerComponent.render(parentView: self.view)
+        _ = _expand_as_list(
+            views: self.racerComponents.map{$0.view},
+            spacing: CGFloat(RacerComponent.labelHeight + RacerComponent.racerSpacing)
+        )
+        self.racerComponents.forEach {
+            (racerComponent) in racerComponent.render(parentView: self.view)
         }
         parentView.addSubview(self.view)
     }
     
     func reset() {
-        for racer in self.racerComponents {
-            racer.view.removeFromSuperview()
-        }
+        self.racerComponents.forEach{ (racer) in racer.view.removeFromSuperview() }
         self.racerComponents = []
     }
     
@@ -521,7 +556,6 @@ class RacerResultComponent {
         self.view.addSubview(self.statsLabel)
         self.statsLabel.frame = CGRect(x: 0, y: 50, width: Self.width, height: 60)
 
-
         parentView.addSubview(self.view)
     }
 }
@@ -556,15 +590,13 @@ class RaceResultsComponent: WindowComponent {
     
     func render(parentView: UIView) {
         self.view.removeFromSuperview()
-        var lastY: CGFloat = 40
+        let lastY = _expand_as_list(views: self.racerResultComponents.map{$0.view}, startY: self.titleLabel.frame.height + 10)
         for racerResultComponent in self.racerResultComponents {
-            racerResultComponent.view.frame.origin.y = lastY
             racerResultComponent.render(parentView: self.view)
-            lastY += CGFloat(RacerResultComponent.height)
         }
         self.view.contentSize = CGSize(
             width: CGFloat(RacerResultComponent.width),
-            height: lastY + CGFloat(RacerResultComponent.height)
+            height: lastY
         )
         parentView.addSubview(self.view)
     }
@@ -619,7 +651,18 @@ class RaceController {
         }
     }
     
+    func startRaceFromRacers(racers: [RacerModel]) {
+        self.reset()
+        self.loadedRacers = racers
+        self.racerInputsComponent.setInputRows(racers: racers)
+        self.startRace()
+    }
+    
+    
     func startRace() {
+        if self.loadedRacers.count == 0 {
+            return
+        }
         for racer in self.loadedRacers {
             self.raceViewComponent.addRacer(racer: racer)
         }

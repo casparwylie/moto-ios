@@ -29,7 +29,9 @@ class ViewController: UIViewController {
     var insightManager: Insights!
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        
         self.initialSetup()
         let racingApiClient = RacingApiClient(
             base_url: "https://whatbikeswin.com/api/racing")
@@ -43,7 +45,7 @@ class ViewController: UIViewController {
         
         self.introductionManager = Introduction(parentView: self.view)
         
-        self.insightManager = Insights(parentView: self.view, apiClient: racingApiClient)
+        self.insightManager = Insights(parentView: self.view, apiClient: racingApiClient, raceController: racingManager.raceController)
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
