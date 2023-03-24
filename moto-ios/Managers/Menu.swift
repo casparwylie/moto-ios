@@ -146,10 +146,8 @@ class MenuController {
             default:
                 print("Unexpected window name")
         }
-        
     }
 }
-
 
 
 class Menu {
@@ -178,5 +176,4 @@ class Menu {
         self.headerComponent.render(parentView: self.viewController.view)
         self.menuComponent.render(parentView: self.viewController.view)
     }
-    
 }

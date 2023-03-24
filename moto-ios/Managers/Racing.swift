@@ -9,14 +9,20 @@ import Foundation
 import SwiftSVG
 
 
-let _DARK_BLUE = UIColor(red: 0.00, green: 0.18, blue: 0.35, alpha: 1.00)
-let _GREEN = UIColor(red: 0.22, green: 0.68, blue: 0.53, alpha: 1.00)
-let _YELLOW = UIColor(red: 1.00, green: 0.65, blue: 0.00, alpha: 1.00)
 
 struct PartialRacer {
     var make: String
     var model: String
     var year: String
+}
+
+extension PartialRacer: Equatable {
+    static func == (lhs: PartialRacer, rhs: PartialRacer) -> Bool {
+        return
+            lhs.make == rhs.make &&
+            lhs.model == rhs.model &&
+            lhs.year == rhs.year
+    }
 }
 
 
@@ -159,27 +165,43 @@ class RacerInputsComponent {
     }
     
     @MainActor @objc func onModelChange(input: TextField) {
-        let racer = self.getRacerFromInputRow(inputRow: self.allInputs[input.group])
-        self.racerRecommendingController?.recommend(
-            racer: racer,
-            inputRow: input.group
-        )
+        if let racer = self.getPartialRacerFromInputRow(inputRow: self.allInputs[input.group]) {
+            self.racerRecommendingController?.recommend(
+                racer: racer,
+                inputRow: input.group
+            )
+        }
     }
     
-    func getRacerFromInputRow(inputRow: [UITextField]) -> PartialRacer {
-        return PartialRacer(
+    func getPartialRacerFromInputRow(inputRow: [UITextField]) -> PartialRacer? {
+        let racer = PartialRacer(
             make: inputRow[0].text!,
             model: inputRow[1].text!,
             year: inputRow[2].text!
         )
+        if racer.make.count > 0 && racer.model.count > 0  {
+            return racer
+        } else {
+            return nil
+        }
     }
     
     @MainActor @objc func onRacePress() {
-        var racers: [PartialRacer] = []
-        for inputs in self.allInputs {
-            racers.append(self.getRacerFromInputRow(inputRow: inputs))
+        let racers = self.getPartialRacersFromAllInputs()
+        Task {
+            await self.raceController?.setRacersFromInputs(racers: racers)
+            self.raceController?.startRace()
         }
-        self.raceController?.startRaceFromInputs(racers: racers)
+    }
+    
+    func getPartialRacersFromAllInputs() -> [PartialRacer] {
+        var racers: [PartialRacer] = []
+        for row in self.allInputs {
+            if let racer = self.getPartialRacerFromInputRow(inputRow: row) {
+                racers.append(racer)
+            }
+        }
+        return racers
     }
     
     @objc func onSkipPress() {
@@ -356,6 +378,7 @@ class ControlPanelComponent {
                 height: global_height
             )
         )
+        self.view.backgroundColor = .white
         self.racerInputsComponent = RacerInputsComponent()
         self.racerRecommenderComponent = RacerRecommenderComponent()
     }
@@ -367,10 +390,85 @@ class ControlPanelComponent {
     }
 }
 
+class TrafficLightComponent {
+    var view: UIView!
+    let size = global_width / 7
+    let lightSpacing = 3
+    
+    var light1: UIView!
+    var light2: UIView!
+    var light3: UIView!
+    
+    init() {
+        self.view = UIView(
+            frame: CGRect(
+                x: _get_center_x(width: self.size),
+                y: _get_center_y(height: self.size * 3),
+                width: self.size,
+                height: self.size * 3
+            )
+        )
+        self.view.backgroundColor = .black
+        self.makeLights()
+    }
+    
+    func makeLight() -> UIView {
+        let light = UIView()
+        light.frame = CGRect(x: 0, y: 0, width: self.size, height: self.size)
+        light.backgroundColor = .red
+        light.layer.cornerRadius = CGFloat(self.size / 2)
+        light.layer.masksToBounds = true
+        light.backgroundColor = .black
+        self.view.addSubview(light)
+        return light
+    }
+    
+    func makeLights () {
+        self.light1 = self.makeLight()
+        self.light2 = self.makeLight()
+        self.light3 = self.makeLight()
+        _ = _expand_as_list(
+            views: [self.light1, self.light2, self.light3], spacing: CGFloat(self.lightSpacing)
+        )
+    }
+    
+    func render(parentView: UIView) {
+        parentView.addSubview(self.view)
+        _hide(view: self.view)
+    }
+    
+    func reset() {
+        self.light1.backgroundColor = .black
+        self.light2.backgroundColor = .black
+        self.light3.backgroundColor = .black
+    }
+    
+    func run() {
+        self.reset()
+        _show(view: self.view)
+        self.view.superview?.bringSubviewToFront(self.view)
+        self.light1.backgroundColor = _RED
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { (timer) in
+            self.light2.backgroundColor = _YELLOW
+        }
+        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { (timer) in
+            self.light1.backgroundColor = _GREEN
+            self.light2.backgroundColor = _GREEN
+            self.light3.backgroundColor = _GREEN
+        }
+        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+            _hide(view: self.view)
+        }
+        
+    }
+}
+
 class RacerComponent {
     var view: UIImageView!
     var racer: RacerModel!
     var label: UILabel!
+    var acc: Double!
+    var ptw: Double!
     
     static let labelHeight = 20
     let labelWidth = 200
@@ -383,15 +481,21 @@ class RacerComponent {
 
     init (racer: RacerModel) {
         self.racer = racer
+        self.resolveWeight()
         
-        // ** Manual dry weight adjustment **
+        self.acc = Double(self.racer.torque)! / self.resolvedWeight
+        self.ptw = Double(self.racer.power)! / self.resolvedWeight
+        
+        self.makeRacerImage()
+        self.makeRacerLabel()
+    }
+    
+    func resolveWeight() {
         if self.racer.weight_type == "dry" {
             self.resolvedWeight = Double(self.racer.weight)! + 20
         } else {
             self.resolvedWeight = Double(self.racer.weight)!
         }
-        self.makeRacerImage()
-        self.makeRacerLabel()
     }
     
     func makeRacerImage() {
@@ -415,7 +519,7 @@ class RacerComponent {
         )
         self.label.frame = CGRect(
             x: 0,
-            y: Int(RacerComponent.racerSize) + 10,
+            y: Int(RacerComponent.racerSize),
             width: labelWidth,
             height: RacerComponent.labelHeight
         )
@@ -431,12 +535,8 @@ class RacerComponent {
     
     func move(onFinish: @escaping (RacerModel) -> Void) {
         var progress = Double(self.racer.torque)! / 25
-        let acc = Double(self.racer.torque)! / self.resolvedWeight
-        let ptw = Double(self.racer.power)! / self.resolvedWeight
-
-    
         self.timer = Timer.scheduledTimer(withTimeInterval: 0.040, repeats: true, block: { _ in
-            let momentum = (acc * progress) + 1 + (ptw * 7)
+            let momentum = (self.acc * progress) + 1 + (self.ptw * 7)
             progress += 0.01
             self.view.frame.origin.x += CGFloat(Int(momentum))
             if Double(self.view.frame.origin.x) >= Double(global_width) * 0.8 {
@@ -564,11 +664,90 @@ class RacerResultComponent {
 class RaceResultsComponent: WindowComponent {
     
     var racerResultComponents: [RacerResultComponent] = []
+    
+    var shareButton: UIButton!
+    var fbButton: UIButton!
+    var viewCommentsButton: UIButton!
+    var voteDownButton: UIButton!
+    var voteUpButton: UIButton!
+    
+    var voteOptionsView: UIView!
+    var optionsView: UIView!
+    
+    let optionsViewHeight = 40
+    let optionWidth = global_width / 6
+    let optionFontSize = 15
+    
+    override init() {
+        super.init()
+        self.makeOptionsView()
+        self.makeResultOptions()
+    }
 
     override func setWindowMeta() {
         self.backgroundColor = .black
         self.title = "Results"
         self.titleColor = .white
+    }
+    
+    func makeOptionsView() {
+        self.optionsView = UIView()
+        self.optionsView.frame = CGRect(
+            x: 0,
+            y: self.titleHeight + 10,
+            width: 0, height: self.optionsViewHeight
+        )
+    }
+    
+    func makeResultOptions() {
+        let halfOptionsHeight = self.optionsViewHeight / 2
+        
+        self.voteOptionsView = UIView()
+        self.voteOptionsView.frame = CGRect(
+            x: 0, y: 0, width: self.optionWidth, height: self.optionsViewHeight
+        )
+        
+        self.voteUpButton = _make_button(
+            text: "Upvote", background: _GREEN, color: .white, size: self.optionFontSize
+        )
+        self.voteUpButton.frame = CGRect(
+            x: 0, y: 0, width: self.optionWidth, height: halfOptionsHeight
+        )
+        
+        self.voteDownButton = _make_button(
+            text: "Downvote", background: _RED, color: .white, size: self.optionFontSize
+        )
+        self.voteDownButton.frame = CGRect(
+            x: 0, y: halfOptionsHeight, width: self.optionWidth, height: halfOptionsHeight
+        )
+        
+        self.viewCommentsButton = _make_button(
+            text: "View Comments", background: _YELLOW, color: .white, size: self.optionFontSize
+        )
+        self.viewCommentsButton.frame = CGRect(
+            x: 0, y: 0, width: self.optionWidth, height: self.optionsViewHeight
+        )
+        
+        self.shareButton = _make_button(
+            text: "Share Race URL", background: _YELLOW, color: .white, size: self.optionFontSize
+        )
+        self.shareButton.frame = CGRect(
+            x: 0, y: 0, width: self.optionWidth, height: self.optionsViewHeight
+        )
+        
+        self.fbButton = _make_button(
+            text: "f Share", background: _BLUE, color: .white, size: self.optionFontSize
+        )
+        self.fbButton.frame = CGRect(
+            x: 0, y: 0, width: self.optionWidth, height: self.optionsViewHeight
+        )
+        
+        let width = _expand_across(
+            views: [self.voteOptionsView, self.viewCommentsButton, self.shareButton, self.fbButton],
+            spacing: 2
+        )
+        self.optionsView.frame.size.width = width
+        self.optionsView.frame.origin.x = CGFloat(_get_center_x(width: Int(width)))
     }
     
     func reset() {
@@ -590,7 +769,20 @@ class RaceResultsComponent: WindowComponent {
     
     func render(parentView: UIView) {
         self.view.removeFromSuperview()
-        let lastY = _expand_as_list(views: self.racerResultComponents.map{$0.view}, startY: self.titleLabel.frame.height + 10)
+        
+        self.voteOptionsView.addSubview(self.voteDownButton)
+        self.voteOptionsView.addSubview(self.voteUpButton)
+        
+        self.optionsView.addSubview(self.voteOptionsView)
+        self.optionsView.addSubview(self.viewCommentsButton)
+        self.optionsView.addSubview(self.shareButton)
+        self.optionsView.addSubview(self.fbButton)
+        self.view.addSubview(self.optionsView)
+        
+        let lastY = _expand_as_list(
+            views: self.racerResultComponents.map{$0.view},
+            startY: self.titleLabel.frame.height + CGFloat(self.optionsViewHeight) + 20
+        )
         for racerResultComponent in self.racerResultComponents {
             racerResultComponent.render(parentView: self.view)
         }
@@ -608,58 +800,65 @@ class RaceController {
     var raceViewComponent: RaceViewComponent!
     var racerInputsComponent: RacerInputsComponent!
     var raceResultsComponent: RaceResultsComponent!
+    var trafficLightComponent: TrafficLightComponent!
+    
     var apiClient: RacingApiClient!
     var loadedRacers: [RacerModel] = []
+    var lastPartialRacers: [PartialRacer] = []
+    var currentRaceId: Int?
     
     init(
         apiClient: RacingApiClient,
         mainView: UIView,
         raceViewComponent: RaceViewComponent,
         racerInputsComponent: RacerInputsComponent,
-        raceResultsComponent: RaceResultsComponent
+        raceResultsComponent: RaceResultsComponent,
+        trafficLightComponent: TrafficLightComponent
     ) {
         self.apiClient = apiClient
         self.mainView = mainView
         self.racerInputsComponent = racerInputsComponent
         self.raceViewComponent = raceViewComponent
         self.raceResultsComponent = raceResultsComponent
+        self.trafficLightComponent = trafficLightComponent
         self.racerInputsComponent.raceController = self
     }
     
     func reset() {
-        self.loadedRacers = []
         self.raceViewComponent.reset()
         self.raceResultsComponent.reset()
     }
     
-    @MainActor func startRaceFromInputs(racers: [PartialRacer]) {
-        self.reset()
-        Task {
-            for partialRacer in racers {
-                // ADJUST WEIGHT
-                // SAVE RACE!
-                let racer = await self.apiClient.getRacer(
-                    make: partialRacer.make,
-                    model: partialRacer.model,
-                    year: partialRacer.year
-                )
-                if let racer = racer {
-                    self.loadedRacers.append(racer)
-                }
-            }
-            self.startRace()
+    @MainActor func setRacersFromInputs(racers: [PartialRacer]) async {
+        if racers == lastPartialRacers {
+            return
         }
+        
+        self.lastPartialRacers = racers
+        self.loadedRacers = []
+        for partialRacer in racers {
+            let racer = await self.apiClient.getRacer(
+                make: partialRacer.make,
+                model: partialRacer.model,
+                year: partialRacer.year
+            )
+            if let racer = racer {
+                self.loadedRacers.append(racer)
+            }
+        }
+        let race = await self.apiClient.saveRace(modelIds: self.loadedRacers.map{$0.model_id})
+        self.currentRaceId = race?.race_id
     }
     
-    func startRaceFromRacers(racers: [RacerModel]) {
-        self.reset()
-        self.loadedRacers = racers
-        self.racerInputsComponent.setInputRows(racers: racers)
-        self.startRace()
+    func setRacersFromRace(race: RaceModel) {
+        self.loadedRacers = race.racers
+        self.currentRaceId = race.race_id
+        self.racerInputsComponent.setInputRows(racers: self.loadedRacers)
+        self.lastPartialRacers = self.racerInputsComponent.getPartialRacersFromAllInputs()
     }
-    
     
     func startRace() {
+        self.reset()
         if self.loadedRacers.count == 0 {
             return
         }
@@ -667,11 +866,17 @@ class RaceController {
             self.raceViewComponent.addRacer(racer: racer)
         }
         self.raceViewComponent.render(parentView: self.mainView)
-        for racerComponent in self.raceViewComponent.racerComponents {
-            racerComponent.move() { (racer) -> () in
-                self.raceResultsComponent.addFinishedRacer(racer: racer)
-                if self.raceResultsComponent.racerResultComponents.count == self.loadedRacers.count {
-                    self.finishRace()
+        self.trafficLightComponent.run()
+        let timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+            for racerComponent in self.raceViewComponent.racerComponents {
+                racerComponent.move() { (racer) -> () in
+                    self.raceResultsComponent.addFinishedRacer(racer: racer)
+                    if (
+                        self.raceResultsComponent.racerResultComponents.count
+                        == self.loadedRacers.count)
+                    {
+                        self.finishRace()
+                    }
                 }
             }
         }
@@ -691,6 +896,7 @@ class Racing {
     var controlPanelComponent: ControlPanelComponent!
     var raceViewComponent: RaceViewComponent!
     var raceResultsComponent: RaceResultsComponent!
+    var trafficLightComponent: TrafficLightComponent!
     
     var racerRecommendingController: RacerRecommendingController!
     var raceController: RaceController!
@@ -707,6 +913,7 @@ class Racing {
         self.controlPanelComponent = ControlPanelComponent()
         self.raceViewComponent = RaceViewComponent()
         self.raceResultsComponent = RaceResultsComponent()
+        self.trafficLightComponent = TrafficLightComponent()
     }
     
     func makeControllers () {
@@ -720,11 +927,16 @@ class Racing {
             mainView: self.parentView,
             raceViewComponent: self.raceViewComponent,
             racerInputsComponent: self.controlPanelComponent.racerInputsComponent,
-            raceResultsComponent: self.raceResultsComponent
+            raceResultsComponent: self.raceResultsComponent,
+            trafficLightComponent: self.trafficLightComponent
         )
     }
 
     func render() {
         self.controlPanelComponent.render(parentView: self.parentView)
+        self.trafficLightComponent.render(parentView: self.parentView)
+        
+        
+        //self.raceResultsComponent.render(parentView: self.parentView)
     }
 }

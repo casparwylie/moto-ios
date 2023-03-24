@@ -45,7 +45,11 @@ class ViewController: UIViewController {
         
         self.introductionManager = Introduction(parentView: self.view)
         
-        self.insightManager = Insights(parentView: self.view, apiClient: racingApiClient, raceController: racingManager.raceController)
+        self.insightManager = Insights(
+            parentView: self.view,
+            apiClient: racingApiClient,
+            raceController: racingManager.raceController
+        )
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

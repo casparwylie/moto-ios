@@ -19,7 +19,7 @@ class RaceListingWindowComponent: WindowComponent {
     var insightController: InsightController?
     
     
-    @MainActor func populate(races: [RaceModel]!) {
+    @MainActor func populate(races: [RaceModel]) {
         self.raceButtons.forEach{ raceButton in raceButton.removeFromSuperview() }
         let buttons = races.map {self.addRaceButton(race: $0)}
         let lastY = _expand_as_list(views: buttons, startY: self.titleLabel.frame.height + 20)
@@ -97,13 +97,15 @@ class InsightController {
     
     func populate() {
         Task {
-            let results = await apiClient.getRaceInsights(pathName: self.apiPath)
-            await self.windowComponent.populate(races: results?.races)
+            if let results = await apiClient.getRaceInsights(pathName: self.apiPath) {
+                await self.windowComponent.populate(races: results.races)
+            }
         }
     }
     
     func startRace(race: RaceModel) {
-        raceController?.startRaceFromRacers(racers: race.racers)
+        raceController?.setRacersFromRace(race: race)
+        raceController?.startRace()
     }
 }
 

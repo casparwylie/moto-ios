@@ -13,8 +13,9 @@ import UIKit
 class WindowComponent {
     var view: UIScrollView!
     var closeButton: UIButton!
-    let closeSize = 20
+    let closeSize = 25
     let titleWidth = global_width
+    let titleHeight = 50
     var titleLabel: UILabel!
     var title: String = ""
     var titleColor: UIColor = .black
@@ -44,12 +45,22 @@ class WindowComponent {
     
     func makeTitle() {
         self.titleLabel = _make_text(text: self.title, align: .center, font: "Tourney", size: 25, color: self.titleColor)
-        self.titleLabel.frame = CGRect(x: _get_center_x(width: self.titleWidth), y: 5, width: self.titleWidth, height: 30)
+        self.titleLabel.frame = CGRect(
+            x: _get_center_x(width: self.titleWidth),
+            y: 5,
+            width: self.titleWidth,
+            height: self.titleHeight
+        )
     }
     
     func makeClose() {
-        self.closeButton = _make_button(text: "x", color: .white)
-        self.closeButton.frame = CGRect(x: global_width - closeSize, y: 5, width: closeSize, height: closeSize)
+        self.closeButton = _make_button(text: "x", color: .white, size: self.closeSize)
+        self.closeButton.frame = CGRect(
+            x: global_width - self.closeSize * 2,
+            y: self.closeSize,
+            width: self.closeSize,
+            height: self.closeSize
+        )
         self.closeButton.addTarget(
             self, action: #selector(self.onClosePress), for: .touchDown
         )

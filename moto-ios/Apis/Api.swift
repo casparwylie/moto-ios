@@ -44,6 +44,13 @@ struct RaceListingModel: Decodable {
     var races: [RaceModel]
 }
 
+struct SaveRaceRequestModel: Codable {
+    var model_ids: [Int]
+}
+
+struct SuccessResponseModel: Decodable {
+    var success: Bool
+}
 
 class BaseApiClient {
     var base_url: String!
@@ -66,14 +73,16 @@ class BaseApiClient {
     
     func _make_post_request<ResponseModel: Decodable> (
         path: String, body: Codable, responseModel: ResponseModel.Type
-    ) async -> ResponseModel {
+    ) async -> ResponseModel? {
         let url = URL(string: base_url + path)!
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         request.httpBody = try? JSONEncoder().encode(body)
-        let (data, _)  = try! await URLSession.shared.data(for: request)
-        return try! JSONDecoder().decode(responseModel, from: data)
+        if let (data, _)  = try? await URLSession.shared.data(for: request) {
+            return try? JSONDecoder().decode(responseModel, from: data)
+        }
+        return nil
     }
 }
 
@@ -103,6 +112,14 @@ class RacingApiClient: BaseApiClient {
     func getRaceInsights(pathName: String) async -> RaceListingModel? {
         return await self._make_get_request(
             path: "/insight\(pathName)", queryItems: [] , responseModel: RaceListingModel.self
+        )
+    }
+    
+    func saveRace(modelIds: [Int]) async -> RaceModel? {
+        return await self._make_post_request(
+            path: "/race/save",
+            body: SaveRaceRequestModel(model_ids: modelIds),
+            responseModel: RaceModel.self
         )
     }
 }
