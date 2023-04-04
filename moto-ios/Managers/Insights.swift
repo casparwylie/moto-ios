@@ -22,11 +22,13 @@ class RaceListingWindowComponent: WindowComponent {
     @MainActor func populate(races: [RaceModel]) {
         self.raceButtons.forEach{ raceButton in raceButton.removeFromSuperview() }
         let buttons = races.map {self.addRaceButton(race: $0)}
-        let lastY = _expand_as_list(views: buttons, startY: self.titleLabel.frame.height + 20)
+        let lastY = _expand_as_list(views: buttons, startY: self.titleLabel.frame.height)
         self.view.contentSize = CGSize(width: self.view.frame.width, height: lastY)
     }
     
     func render(parentView: UIView) {
+        super.render()
+        self.insightController?.populate()
         parentView.addSubview(self.view)
     }
     
@@ -92,7 +94,6 @@ class InsightController {
         self.apiPath = apiPath
         self.windowComponent = windowComponent
         self.raceController = raceController
-        self.populate()
     }
     
     func populate() {
@@ -110,9 +111,7 @@ class InsightController {
 }
 
 
-
-
-class Insights {
+class InsightsManager {
     var h2hController: InsightController!
     var recentRacesController: InsightController!
     var h2hWindowComponent: Head2HeadWindowComponent!

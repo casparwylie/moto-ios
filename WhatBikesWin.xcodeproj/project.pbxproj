@@ -18,16 +18,21 @@
 		B0227DB429BE250C0024F775 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = B0227DB329BE250C0024F775 /* fonts */; };
 		B0227DB629BE3DDA0024F775 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227DB529BE3DDA0024F775 /* Extensions.swift */; };
 		B0281DB529C35B40008317E2 /* images in Resources */ = {isa = PBXBuildFile; fileRef = B0281DB429C35B40008317E2 /* images */; };
-		B0281DB829C35BDD008317E2 /* SwiftSVG in Frameworks */ = {isa = PBXBuildFile; productRef = B0281DB729C35BDD008317E2 /* SwiftSVG */; };
-		B044EFB029BF8BFA00AF6813 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = B044EFAF29BF8BFA00AF6813 /* Api.swift */; };
 		B0488A0629CA38F6007F576C /* GeneralComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0529CA38F6007F576C /* GeneralComponents.swift */; };
 		B0488A0829CA4786007F576C /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0729CA4786007F576C /* Menu.swift */; };
 		B0488A0A29CA4DD0007F576C /* Introduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0929CA4DD0007F576C /* Introduction.swift */; };
 		B0488A0F29CA5540007F576C /* Insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0488A0E29CA5540007F576C /* Insights.swift */; };
+		B079B7AE29D5F3FA007501FE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B079B7AD29D5F3FA007501FE /* User.swift */; };
+		B079B7B029D5F683007501FE /* UserClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B079B7AF29D5F683007501FE /* UserClient.swift */; };
+		B079B7B229D5F69A007501FE /* BaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B079B7B129D5F69A007501FE /* BaseClient.swift */; };
+		B079B7B429D5F6C5007501FE /* RaceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B079B7B329D5F6C5007501FE /* RaceClient.swift */; };
+		B0D37A9C29DD5C3200DF37FC /* Social.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D37A9B29DD5C3200DF37FC /* Social.swift */; };
+		B0D37A9E29DD5C3B00DF37FC /* SocialClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D37A9D29DD5C3B00DF37FC /* SocialClient.swift */; };
+		B0E713C729D461E00084F978 /* Informer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E713C629D461E00084F978 /* Informer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B0227D9829BE1A350024F775 /* moto-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "moto-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0227D9829BE1A350024F775 /* WhatBikesWin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatBikesWin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0227D9B29BE1A350024F775 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0227D9D29BE1A350024F775 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B0227D9F29BE1A350024F775 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -40,11 +45,17 @@
 		B0227DB329BE250C0024F775 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		B0227DB529BE3DDA0024F775 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		B0281DB429C35B40008317E2 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
-		B044EFAF29BF8BFA00AF6813 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
 		B0488A0529CA38F6007F576C /* GeneralComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralComponents.swift; sourceTree = "<group>"; };
 		B0488A0729CA4786007F576C /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		B0488A0929CA4DD0007F576C /* Introduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Introduction.swift; sourceTree = "<group>"; };
 		B0488A0E29CA5540007F576C /* Insights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insights.swift; sourceTree = "<group>"; };
+		B079B7AD29D5F3FA007501FE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		B079B7AF29D5F683007501FE /* UserClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserClient.swift; sourceTree = "<group>"; };
+		B079B7B129D5F69A007501FE /* BaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseClient.swift; sourceTree = "<group>"; };
+		B079B7B329D5F6C5007501FE /* RaceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceClient.swift; sourceTree = "<group>"; };
+		B0D37A9B29DD5C3200DF37FC /* Social.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Social.swift; sourceTree = "<group>"; };
+		B0D37A9D29DD5C3B00DF37FC /* SocialClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialClient.swift; sourceTree = "<group>"; };
+		B0E713C629D461E00084F978 /* Informer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Informer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +63,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0281DB829C35BDD008317E2 /* SwiftSVG in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,7 +80,7 @@
 		B0227D9929BE1A350024F775 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B0227D9829BE1A350024F775 /* moto-ios.app */,
+				B0227D9829BE1A350024F775 /* WhatBikesWin.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,8 +90,6 @@
 			children = (
 				B0488A0D29CA5483007F576C /* Apis */,
 				B0488A0B29CA544C007F576C /* Managers */,
-				B0281DB429C35B40008317E2 /* images */,
-				B0227DB329BE250C0024F775 /* fonts */,
 				B0227D9B29BE1A350024F775 /* AppDelegate.swift */,
 				B0227DB529BE3DDA0024F775 /* Extensions.swift */,
 				B0227D9D29BE1A350024F775 /* SceneDelegate.swift */,
@@ -89,6 +97,8 @@
 				B0488A0529CA38F6007F576C /* GeneralComponents.swift */,
 				B0227D9F29BE1A350024F775 /* ViewController.swift */,
 				B0227DA129BE1A350024F775 /* Main.storyboard */,
+				B0227DB329BE250C0024F775 /* fonts */,
+				B0281DB429C35B40008317E2 /* images */,
 				B0227DA429BE1A350024F775 /* Assets.xcassets */,
 				B0227DA629BE1A350024F775 /* LaunchScreen.storyboard */,
 				B0227DA929BE1A350024F775 /* Info.plist */,
@@ -103,6 +113,9 @@
 				B0488A0929CA4DD0007F576C /* Introduction.swift */,
 				B0488A0729CA4786007F576C /* Menu.swift */,
 				B0488A0E29CA5540007F576C /* Insights.swift */,
+				B0E713C629D461E00084F978 /* Informer.swift */,
+				B079B7AD29D5F3FA007501FE /* User.swift */,
+				B0D37A9B29DD5C3200DF37FC /* Social.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -110,7 +123,10 @@
 		B0488A0D29CA5483007F576C /* Apis */ = {
 			isa = PBXGroup;
 			children = (
-				B044EFAF29BF8BFA00AF6813 /* Api.swift */,
+				B079B7AF29D5F683007501FE /* UserClient.swift */,
+				B079B7B129D5F69A007501FE /* BaseClient.swift */,
+				B079B7B329D5F6C5007501FE /* RaceClient.swift */,
+				B0D37A9D29DD5C3B00DF37FC /* SocialClient.swift */,
 			);
 			path = Apis;
 			sourceTree = "<group>";
@@ -118,9 +134,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B0227D9729BE1A350024F775 /* moto-ios */ = {
+		B0227D9729BE1A350024F775 /* WhatBikesWin */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0227DAC29BE1A350024F775 /* Build configuration list for PBXNativeTarget "moto-ios" */;
+			buildConfigurationList = B0227DAC29BE1A350024F775 /* Build configuration list for PBXNativeTarget "WhatBikesWin" */;
 			buildPhases = (
 				B0227D9429BE1A350024F775 /* Sources */,
 				B0227D9529BE1A350024F775 /* Frameworks */,
@@ -130,12 +146,11 @@
 			);
 			dependencies = (
 			);
-			name = "moto-ios";
+			name = WhatBikesWin;
 			packageProductDependencies = (
-				B0281DB729C35BDD008317E2 /* SwiftSVG */,
 			);
 			productName = "moto-ios";
-			productReference = B0227D9829BE1A350024F775 /* moto-ios.app */;
+			productReference = B0227D9829BE1A350024F775 /* WhatBikesWin.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -153,7 +168,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B0227D9329BE1A350024F775 /* Build configuration list for PBXProject "moto-ios" */;
+			buildConfigurationList = B0227D9329BE1A350024F775 /* Build configuration list for PBXProject "WhatBikesWin" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -163,13 +178,12 @@
 			);
 			mainGroup = B0227D8F29BE1A350024F775;
 			packageReferences = (
-				B0281DB629C35BDD008317E2 /* XCRemoteSwiftPackageReference "SwiftSVG" */,
 			);
 			productRefGroup = B0227D9929BE1A350024F775 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B0227D9729BE1A350024F775 /* moto-ios */,
+				B0227D9729BE1A350024F775 /* WhatBikesWin */,
 			);
 		};
 /* End PBXProject section */
@@ -194,15 +208,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B079B7AE29D5F3FA007501FE /* User.swift in Sources */,
+				B079B7B229D5F69A007501FE /* BaseClient.swift in Sources */,
+				B0D37A9C29DD5C3200DF37FC /* Social.swift in Sources */,
+				B079B7B429D5F6C5007501FE /* RaceClient.swift in Sources */,
 				B0227DB229BE1D080024F775 /* Utils.swift in Sources */,
+				B0D37A9E29DD5C3B00DF37FC /* SocialClient.swift in Sources */,
 				B0488A0A29CA4DD0007F576C /* Introduction.swift in Sources */,
 				B0227DB629BE3DDA0024F775 /* Extensions.swift in Sources */,
 				B0227DA029BE1A350024F775 /* ViewController.swift in Sources */,
 				B0227D9C29BE1A350024F775 /* AppDelegate.swift in Sources */,
 				B0227D9E29BE1A350024F775 /* SceneDelegate.swift in Sources */,
 				B0488A0F29CA5540007F576C /* Insights.swift in Sources */,
-				B044EFB029BF8BFA00AF6813 /* Api.swift in Sources */,
+				B0E713C729D461E00084F978 /* Informer.swift in Sources */,
 				B0488A0829CA4786007F576C /* Menu.swift in Sources */,
+				B079B7B029D5F683007501FE /* UserClient.swift in Sources */,
 				B0488A0629CA38F6007F576C /* GeneralComponents.swift in Sources */,
 				B0227DB029BE1B330024F775 /* Racing.swift in Sources */,
 			);
@@ -366,7 +386,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "moto.moto-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = moto.whatbikeswin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -396,7 +416,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "moto.moto-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = moto.whatbikeswin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -407,7 +427,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B0227D9329BE1A350024F775 /* Build configuration list for PBXProject "moto-ios" */ = {
+		B0227D9329BE1A350024F775 /* Build configuration list for PBXProject "WhatBikesWin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0227DAA29BE1A350024F775 /* Debug */,
@@ -416,7 +436,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B0227DAC29BE1A350024F775 /* Build configuration list for PBXNativeTarget "moto-ios" */ = {
+		B0227DAC29BE1A350024F775 /* Build configuration list for PBXNativeTarget "WhatBikesWin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0227DAD29BE1A350024F775 /* Debug */,
@@ -426,25 +446,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		B0281DB629C35BDD008317E2 /* XCRemoteSwiftPackageReference "SwiftSVG" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mchoe/SwiftSVG.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		B0281DB729C35BDD008317E2 /* SwiftSVG */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B0281DB629C35BDD008317E2 /* XCRemoteSwiftPackageReference "SwiftSVG" */;
-			productName = SwiftSVG;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B0227D9029BE1A350024F775 /* Project object */;
 }

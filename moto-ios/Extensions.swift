@@ -38,3 +38,17 @@ extension UIView {
     }
 }
 
+extension UIButton {
+    func addTouchDownEffect () {
+        self.addTarget(self, action: #selector(self.shortChangeBackground), for: .touchDown)
+    }
+    @objc func shortChangeBackground(with color: UIColor) {
+        UIView.animate(withDuration: 0.0) {
+            self.backgroundColor = self.backgroundColor?.withAlphaComponent(0.5)
+        }
+        
+        UIView.animate(withDuration: 0.1, delay: 0.3) {
+            self.backgroundColor = self.backgroundColor?.withAlphaComponent(1)
+        }
+    }
+}

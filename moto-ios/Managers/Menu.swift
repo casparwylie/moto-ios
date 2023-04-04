@@ -12,7 +12,7 @@ import Foundation
 class HeaderComponent {
     var view: UIView!
     let width = 300
-    let height = 100
+    static let height = 60
     var headerLabel: UILabel!
     var creditLabel: UILabel!
     
@@ -22,7 +22,7 @@ class HeaderComponent {
                 x: _get_center_x(width: self.width),
                 y: 20,
                 width: self.width,
-                height: 0
+                height: HeaderComponent.height
             )
         )
         self.makeHeaderLabel()
@@ -43,7 +43,7 @@ class HeaderComponent {
     
     func render(parentView: UIView) {
         self.view.addSubview(self.headerLabel)
-        self.view.addSubview(self.creditLabel)
+        //self.view.addSubview(self.creditLabel)
         parentView.addSubview(self.view)
     }
 }
@@ -68,7 +68,7 @@ class MenuItemComponent {
         parentView.addSubview(self.button)
     }
     
-    @objc func onPress(button: UIButton) {
+    @MainActor @objc func onPress(button: UIButton) {
         self.menuController?.openWindow(windowName: button.titleLabel?.text! ?? "")
     }
 }
@@ -79,33 +79,43 @@ class MenuComponent {
     let spacing = 10
     var menuController: MenuController?
     
-    init() {
-        self.view = UIView()
-    }
+    let menuItemNamesLoggedOut = [
+        "Introduction",
+        "Head2Heads",
+        "Recent Races",
+        "Login",
+        "Sign Up"
+    ]
     
-    func setMenuItems(menuItemNames: [String]) {
-        for menuItemName in menuItemNames {
+    let menuItemNamesLoggedIn = [
+        "Introduction",
+        "Head2Heads",
+        "Recent Races",
+        "My Profile",
+        "Logout"
+    ]
+    
+ 
+    func setMenuItems(isLoggedin: Bool) {
+        self.menuItems = []
+        let names = (isLoggedin) ? self.menuItemNamesLoggedIn: self.menuItemNamesLoggedOut
+        for menuItemName in names {
             let menuItemComponent = MenuItemComponent(text: menuItemName)
             menuItemComponent.menuController = self.menuController
             self.menuItems.append(menuItemComponent)
         }
     }
+    
 
-    func render(parentView: UIView) {
-        var totalWidth = 0
-        for item in self.menuItems {
-            item.button.frame = CGRect(
-                x: CGFloat(totalWidth),
-                y: 0,
-                width: item.button.frame.size.width,
-                height: item.button.frame.size.height)
-            item.render(parentView: self.view)
-            totalWidth += Int(item.button.frame.width) + self.spacing
-        }
+    func render(parentView: UIView, isLoggedin: Bool) {
+        self.view = UIView()
+        self.setMenuItems(isLoggedin: isLoggedin)
+        self.menuItems.forEach { item in item.render(parentView: self.view) }
+        let lastX = _expand_across(views: self.menuItems.map {$0.button}, spacing: 15)
         self.view.frame = CGRect(
-            x: _get_center_x(width: totalWidth),
-            y: 70,
-            width: totalWidth,
+            x: _get_center_x(width: Int(lastX)),
+            y: HeaderComponent.height,
+            width: Int(lastX),
             height: 30
         )
         parentView.addSubview(self.view)
@@ -116,23 +126,15 @@ class MenuComponent {
 class MenuController {
     var menuComponent: MenuComponent!
     var viewController: ViewController!
-    
-    let menuItems = [
-        "Introduction",
-        "Head2Heads",
-        "Recent Races",
-        "Login",
-        "Sign Up"
-    ]
+
 
     init (menuComponent: MenuComponent, viewController: ViewController) {
         self.viewController = viewController
         self.menuComponent = menuComponent
         self.menuComponent.menuController = self
-        self.menuComponent.setMenuItems(menuItemNames: self.menuItems)
     }
     
-    func openWindow(windowName: String) {
+    @MainActor func openWindow(windowName: String) {
         let parentView = self.viewController.view!
         switch(windowName) {
             case "Introduction":
@@ -143,6 +145,12 @@ class MenuController {
             case "Recent Races":
                 self.viewController.insightManager.recentRacesWindowComponent.render(
                     parentView: parentView)
+            case "Sign Up":
+                self.viewController.userManager.signUpWindowComponent.render(parentView: parentView)
+            case "Login":
+                self.viewController.userManager.loginWindowComponent.render(parentView: parentView)
+            case "Logout":
+                self.viewController.userManager.userStateController.logoutUser()
             default:
                 print("Unexpected window name")
         }
@@ -150,7 +158,7 @@ class MenuController {
 }
 
 
-class Menu {
+class MenuManager {
     var viewController: ViewController!
     var headerComponent: HeaderComponent!
     var menuComponent: MenuComponent!
@@ -172,8 +180,8 @@ class Menu {
         self.menuController = MenuController(menuComponent: self.menuComponent, viewController: self.viewController)
     }
     
-    func render() {
+    func render(isLoggedin: Bool) {
         self.headerComponent.render(parentView: self.viewController.view)
-        self.menuComponent.render(parentView: self.viewController.view)
+        self.menuComponent.render(parentView: self.viewController.view, isLoggedin: isLoggedin)
     }
 }

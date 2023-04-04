@@ -22,13 +22,13 @@ class IntroductionWindowComponent: WindowComponent {
     }
     
     func render(parentView: UIView) {
+        super.render()
         self.view.addSubview(self.testLabel)
         parentView.addSubview(self.view)
     }
-    
 }
 
-class Introduction {
+class IntroductionManager {
     var parentView: UIView!
     var introductionWindowComponent: IntroductionWindowComponent!
     

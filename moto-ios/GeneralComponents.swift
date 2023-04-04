@@ -15,30 +15,27 @@ class WindowComponent {
     var closeButton: UIButton!
     let closeSize = 25
     let titleWidth = global_width
-    let titleHeight = 50
+    let titleHeight = 100
     var titleLabel: UILabel!
     var title: String = ""
     var titleColor: UIColor = .black
     var backgroundColor = UIColor(
         red: 0.00, green: 0.55, blue: 0.55, alpha: 1.00
     )
+    
+    let frame = CGRect(
+        x: 0,
+        y: 0,
+        width: global_width,
+        height: global_height
+    )
 
     
     init() {
-        self.view = UIScrollView(
-            frame: CGRect(
-                x: 0,
-                y: 0,
-                width: global_width,
-                height: global_height
-            )
-        )
-        
         self.setWindowMeta()
-        self.view.backgroundColor = self.backgroundColor
         self.makeClose()
         self.makeTitle()
-        self.prerender()
+        self.render()
     }
     
     func setWindowMeta() {}
@@ -54,7 +51,7 @@ class WindowComponent {
     }
     
     func makeClose() {
-        self.closeButton = _make_button(text: "x", color: .white, size: self.closeSize)
+        self.closeButton = _make_button(text: "✕", color: .white, size: self.closeSize)
         self.closeButton.frame = CGRect(
             x: global_width - self.closeSize * 2,
             y: self.closeSize,
@@ -70,7 +67,9 @@ class WindowComponent {
         self.view.removeFromSuperview()
     }
     
-    func prerender() {
+    func render() {
+        self.view = UIScrollView(frame: self.frame)
+        self.view.backgroundColor = self.backgroundColor
         self.view.addSubview(self.closeButton)
         self.view.addSubview(self.titleLabel)
     }

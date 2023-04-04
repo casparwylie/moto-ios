@@ -14,6 +14,11 @@ let _GREEN = UIColor(red: 0.22, green: 0.68, blue: 0.53, alpha: 1.00)
 let _YELLOW = UIColor(red: 1.00, green: 0.65, blue: 0.00, alpha: 1.00)
 let _RED = UIColor(red: 1.00, green: 0.30, blue: 0.30, alpha: 1.00)
 let _BLUE = UIColor(red: 0.20, green: 0.60, blue: 1.00, alpha: 1.00)
+let _DARK_TBLUE = UIColor(red: 0.00, green: 0.49, blue: 0.49, alpha: 1.00)
+let _DARK2_TBLUE = UIColor(red: 0.00, green: 0.33, blue: 0.33, alpha: 1.00)
+
+
+let _DEFAULT_CORNER_RADIUS: CGFloat = 5
 
 
 class TextField: UITextField {
@@ -68,12 +73,13 @@ func _make_button (
     size: Int = 15
 ) -> UIButton {
     let button = UIButton()
+    button.addTouchDownEffect()
     button.titleLabel?.font = UIFont(name: "ChakraPetch-Medium", size: CGFloat(size))
     button.titleLabel?.textAlignment = .center
     button.setTitle(text, for: .normal)
     button.setTitleColor(color, for: .normal)
     button.backgroundColor = background
-    button.layer.cornerRadius = 5
+    button.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
     button.titleLabel?.lineBreakMode = .byWordWrapping
     return button
 }
@@ -86,9 +92,22 @@ func _make_text_input(text: String) -> TextField {
     )
     textField.backgroundColor = .black
     textField.textColor = .white
-    textField.layer.cornerRadius = 5
+    textField.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
     textField.font =  UIFont(name: "ChakraPetch-Medium", size: 15)
     return textField
+}
+
+func _make_text_box_input() -> UITextView {
+    let textBox = UITextView()
+    textBox.isEditable = true
+    textBox.isUserInteractionEnabled = true
+    textBox.isScrollEnabled = true
+    
+    textBox.backgroundColor = .black
+    textBox.textColor = .white
+    textBox.font =  UIFont(name: "ChakraPetch-Medium", size: 15)
+    textBox.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
+    return textBox
 }
 
 
