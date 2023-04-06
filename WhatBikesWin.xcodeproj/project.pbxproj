@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B016B85729DDF1F7000B657E /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = B016B85629DDF1F7000B657E /* Reachability */; };
+		B016B85929DDF304000B657E /* NetworkCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016B85829DDF304000B657E /* NetworkCheck.swift */; };
 		B0227D9C29BE1A350024F775 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227D9B29BE1A350024F775 /* AppDelegate.swift */; };
 		B0227D9E29BE1A350024F775 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227D9D29BE1A350024F775 /* SceneDelegate.swift */; };
 		B0227DA029BE1A350024F775 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0227D9F29BE1A350024F775 /* ViewController.swift */; };
@@ -32,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B016B85829DDF304000B657E /* NetworkCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkCheck.swift; sourceTree = "<group>"; };
 		B0227D9829BE1A350024F775 /* WhatBikesWin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatBikesWin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0227D9B29BE1A350024F775 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0227D9D29BE1A350024F775 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B016B85729DDF1F7000B657E /* Reachability in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,6 +120,7 @@
 				B0E713C629D461E00084F978 /* Informer.swift */,
 				B079B7AD29D5F3FA007501FE /* User.swift */,
 				B0D37A9B29DD5C3200DF37FC /* Social.swift */,
+				B016B85829DDF304000B657E /* NetworkCheck.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 			);
 			name = WhatBikesWin;
 			packageProductDependencies = (
+				B016B85629DDF1F7000B657E /* Reachability */,
 			);
 			productName = "moto-ios";
 			productReference = B0227D9829BE1A350024F775 /* WhatBikesWin.app */;
@@ -178,6 +184,7 @@
 			);
 			mainGroup = B0227D8F29BE1A350024F775;
 			packageReferences = (
+				B016B85529DDF1F7000B657E /* XCRemoteSwiftPackageReference "Reachability" */,
 			);
 			productRefGroup = B0227D9929BE1A350024F775 /* Products */;
 			projectDirPath = "";
@@ -219,6 +226,7 @@
 				B0227DA029BE1A350024F775 /* ViewController.swift in Sources */,
 				B0227D9C29BE1A350024F775 /* AppDelegate.swift in Sources */,
 				B0227D9E29BE1A350024F775 /* SceneDelegate.swift in Sources */,
+				B016B85929DDF304000B657E /* NetworkCheck.swift in Sources */,
 				B0488A0F29CA5540007F576C /* Insights.swift in Sources */,
 				B0E713C729D461E00084F978 /* Informer.swift in Sources */,
 				B0488A0829CA4786007F576C /* Menu.swift in Sources */,
@@ -446,6 +454,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B016B85529DDF1F7000B657E /* XCRemoteSwiftPackageReference "Reachability" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B016B85629DDF1F7000B657E /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B016B85529DDF1F7000B657E /* XCRemoteSwiftPackageReference "Reachability" */;
+			productName = Reachability;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B0227D9029BE1A350024F775 /* Project object */;
 }

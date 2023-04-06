@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "swiftsvg",
+      "identity" : "reachability.swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mchoe/SwiftSVG.git",
+      "location" : "https://github.com/ashleymills/Reachability.swift",
       "state" : {
         "branch" : "master",
-        "revision" : "88b9ee086b29019e35f6f49c8e30e5552eb8fa9d"
+        "revision" : "a81b7367f2c46875f29577e03a60c39cdfad0c8d"
       }
     }
   ],

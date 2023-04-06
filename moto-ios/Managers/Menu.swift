@@ -91,7 +91,7 @@ class MenuComponent {
         "Introduction",
         "Head2Heads",
         "Recent Races",
-        "My Profile",
+        "Me",
         "Logout"
     ]
     
@@ -151,6 +151,8 @@ class MenuController {
                 self.viewController.userManager.loginWindowComponent.render(parentView: parentView)
             case "Logout":
                 self.viewController.userManager.userStateController.logoutUser()
+            case "Me":
+                self.viewController.userManager.profileWindowComponent.render(parentView: parentView)
             default:
                 print("Unexpected window name")
         }

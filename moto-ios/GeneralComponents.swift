@@ -31,13 +31,6 @@ class WindowComponent {
     )
 
     
-    init() {
-        self.setWindowMeta()
-        self.makeClose()
-        self.makeTitle()
-        self.render()
-    }
-    
     func setWindowMeta() {}
     
     func makeTitle() {
@@ -67,10 +60,14 @@ class WindowComponent {
         self.view.removeFromSuperview()
     }
     
-    func render() {
+    func render(parentView: UIView) {
+        self.setWindowMeta()
+        self.makeClose()
+        self.makeTitle()
         self.view = UIScrollView(frame: self.frame)
         self.view.backgroundColor = self.backgroundColor
         self.view.addSubview(self.closeButton)
         self.view.addSubview(self.titleLabel)
+        parentView.addSubview(self.view)
     }
 }

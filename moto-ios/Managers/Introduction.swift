@@ -13,7 +13,6 @@ class IntroductionWindowComponent: WindowComponent {
     var testLabel: UILabel!
 
    override init() {
-        super.init()
         self.testLabel = _make_text(text: "This is the intro")
     }
     
@@ -21,10 +20,9 @@ class IntroductionWindowComponent: WindowComponent {
         self.title = "Introduction"
     }
     
-    func render(parentView: UIView) {
-        super.render()
+    override func render(parentView: UIView) {
+        super.render(parentView: parentView)
         self.view.addSubview(self.testLabel)
-        parentView.addSubview(self.view)
     }
 }
 

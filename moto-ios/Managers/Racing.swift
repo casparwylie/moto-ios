@@ -6,7 +6,6 @@
 //
 import UIKit
 import Foundation
-import SwiftSVG
 
 
 let _MAX_RACERS_PER_RACE = 8
@@ -665,7 +664,7 @@ class RacerResultComponent {
 class RaceResultsWindowComponent: WindowComponent {
     
     var racerResultComponents: [RacerResultComponent] = []
-    var informer: InformerManager!
+    var informer: InformerController?
     
     var raceController: RaceController?
     
@@ -685,10 +684,6 @@ class RaceResultsWindowComponent: WindowComponent {
     
     var raceId: Int?
     
-    init(informer: InformerManager) {
-        super.init()
-        self.informer = informer
-    }
 
     override func setWindowMeta() {
         self.backgroundColor = .black
@@ -785,7 +780,7 @@ class RaceResultsWindowComponent: WindowComponent {
     @MainActor @objc func onShareButtonPress() {
         if let id = self.raceId {
             UIPasteboard.general.string = "\(BASE_DOMAIN)/r/\(id)"
-            self.informer.inform(message: "Copied sharable URL!")
+            self.informer?.inform(message: "Copied sharable URL!")
         }
     }
     
@@ -819,8 +814,7 @@ class RaceResultsWindowComponent: WindowComponent {
         self.voteDownButton.setTitle("Downvote (\(downvotes))", for: .normal)
     }
     
-    func render(parentView: UIView) {
-        super.render()
+    override func render(parentView: UIView) {
         self.makeOptionsView()
         self.makeResultOptions()
         self.voteOptionsView.addSubview(self.voteDownButton)
@@ -830,8 +824,9 @@ class RaceResultsWindowComponent: WindowComponent {
         self.optionsView.addSubview(self.viewCommentsButton)
         self.optionsView.addSubview(self.shareButton)
         self.optionsView.addSubview(self.fbButton)
-        self.view.addSubview(self.optionsView)
         
+        
+        super.render(parentView: parentView)
         self.racerResultComponents.forEach { racerResultComponent in
             racerResultComponent.render(parentView: self.view)
         }
@@ -843,7 +838,7 @@ class RaceResultsWindowComponent: WindowComponent {
             width: CGFloat(RacerResultComponent.width),
             height: lastY
         )
-        parentView.addSubview(self.view)
+        self.view.addSubview(self.optionsView)
     }
 }
 
@@ -854,8 +849,8 @@ class RaceController {
     var racerInputsComponent: RacerInputsComponent!
     var raceResultsWindowComponent: RaceResultsWindowComponent!
     var trafficLightComponent: TrafficLightComponent!
-    var informer: InformerManager!
-    var commentsController: CommentsController!
+    var informerController: InformerController?
+    var commentsController: CommentsController?
     
     var apiClient: RacingApiClient!
     var loadedRacers: [RacerModel] = []
@@ -868,9 +863,7 @@ class RaceController {
         raceViewComponent: RaceViewComponent,
         racerInputsComponent: RacerInputsComponent,
         raceResultsWindowComponent: RaceResultsWindowComponent,
-        trafficLightComponent: TrafficLightComponent,
-        informer: InformerManager,
-        commentsController: CommentsController
+        trafficLightComponent: TrafficLightComponent
     ) {
         self.apiClient = apiClient
         self.mainView = mainView
@@ -878,8 +871,6 @@ class RaceController {
         self.raceViewComponent = raceViewComponent
         self.raceResultsWindowComponent = raceResultsWindowComponent
         self.trafficLightComponent = trafficLightComponent
-        self.informer = informer
-        self.commentsController = commentsController
         self.racerInputsComponent.raceController = self
         self.raceResultsWindowComponent.raceController = self
     }
@@ -960,12 +951,13 @@ class RaceController {
                 if let result = await self.apiClient.voteRace(vote: vote, raceUniqueId: uniqueId) {
                     if result.success {
                         self.setVotes()
-                        self.informer.inform(message: "Successfully voted!")
+                        self.informerController?.inform(message: "Successfully voted!")
                     } else {
-                        self.informer.inform(message: "You have already voted.", mood: "bad")
+                        self.informerController?.inform(message: "You have already voted.", mood: "bad")
                     }
                 } else {
-                    self.informer.inform(message: "You must have an account to vote.", mood: "bad")
+                    // TODO: Handle 403 error code explicitly
+                    self.informerController?.inform(message: "You must have an account to vote.", mood: "bad")
                 }
             }
         }
@@ -1004,8 +996,7 @@ class RaceController {
 class RacingManager {
     var apiClient: RacingApiClient!
     var parentView: UIView!
-    var informer: InformerManager!
-    var socialManager: SocialManager!
+    var informerController: InformerController!
     
     var controlPanelComponent: ControlPanelComponent!
     var raceViewComponent: RaceViewComponent!
@@ -1016,19 +1007,18 @@ class RacingManager {
     var raceController: RaceController!
 
     
-    init(apiClient: RacingApiClient, informer: InformerManager, socialManager: SocialManager, parentView: UIView) {
+    init(apiClient: RacingApiClient, parentView: UIView) {
         self.apiClient = apiClient
-        self.informer = informer
-        self.socialManager = socialManager
         self.parentView = parentView
         self.makeComponents()
         self.makeControllers()
     }
     
+    
     func makeComponents () {
         self.controlPanelComponent = ControlPanelComponent()
         self.raceViewComponent = RaceViewComponent()
-        self.raceResultsWindowComponent = RaceResultsWindowComponent(informer: self.informer)
+        self.raceResultsWindowComponent = RaceResultsWindowComponent()
         self.trafficLightComponent = TrafficLightComponent()
     }
     
@@ -1044,10 +1034,14 @@ class RacingManager {
             raceViewComponent: self.raceViewComponent,
             racerInputsComponent: self.controlPanelComponent.racerInputsComponent,
             raceResultsWindowComponent: self.raceResultsWindowComponent,
-            trafficLightComponent: self.trafficLightComponent,
-            informer: self.informer,
-            commentsController: self.socialManager.commentsController
+            trafficLightComponent: self.trafficLightComponent
         )
+    }
+    
+    func injectControllers(commentsController: CommentsController, informerController: InformerController) {
+        self.raceController.commentsController = commentsController
+        self.raceController.informerController = informerController
+        self.raceResultsWindowComponent.informer = informerController
     }
 
     func render() {

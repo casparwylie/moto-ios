@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import Reachability
 
 
 var global_width = Int(UIScreen.main.bounds.size.width)
@@ -30,13 +31,14 @@ class ViewController: UIViewController {
     var menuManager: MenuManager!
     var introductionManager: IntroductionManager!
     var insightManager: InsightsManager!
-    var informManager: InformerManager!
+    var informerManager: InformerManager!
     var userManager: UserManager!
     var socialManager: SocialManager!
+    var networkCheckManager: NetworkCheckManager!
     
-    let racingApiClient = RacingApiClient(base_url: BASE_DOMAIN + "/api/racing")
-    let userApiClient = UserApiClient(base_url: BASE_DOMAIN + "/api/user")
-    let socialApiClient = SocialApiClient(base_url: BASE_DOMAIN + "/api/social")
+    var racingApiClient: RacingApiClient!
+    var userApiClient: UserApiClient!
+    var socialApiClient: SocialApiClient!
     
     func sceneDelegate() -> SceneDelegate? {
         let scene = UIApplication.shared.connectedScenes.first
@@ -48,50 +50,61 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-            self.informManager = InformerManager(parentView: self.view)
         
-            self.userManager = UserManager(
-                apiClient: self.userApiClient, informer: informManager, viewController: self
-            )
-        
-            self.socialManager = SocialManager(
-                informer: self.informManager,
-                userStateController: self.userManager.userStateController,
-                apiClient: self.socialApiClient,
-                parentView: self.view
-            )
-        
-            self.racingManager = RacingManager(
-                apiClient: self.racingApiClient,
-                informer: informManager,
-                socialManager: socialManager,
-                parentView: self.view
-            )
- 
-        
-            self.menuManager = MenuManager(viewController: self)
-        
-            self.introductionManager = IntroductionManager(parentView: self.view)
-        
-            self.insightManager = InsightsManager(
-                parentView: self.view,
-                apiClient: racingApiClient,
-                raceController: racingManager.raceController
-            )
+        self.makeApiClients()
+        self.makeManagers()
         
         Task {
             await self.initialSetup()
-            self.renderAll(isLoggedin: self.userManager.userStateController.isLoggedin())
         }
     }
     
+    func makeApiClients() {
+        self.racingApiClient = RacingApiClient(base_url: BASE_DOMAIN + "/api/racing")
+        self.userApiClient = UserApiClient(base_url: BASE_DOMAIN + "/api/user")
+        self.socialApiClient = SocialApiClient(base_url: BASE_DOMAIN + "/api/social")
+    }
+    
+    func makeManagers() {
+        self.informerManager = InformerManager(parentView: self.view)
+        self.racingManager = RacingManager(apiClient: self.racingApiClient, parentView: self.view)
+        self.menuManager = MenuManager(viewController: self)
+        self.introductionManager = IntroductionManager(parentView: self.view)
+        self.insightManager = InsightsManager(parentView: self.view, apiClient: self.racingApiClient)
+        self.userManager = UserManager(apiClient: self.userApiClient, viewController: self)
+        self.socialManager = SocialManager(apiClient: self.socialApiClient, parentView: self.view)
+        self.networkCheckManager = NetworkCheckManager(mainView: self.view)
+    }
+    
+    func injectDependencies() {
+        self.racingManager.injectControllers(
+            commentsController: self.socialManager.commentsController,
+            informerController: self.informerManager.informerController
+        )
+        
+        self.insightManager.injectControllers(
+            raceController: self.racingManager.raceController
+        )
+        
+        self.userManager.injectControllers(
+            informerController: self.informerManager.informerController,
+            myRecentRacesController: self.insightManager.myRecentRacesController
+        )
+        
+        self.socialManager.injectControllers(
+            informerController: self.informerManager.informerController,
+            userStateController: self.userManager.userStateController
+        )
+    }
+    
     func renderAll(isLoggedin: Bool) {
-        self.informManager.render()
+        self.informerManager.render()
         self.racingManager.render()
         self.userManager.render()
         self.menuManager.render(isLoggedin: isLoggedin)
         self.socialManager.render()
+        
+        self.networkCheckManager.start()
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -135,6 +148,8 @@ class ViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
         
         await self.userManager.userStateController.setUser()
+        self.injectDependencies()
+        self.renderAll(isLoggedin: self.userManager.userStateController.isLoggedin())
         
     }
 

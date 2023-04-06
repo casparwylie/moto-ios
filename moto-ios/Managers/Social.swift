@@ -88,7 +88,7 @@ class CommentComponent {
     }
     
     func makeDeleteButton() {
-        if (self.commentsController?.userStateController.isLoggedin() ?? false && self.commentsController?.userStateController.currentUser?.username == self.comment.username
+        if (self.commentsController?.userStateController?.isLoggedin() ?? false && self.commentsController?.userStateController?.currentUser?.username == self.comment.username
         ) {
             self.deleteButton = _make_button(text: "✕", color: _RED, size: self.deleteButtonSize)
             self.deleteButton!.frame = CGRect(
@@ -133,11 +133,12 @@ class CommentComponent {
 
 
 class CommentsWindowComponent: WindowComponent {
-    var informer: InformerManager!
-    
     var commentsController: CommentsController?
 
     var commentComponents: [CommentComponent] = []
+    
+    var noCommentsLabel: UILabel!
+    
     var commentTextBox: UITextView!
     let commentTextBoxSpacing: CGFloat = 5
     let commentTextBoxWidth = Int(Double(global_width) * 0.7)
@@ -148,11 +149,6 @@ class CommentsWindowComponent: WindowComponent {
     let commentButtonWidth = Int(Double(global_width) * 0.3)
     let commentButtonHeight = 30
 
-        
-    init(informer: InformerManager) {
-        super.init()
-        self.informer = informer
-    }
 
     override func setWindowMeta() {
         self.title = "Comments"
@@ -162,16 +158,27 @@ class CommentsWindowComponent: WindowComponent {
         self.commentComponents.forEach{ component in component.view.removeFromSuperview() }
         self.commentComponents = []
         self.commentTextBox.text = ""
-        for comment in comments {
-            let commentComponent = CommentComponent(comment: comment)
-            commentComponent.commentsController = self.commentsController
-            self.commentComponents.append(commentComponent)
-            commentComponent.render(parentView: self.view)
+        self.noCommentsLabel.removeFromSuperview()
+        if comments.count > 0 {
+            for comment in comments {
+                let commentComponent = CommentComponent(comment: comment)
+                commentComponent.commentsController = self.commentsController
+                self.commentComponents.append(commentComponent)
+                commentComponent.render(parentView: self.view)
+            }
+            let lastY = _expand_as_list(
+                views: self.commentComponents.map{ $0.view }, startY: CGFloat(self.titleHeight)
+            )
+            self.updateFrames(lastY: lastY)
+        } else {
+            self.view.addSubview(self.noCommentsLabel)
+            self.updateFrames(
+                lastY: CGFloat(self.titleHeight)
+                + self.noCommentsLabel.frame.height
+                + self.commentTextBoxSpacing
+            )
         }
-        let lastY = _expand_as_list(
-            views: self.commentComponents.map{ $0.view }, startY: CGFloat(self.titleHeight)
-        )
-        self.updateFrames(lastY: lastY)
+        
     }
     
     func updateFrames(lastY: CGFloat) {
@@ -213,20 +220,30 @@ class CommentsWindowComponent: WindowComponent {
         self.commentButton.addTarget(self, action: #selector(self.onAddCommentPress), for: .touchDown)
     }
     
+    func makeNoCommentsLabel() {
+        self.noCommentsLabel = _make_text(text: "There are no comments for this race yet.", align: .center)
+        self.noCommentsLabel.frame = CGRect(
+            x: _get_center_x(width: global_width),
+            y: self.titleHeight,
+            width: global_width,
+            height: 30
+        )
+    }
+    
     @MainActor @objc func onAddCommentPress() {
         if self.commentTextBox.text.count > 1 {
             commentsController?.addComment(text: self.commentTextBox.text)
         }
     }
     
-    func render(parentView: UIView) {
-        super.render()
+    override func render(parentView: UIView) {
+        self.makeNoCommentsLabel()
         self.commentsController?.populateComments()
         self.makeCommentBox()
         self.makeCommentButton()
+        super.render(parentView: parentView)
         self.view.addSubview(self.commentTextBox)
         self.view.addSubview(self.commentButton)
-        parentView.addSubview(self.view)
     }
 }
 
@@ -235,22 +252,18 @@ class CommentsController {
     var mainView: UIView!
     var commentsWindowComponent: CommentsWindowComponent!
     var apiClient: SocialApiClient!
-    var informer: InformerManager!
-    var userStateController: UserStateController!
+    var informerController: InformerController?
+    var userStateController: UserStateController?
     
     var currentUniqueRaceId: String?
 
     init(
         commentsWindowComponent: CommentsWindowComponent,
-        userStateController: UserStateController,
         apiClient: SocialApiClient,
-        informer: InformerManager,
         mainView: UIView
     ) {
         self.mainView = mainView
         self.apiClient = apiClient
-        self.informer = informer
-        self.userStateController = userStateController
         self.commentsWindowComponent = commentsWindowComponent
         self.commentsWindowComponent.commentsController = self
     }
@@ -276,10 +289,11 @@ class CommentsController {
                 if let result = await self.apiClient.addComment(uniqueRaceId: uniqueRaceId, text: text) {
                     if result.success {
                         self.populateComments()
-                        self.informer.inform(message: "Successfully commented!")
+                        self.informerController?.inform(message: "Successfully commented!")
                     }
                 } else {
-                    self.informer.inform(message: "You must have an account to comment.", mood: "bad")
+                    // TODO: Handle 403 error code explicitly
+                    self.informerController?.inform(message: "You must have an account to comment.", mood: "bad")
                 }
             }
         }
@@ -290,7 +304,7 @@ class CommentsController {
             if let result = await self.apiClient.deleteComment(commentId: commentId) {
                 if result.success {
                     self.populateComments()
-                    self.informer.inform(message: "Successfully deleted!")
+                    self.informerController?.inform(message: "Successfully deleted!")
                 }
             }
         }
@@ -299,18 +313,15 @@ class CommentsController {
 
 class SocialManager {
     
-    var informer: InformerManager!
-    var userStateController: UserStateController!
+    var informerController: InformerController?
+    var userStateController: UserStateController?
     var apiClient: SocialApiClient!
     var parentView: UIView!
     
     var commentsWindowComponent: CommentsWindowComponent!
     var commentsController: CommentsController!
     
-    init(informer: InformerManager, userStateController: UserStateController, apiClient: SocialApiClient, parentView: UIView) {
-        
-        self.informer = informer
-        self.userStateController = userStateController
+    init(apiClient: SocialApiClient, parentView: UIView) {
         self.apiClient = apiClient
         self.parentView = parentView
         self.makeComponents()
@@ -318,22 +329,23 @@ class SocialManager {
     }
     
     func makeComponents() {
-        self.commentsWindowComponent = CommentsWindowComponent(informer: self.informer)
+        self.commentsWindowComponent = CommentsWindowComponent()
     }
     
     func makeControllers() {
         self.commentsController = CommentsController(
             commentsWindowComponent: self.commentsWindowComponent,
-            userStateController: self.userStateController,
             apiClient: self.apiClient,
-            informer: self.informer,
             mainView: self.parentView
         )
+    }
+    
+    func injectControllers(informerController: InformerController, userStateController: UserStateController) {
+        self.commentsController?.userStateController = userStateController
+        self.commentsController.informerController = informerController
     }
     
     func render() {
         
     }
 }
-
-

@@ -88,9 +88,10 @@ class RacingApiClient: BaseApiClient {
         return result
     }
     
-    func getRaceInsights(pathName: String) async -> RaceListingModel? {
+    func getRaceInsights(name: String, flags: [String: String]) async -> RaceListingModel? {
+        let queryItems = flags.map {(key, value) in URLQueryItem(name: key, value: value)}
         return await self._make_get_request(
-            path: "/insight\(pathName)", queryItems: [] , responseModel: RaceListingModel.self
+            path: "/insight/\(name)", queryItems: queryItems, responseModel: RaceListingModel.self
         )
     }
     

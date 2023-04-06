@@ -46,8 +46,8 @@
             filePath = "moto-ios/GeneralComponents.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
             landmarkName = "onClosePress(button:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "774"
-            endingLineNumber = "774"
+            startingLineNumber = "769"
+            endingLineNumber = "769"
             landmarkName = "onViewCommentsPress(button:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "moto-ios/Managers/Social.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "275"
-            endingLineNumber = "275"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
             landmarkName = "addComment(text:)"
             landmarkType = "7">
             <Locations>
@@ -126,10 +126,420 @@
             filePath = "moto-ios/Managers/Social.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
+            startingLineNumber = "290"
+            endingLineNumber = "290"
             landmarkName = "addComment(text:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "46CF174A-237C-4500-BFD2-850076F0A8F8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/NetworkCheck.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "start()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "46CF174A-237C-4500-BFD2-850076F0A8F8 - c164554c00531db0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Reachability.Reachability) -&gt; () in WhatBikesWin.NetworkCheckManager.start() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/NetworkCheck.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "51"
+                  endingLineNumber = "51"
+                  offsetFromSymbolStart = "376">
+               </Location>
+               <Location
+                  uuid = "46CF174A-237C-4500-BFD2-850076F0A8F8 - edaccdce8e30f1b3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Reachability.Reachability) -&gt; () in WhatBikesWin.NetworkCheckManager.start() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/NetworkCheck.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "51"
+                  endingLineNumber = "51"
+                  offsetFromSymbolStart = "80">
+               </Location>
+               <Location
+                  uuid = "46CF174A-237C-4500-BFD2-850076F0A8F8 - edaccdce8e30f192"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Reachability.Reachability) -&gt; () in WhatBikesWin.NetworkCheckManager.start() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/NetworkCheck.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "50"
+                  endingLineNumber = "50"
+                  offsetFromSymbolStart = "80">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1728D653-1BCC-4913-B33C-139165B08E3C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/NetworkCheck.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "start()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "1728D653-1BCC-4913-B33C-139165B08E3C - ab2be1690c93f43a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WhatBikesWin.NetworkCheckManager.start() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/NetworkCheck.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "48"
+                  endingLineNumber = "48"
+                  offsetFromSymbolStart = "260">
+               </Location>
+               <Location
+                  uuid = "1728D653-1BCC-4913-B33C-139165B08E3C - c164554c00531c4e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Reachability.Reachability) -&gt; () in WhatBikesWin.NetworkCheckManager.start() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/NetworkCheck.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "49"
+                  endingLineNumber = "49"
+                  offsetFromSymbolStart = "80">
+               </Location>
+               <Location
+                  uuid = "1728D653-1BCC-4913-B33C-139165B08E3C - c164554c00531c2f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Reachability.Reachability) -&gt; () in WhatBikesWin.NetworkCheckManager.start() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/NetworkCheck.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "48"
+                  endingLineNumber = "48"
+                  offsetFromSymbolStart = "76">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EBD531D9-BE5B-4F49-9094-5DED2BB339C5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Insights.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "populate()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EBD531D9-BE5B-4F49-9094-5DED2BB339C5 - 4ec15a8dd29e7251"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.InsightController.populate() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112"
+                  offsetFromSymbolStart = "196">
+               </Location>
+               <Location
+                  uuid = "EBD531D9-BE5B-4F49-9094-5DED2BB339C5 - ce580f3fe78b9450"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.InsightController.populate() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "EBD531D9-BE5B-4F49-9094-5DED2BB339C5 - 49f2f1a1f8e735af"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.InsightController.populate() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112"
+                  offsetFromSymbolStart = "36">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "432C6071-7D6A-42AC-A6B8-E6FD1238B75B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Insights.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "populate()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "432C6071-7D6A-42AC-A6B8-E6FD1238B75B - 4f940e69acb1bdb2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.InsightController.populate() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "111"
+                  endingLineNumber = "111"
+                  offsetFromSymbolStart = "84">
+               </Location>
+               <Location
+                  uuid = "432C6071-7D6A-42AC-A6B8-E6FD1238B75B - b60050c2f0e1e250"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.InsightController.populate() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "111"
+                  endingLineNumber = "111"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  uuid = "432C6071-7D6A-42AC-A6B8-E6FD1238B75B - 4ec15a8dd29e71b0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.InsightController.populate() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "111"
+                  endingLineNumber = "111"
+                  offsetFromSymbolStart = "76">
+               </Location>
+               <Location
+                  uuid = "432C6071-7D6A-42AC-A6B8-E6FD1238B75B - 4ec15a8dd29e71b0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.InsightController.populate() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "111"
+                  endingLineNumber = "111"
+                  offsetFromSymbolStart = "252">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "92E4C4DB-AFDC-43F3-A9CD-3D27095DDFFF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Apis/RaceClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "getRaceInsights(name:flags:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "92E4C4DB-AFDC-43F3-A9CD-3D27095DDFFF - 681b58bec469967f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for WhatBikesWin.RacingApiClient.getRaceInsights(name: Swift.String, flags: Swift.Dictionary&lt;Swift.String, Swift.String&gt;) async -&gt; Swift.Optional&lt;WhatBikesWin.RaceListingModel&gt;"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Apis/RaceClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "112">
+               </Location>
+               <Location
+                  uuid = "92E4C4DB-AFDC-43F3-A9CD-3D27095DDFFF - 949c11638a5f0034"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.String, Swift.String) -&gt; Foundation.URLQueryItem in WhatBikesWin.RacingApiClient.getRaceInsights(name: Swift.String, flags: Swift.Dictionary&lt;Swift.String, Swift.String&gt;) async -&gt; Swift.Optional&lt;WhatBikesWin.RaceListingModel&gt;"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Apis/RaceClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "72">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "68493F62-4547-475E-B9DC-5E7FD009E215"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Insights.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
+            landmarkName = "startRace(race:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "29607E65-C5D8-4F0C-900A-E88F1305CB46"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "injectDependencies()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EF187315-AC71-48F3-B8CE-7D0E6C640819"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Insights.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
+            landmarkName = "injectControllers(raceController:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EF187315-AC71-48F3-B8CE-7D0E6C640819 - f252a637cb0566b5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WhatBikesWin.InsightsManager.injectControllers() -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "171"
+                  endingLineNumber = "171"
+                  offsetFromSymbolStart = "68">
+               </Location>
+               <Location
+                  uuid = "EF187315-AC71-48F3-B8CE-7D0E6C640819 - b6b9ad56b2100912"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WhatBikesWin.InsightsManager.injectControllers(raceController: WhatBikesWin.RaceController) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "171"
+                  endingLineNumber = "171"
+                  offsetFromSymbolStart = "76">
+               </Location>
+               <Location
+                  uuid = "EF187315-AC71-48F3-B8CE-7D0E6C640819 - b6b9ad56b2100931"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "WhatBikesWin.InsightsManager.injectControllers(raceController: WhatBikesWin.RaceController) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Insights.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "170"
+                  endingLineNumber = "170"
+                  offsetFromSymbolStart = "80">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
