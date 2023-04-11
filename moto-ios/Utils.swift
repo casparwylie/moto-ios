@@ -66,6 +66,7 @@ func _make_text (
 }
 
 
+// TODO: Replace _make methods with Subclasses in GeneralComponents
 func _make_button (
     text: String,
     background: UIColor? = nil,

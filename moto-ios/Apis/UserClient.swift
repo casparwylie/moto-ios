@@ -31,6 +31,11 @@ struct UserResponseModel: Decodable {
     var email: String
 }
 
+struct ChangePasswordRequestModel: Codable {
+    var old: String
+    var new: String
+}
+
 
 class UserApiClient: BaseApiClient {
 
@@ -57,6 +62,14 @@ class UserApiClient: BaseApiClient {
     func logoutUser() async -> SuccessResponseModel? {
         return await self._make_get_request(
             path: "/logout", queryItems: [], responseModel: SuccessResponseModel.self
+        )
+    }
+    
+    func changePassword(oldPassword: String, newPassword: String) async -> SuccessResponseModel? {
+        return await self._make_post_request(
+            path: "/change-password",
+            body: ChangePasswordRequestModel(old: oldPassword, new: newPassword),
+            responseModel: SuccessResponseModel.self
         )
     }
     

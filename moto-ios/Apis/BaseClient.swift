@@ -9,6 +9,7 @@ import UIKit
 
 struct SuccessResponseModel: Decodable {
     var success: Bool
+    var errors: [String]
 }
 
 class BaseApiClient {
