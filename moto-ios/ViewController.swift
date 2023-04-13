@@ -71,7 +71,7 @@ class ViewController: UIViewController {
         self.menuManager = MenuManager(viewController: self)
         self.introductionManager = IntroductionManager(parentView: self.view)
         self.insightManager = InsightsManager(parentView: self.view, apiClient: self.racingApiClient)
-        self.userManager = UserManager(apiClient: self.userApiClient, viewController: self)
+        self.userManager = UserManager(apiClient: self.userApiClient, racingApiClient: self.racingApiClient, viewController: self)
         self.socialManager = SocialManager(apiClient: self.socialApiClient, parentView: self.view)
         self.networkCheckManager = NetworkCheckManager(mainView: self.view)
     }
@@ -88,7 +88,8 @@ class ViewController: UIViewController {
         
         self.userManager.injectControllers(
             informerController: self.informerManager.informerController,
-            myRecentRacesController: self.insightManager.myRecentRacesController
+            myRecentRacesController: self.insightManager.myRecentRacesController,
+            racerRecommendingController: self.racingManager.racerRecommendingController
         )
         
         self.socialManager.injectControllers(

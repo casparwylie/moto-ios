@@ -18,12 +18,30 @@ class RaceListingWindowComponent: WindowComponent {
     let buttonWidth = Double(global_width) * 0.8
     var insightController: InsightController?
     
+    var noCommentsLabel: UILabel!
+    
     
     @MainActor func populate(races: [RaceModel]) {
-        self.raceButtons.forEach{ raceButton in raceButton.removeFromSuperview() }
-        let buttons = races.map {self.addRaceButton(race: $0)}
-        let lastY = _expand_as_list(views: buttons, startY: self.titleLabel.frame.height)
-        self.view.contentSize = CGSize(width: self.view.frame.width, height: lastY)
+        self.noCommentsLabel.removeFromSuperview()
+        if races.count > 0 {
+            self.raceButtons.forEach{ raceButton in raceButton.removeFromSuperview() }
+            let buttons = races.map {self.addRaceButton(race: $0)}
+            let lastY = _expand_as_list(views: buttons, startY: self.titleLabel.frame.height)
+            self.view.contentSize = CGSize(width: self.view.frame.width, height: lastY)
+        } else {
+            self.view.addSubview(self.noCommentsLabel)
+        }
+    }
+    
+    
+    func makeNoCommentsLabel() {
+        self.noCommentsLabel = _make_text(text: "There are no races yet.", align: .center)
+        self.noCommentsLabel.frame = CGRect(
+            x: _get_center_x(width: global_width),
+            y: self.titleHeight,
+            width: global_width,
+            height: 30
+        )
     }
 
     func addRaceButton(race: RaceModel) -> UILabel {
@@ -61,6 +79,7 @@ class RaceListingWindowComponent: WindowComponent {
     override func render(parentView: UIView) {
         self.insightController?.populate()
         super.render(parentView: parentView)
+        self.makeNoCommentsLabel()
     }
     
 }

@@ -27,7 +27,100 @@ extension PartialRacer: Equatable {
 }
 
 
-class RacerInputsComponent {
+protocol RacerInputOwnerComponent: AnyObject {
+    var racerRecommendingController: RacerRecommendingController? { get set }
+}
+
+
+class RacerInputComponent: RacerInputOwnerComponent {
+    
+    var view: UIView!
+    var makeIn: UITextField!
+    var modelIn: UITextField!
+    var yearIn: UITextField!
+    
+    static let width = Int(Double(global_width) * 0.8)
+    static let inputHeight = 30
+    static let inputWidthSpacing = 2
+    static let inputHeightSpacing = 2
+
+
+    var racerRecommendingController: RacerRecommendingController?
+      
+    @MainActor @objc func onModelChange(input: TextField) {
+        self.racerRecommendingController?.recommend(inputComponent: self)
+        self.yearIn.text = ""
+    }
+    
+    @MainActor @objc func onMakeChange(input: TextField) {
+        self.modelIn.text = ""
+        self.yearIn.text = ""
+    }
+    
+    func reset() {
+        self.makeIn.text = ""
+        self.modelIn.text = ""
+        self.yearIn.text = ""
+    }
+
+    func makeInputs() {
+        let inputWidth = (Int(Self.width + 1 ) / 3) - Self.inputWidthSpacing
+        self.view = UIView(frame: CGRect(x: 0, y: 0, width: Int(Self.width), height: Self.inputHeight))
+        let inputFrame = CGRect(x: 0, y: 0, width: inputWidth, height: Self.inputHeight)
+        
+        self.makeIn = _make_text_input(text: "Make...")
+        self.makeIn.frame = inputFrame
+        self.makeIn.addTarget(
+            self, action: #selector(self.onMakeChange), for: .editingChanged
+        )
+        self.modelIn = _make_text_input(text: "Model...")
+        self.modelIn.frame = inputFrame
+        self.yearIn = _make_text_input(text: "Year...")
+        self.yearIn.frame = inputFrame
+        self.modelIn.addTarget(
+            self, action: #selector(self.onModelChange), for: .editingChanged
+        )
+        self.modelIn.addTarget(
+            self, action: #selector(self.onModelChange), for: .editingDidBegin
+        )
+        _ = _expand_across(
+            views: [self.makeIn, self.modelIn, self.yearIn], spacing: CGFloat(Self.inputWidthSpacing)
+        )
+    }
+
+    
+    func getPartialRacerFromInputs() -> PartialRacer? {
+        let racer = PartialRacer(
+            make: (self.makeIn.text?.trimmingCharacters(in: .whitespacesAndNewlines)) ?? "",
+            model: (self.modelIn.text?.trimmingCharacters(in: .whitespacesAndNewlines)) ?? "",
+            year: (self.yearIn.text?.trimmingCharacters(in: .whitespacesAndNewlines)) ?? ""
+        )
+        if racer.make.count > 0 && racer.model.count > 0  {
+            return racer
+        } else {
+            return nil
+        }
+    }
+    
+    
+    func setRacer(racer: PartialRacer) {
+        self.makeIn.text = racer.make
+        self.modelIn.text = racer.model
+        self.yearIn.text = racer.year
+    }
+    
+    func render(parentView: UIView) {
+        self.makeInputs()
+        self.view.addSubview(makeIn)
+        self.view.addSubview(modelIn)
+        self.view.addSubview(yearIn)
+        
+        parentView.addSubview(self.view)
+    }
+}
+
+
+class RacerInputsComponent: RacerInputOwnerComponent {
     var view: UIView!
     var optionsView: UIView!
     var resetButton: UIButton!
@@ -35,35 +128,29 @@ class RacerInputsComponent {
     var addButton: UIButton!
     var skipButton: UIButton!
     
-    let inputWidth = global_width / 5
-    let inputHeight = 30
-    let inputWidthSpacing = 2
-    let inputHeightSpacing = 2
+
     let optionsWidth = 50
     let optionsWidthSpacing = 2
     let optionsHeightSpacing = 2
     let optionsHeight = 25
+    let thirdWidth = RacerInputComponent.width / 3
+    let halfSpacing = RacerInputComponent.inputWidthSpacing / 2
     
-    var width: Int!
-    var allInputs: [[UITextField]] = []
-    var racerRecommendingController: RacerRecommendingController?
+    var currentInputY = 0
+    
+    var allInputs: [RacerInputComponent] = []
+    
+    
     var raceController: RaceController?
-
-    init () {
-        self.width = (3 * self.inputWidth) + (2 * self.inputWidthSpacing)
-
-    }
+    var racerRecommendingController: RacerRecommendingController?
     
-    func getRowY() -> Int {
-        return self.allInputs.count * (self.inputHeight + self.inputHeightSpacing)
-    }
-    
+
     func makeOptions() {
         self.optionsView = UIView(
             frame: CGRect(
-                x: _get_center_x(width: self.width),
+                x: _get_center_x(width: RacerInputComponent.width),
                 y: 0,
-                width: self.width,
+                width:  RacerInputComponent.width,
                 height: self.optionsHeight * 2 + optionsHeightSpacing
             )
         )
@@ -73,6 +160,7 @@ class RacerInputsComponent {
         self.makeSkipButton()
 
     }
+
     
     func makeAddButton() {
         self.addButton = _make_button(text: "+ Add", background: .black, color: .white)
@@ -100,7 +188,7 @@ class RacerInputsComponent {
         self.raceButton.frame = CGRect(
             x: 0,
             y: self.optionsHeight + optionsHeightSpacing,
-            width: self.inputWidth * 2 + inputWidthSpacing,
+            width: (2 * thirdWidth) - halfSpacing,
             height: self.optionsHeight
         )
         self.raceButton.addTarget(self, action: #selector(self.onRacePress), for: .touchDown)
@@ -109,9 +197,9 @@ class RacerInputsComponent {
     func makeSkipButton() {
         self.skipButton = _make_button(text: "Skip to results", background: _YELLOW, color: .white)
         self.skipButton.frame = CGRect(
-            x: self.inputWidth * 2 + (inputWidthSpacing * 2),
+            x: (2 * thirdWidth) + halfSpacing,
             y: self.optionsHeight + optionsHeightSpacing,
-            width: self.inputWidth,
+            width: thirdWidth - halfSpacing,
             height: self.optionsHeight
         )
         self.skipButton.addTarget(self, action: #selector(self.onSkipPress), for: .touchDown)
@@ -123,72 +211,28 @@ class RacerInputsComponent {
         }
     }
     
-    func addInput() -> Int {
-        let makeIn = _make_text_input(text: "Make...")
-        let modelIn = _make_text_input(text: "Model...")
-        let yearIn = _make_text_input(text: "Year...")
-        let rowId = allInputs.count
-        modelIn.addTarget(
-            self, action: #selector(self.onModelChange), for: .editingChanged
-        )
-        modelIn.addTarget(
-            self, action: #selector(self.onModelChange), for: .editingDidBegin
-        )
-        let y = self.getRowY()
-        modelIn.group = rowId
-        self.allInputs.append([makeIn, modelIn, yearIn])
-
-        for (index, input) in self.allInputs.last!.enumerated() {
-            input.frame = CGRect(
-                x: (inputWidth + self.inputWidthSpacing) * index,
-                y: y,
-                width: self.inputWidth,
-                height: self.inputHeight
+    func addInput() -> RacerInputComponent {
+        let input = RacerInputComponent()
+        input.racerRecommendingController = self.racerRecommendingController
+        input.render(parentView: self.view)
+        self.allInputs.append(input)
+        self.currentInputY = Int(
+            _expand_as_list(
+                views: self.allInputs.map{$0.view}, spacing: CGFloat(RacerInputComponent.inputWidthSpacing)
             )
-        }
-        
+        )
         self.updateFrames()
-        self.view.addSubview(makeIn)
-        self.view.addSubview(modelIn)
-        self.view.addSubview(yearIn)
-        return rowId
+        return input
     }
     
     func updateFrames() {
-        self.view.frame.size.height = CGFloat(self.getRowY())
+        self.view.frame.size.height = CGFloat(self.currentInputY)
         self.optionsView.frame.origin.y = self.view.frame.origin.y + self.view.frame.size.height
     }
-    
-    @MainActor @objc func onModelChange(input: TextField) {
-        if let racer = self.getPartialRacerFromInputRow(inputRow: self.allInputs[input.group]) {
-            self.racerRecommendingController?.recommend(
-                racer: racer,
-                inputRow: input.group
-            )
-        }
-    }
-    
-    func getPartialRacerFromInputRow(inputRow: [UITextField]) -> PartialRacer? {
-        let racer = PartialRacer(
-            make: inputRow[0].text!,
-            model: inputRow[1].text!,
-            year: inputRow[2].text!
-        )
-        if racer.make.count > 0 && racer.model.count > 0  {
-            return racer
-        } else {
-            return nil
-        }
-    }
+
     
     func getPartialRacersFromAllInputs() -> [PartialRacer] {
-        var racers: [PartialRacer] = []
-        for row in self.allInputs {
-            if let racer = self.getPartialRacerFromInputRow(inputRow: row) {
-                racers.append(racer)
-            }
-        }
-        return racers
+        return self.allInputs.compactMap { $0.getPartialRacerFromInputs() }
     }
     
     @MainActor @objc func onRacePress() {
@@ -220,34 +264,24 @@ class RacerInputsComponent {
             _ = self.addInput()
         }
     }
-    
-    func setInputRow(inputRow: Int, racer: PartialRacer) {
-        self.allInputs[inputRow][0].text = racer.make
-        self.allInputs[inputRow][1].text = racer.model
-        self.allInputs[inputRow][2].text = racer.year
-    }
-    
-    func setInputRows(racers: [RacerModel]) {
+
+    func setAllRacers(racers: [RacerModel]) {
         self.reset(addInputs: false)
         for racer in racers {
-            let inputRow = self.addInput()
+            let input = self.addInput()
             let partialRacer = PartialRacer(
                 make: racer.make_name, model: racer.name, year: racer.year
             )
-            self.setInputRow(
-                inputRow: inputRow,
-                racer: partialRacer
-            )
-            
+            input.setRacer(racer: partialRacer)
         }
     }
     
     func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: _get_center_x(width: self.width),
+                x: _get_center_x(width: RacerInputComponent.width),
                 y: 110,
-                width: self.width,
+                width: RacerInputComponent.width,
                 height: 0
             )
         )
@@ -263,105 +297,70 @@ class RacerInputsComponent {
 }
 
 
-class RacerRecommenderComponent {
-    var view: UIScrollView!
-    let width = global_width / 3
+class RacerRecommenderComponent: OptionListingComponent {
     var racerRecommendingController: RacerRecommendingController?
-    var rows: [String: PartialRacer] = [:]
-    let rowHeight = 25
-    let recommenderHeight = 150
-    
-
-    func clear() {
-        self.view.subviews.forEach {row in  row.removeFromSuperview()}
-        self.rows = [:]
-        self.view.frame.size.height = 0
-    }
-    
-    func addRacer(racer: PartialRacer) {
-        let text = "\(racer.model) \(racer.year)"
-        let button = _make_button(text: text, color: .white)
-        button.frame = CGRect(
-            x: 0,
-            y: Int(self.rows.count * self.rowHeight),
-            width: self.width,
-            height: self.rowHeight
-        )
-        button.addBottomBorderWithColor(color: .black, width: 1)
-        self.view.addSubview(button)
-        button.addTarget(
-            self, action: #selector(self.onRowSelect), for: .touchUpInside
-        )
-        self.rows[text] = racer
-        self.view.frame.size.height = CGFloat(self.recommenderHeight)
-        self.view.contentSize = CGSize(
-            width: CGFloat(self.width),
-            height: CGFloat(self.rows.count * self.rowHeight)
-        )
-    }
-    
-    @objc func onRowSelect(button: UIButton) {
-        let name = button.titleLabel?.text!
-        self.racerRecommendingController?.setRacer(racer: self.rows[name!]!)
-        
-    }
-
-    func render(parentView: UIView) {
-        self.view = UIScrollView(
-            frame: CGRect(
-                x: _get_center_x(width: self.width) + (global_width / 5),
-                y: 110,
-                width: self.width,
-                height: 0
-            )
-        )
-        self.view.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
-        self.view.backgroundColor = _DARK_BLUE
-        parentView.addSubview(self.view)
-    }
 }
-
 
 
 class RacerRecommendingController {
     var apiClient: RacingApiClient!
-    var racerRecommenderComponent: RacerRecommenderComponent!
-    var racerInputsComponent: RacerInputsComponent!
-    var currentInputRow = 0
+    var currentInputComponent: RacerInputComponent?
+    var currentRacerRecommenderComponent: RacerRecommenderComponent?
+    
     init(
         apiClient: RacingApiClient,
-        racerInputsComponent: RacerInputsComponent,
-        racerRecommenderComponent: RacerRecommenderComponent
+        recommenderComponent: RacerRecommenderComponent,
+        raceInputOwner: RacerInputOwnerComponent
     ) {
         self.apiClient = apiClient
-        racerInputsComponent.racerRecommendingController = self
-        racerRecommenderComponent.racerRecommendingController = self
-        self.racerRecommenderComponent = racerRecommenderComponent
-        self.racerInputsComponent = racerInputsComponent
+        self.currentRacerRecommenderComponent = recommenderComponent
+        self.currentRacerRecommenderComponent?.racerRecommendingController = self
+        raceInputOwner.racerRecommendingController = self
     }
-    
-    @MainActor func recommend(racer: PartialRacer, inputRow: Int) {
-        self.currentInputRow = inputRow
+ 
+    @MainActor func recommend(inputComponent: RacerInputComponent) {
+        self.currentInputComponent = inputComponent
+        self.placeRecommender()
         Task {
-            self.racerRecommenderComponent.clear()
-            let results = await apiClient.searchRacers(
-                make: racer.make, model: racer.model, year: racer.year
-            )
-            if let results = results {
-                for result in results {
-                    self.racerRecommenderComponent.addRacer(
-                        racer: PartialRacer(
+            self.currentRacerRecommenderComponent?.clear()
+            if let partialRacer = self.currentInputComponent?.getPartialRacerFromInputs() {
+                let results = await apiClient.searchRacers(
+                    make: partialRacer.make, model: partialRacer.model, year: partialRacer.year
+                )
+                if let results = results {
+                    for result in results {
+                        let partialRacer = PartialRacer(
                             make: result.make_name, model: result.name, year: result.year
                         )
-                    )
+                        let text = "\(partialRacer.model) \(partialRacer.year)"
+                        self.currentRacerRecommenderComponent?.addRow(text: text) {
+                            self.setRacer(racer: partialRacer)
+                        }
+                    }
                 }
             }
         }
     }
-    
+
+    func placeRecommender() {
+        if let inputComponent = self.currentInputComponent {
+            let point = inputComponent.view.superview?.convert(
+                inputComponent.view.frame.origin, to: nil
+            )
+            self.currentRacerRecommenderComponent?.setFrame(
+                frame: CGRect(
+                    x: point!.x,
+                    y: point!.y + self.currentInputComponent!.view.frame.size.height,
+                    width: self.currentInputComponent!.view.frame.size.width,
+                    height: 0
+                )
+            )
+        }
+    }
+
     func setRacer(racer: PartialRacer) {
-        self.racerRecommenderComponent.clear()
-        self.racerInputsComponent.setInputRow(inputRow: self.currentInputRow, racer: racer)
+        self.currentRacerRecommenderComponent?.clear()
+        self.currentInputComponent?.setRacer(racer: racer)
     }
 }
 
@@ -371,10 +370,15 @@ class ControlPanelComponent {
     let width = global_width
     var racerInputsComponent: RacerInputsComponent!
     var racerRecommenderComponent: RacerRecommenderComponent!
+    let recommenderWidth = global_width / 3
     
     init() {
         self.racerInputsComponent = RacerInputsComponent()
         self.racerRecommenderComponent = RacerRecommenderComponent()
+    }
+        
+    func makeRacerRecommender() {
+        self.racerRecommenderComponent.render(parentView: self.view)
     }
     
     func render(parentView: UIView) {
@@ -386,7 +390,7 @@ class ControlPanelComponent {
         ))
         self.view.backgroundColor = .white
         self.racerInputsComponent.render(parentView: self.view)
-        self.racerRecommenderComponent.render(parentView: self.view)
+        self.makeRacerRecommender()
         parentView.addSubview(self.view)
     }
 }
@@ -631,7 +635,9 @@ class RacerResultComponent {
     }
     
     func makeStats() {
-        let statsText = "Power: \(self.racer.power) hp \nTorque: \(self.racer.torque) Nm \nWeight: \(self.racer.weight) kg"
+        let statsText = (
+            "Power: \(self.racer.power) hp \nTorque: \(self.racer.torque) Nm \nWeight: \(self.racer.weight) kg"
+        )
         self.statsLabel = _make_text(text: statsText, color: .white)
         self.statsLabel.numberOfLines = 3
     }
@@ -786,7 +792,9 @@ class RaceResultsWindowComponent: WindowComponent {
     
     @MainActor @objc func onShareFbPress() {
         if let id = self.raceId {
-            if let fbShareUrl = URL(string: "https://www.facebook.com/sharer/sharer.php?u=\(BASE_DOMAIN)/r/\(id)") {
+            if let fbShareUrl = URL(
+                string: "https://www.facebook.com/sharer/sharer.php?u=\(BASE_DOMAIN)/r/\(id)"
+            ) {
                 UIApplication.shared.open(fbShareUrl)
             }
         }
@@ -904,7 +912,7 @@ class RaceController {
     func setRacersFromRace(race: RaceModel) {
         self.loadedRacers = race.racers
         self.setRaceInfo(raceId: race.race_id, raceUniqueId: race.race_unique_id)
-        self.racerInputsComponent.setInputRows(racers: self.loadedRacers)
+        self.racerInputsComponent.setAllRacers(racers: self.loadedRacers)
         self.lastPartialRacers = self.racerInputsComponent.getPartialRacersFromAllInputs()
     }
     
@@ -1025,8 +1033,8 @@ class RacingManager {
     func makeControllers () {
         self.racerRecommendingController = RacerRecommendingController(
             apiClient: self.apiClient,
-            racerInputsComponent: self.controlPanelComponent.racerInputsComponent,
-            racerRecommenderComponent: self.controlPanelComponent.racerRecommenderComponent
+            recommenderComponent: self.controlPanelComponent.racerRecommenderComponent,
+            raceInputOwner: self.controlPanelComponent.racerInputsComponent
         )
         self.raceController = RaceController(
             apiClient: self.apiClient,
@@ -1038,7 +1046,9 @@ class RacingManager {
         )
     }
     
-    func injectControllers(commentsController: CommentsController, informerController: InformerController) {
+    func injectControllers(
+        commentsController: CommentsController, informerController: InformerController
+    ) {
         self.raceController.commentsController = commentsController
         self.raceController.informerController = informerController
         self.raceResultsWindowComponent.informer = informerController

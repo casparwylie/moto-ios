@@ -24,7 +24,6 @@ let _DEFAULT_CORNER_RADIUS: CGFloat = 5
 class TextField: UITextField {
 
     let padding = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-    var group = 0
 
     override open func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
@@ -73,16 +72,27 @@ func _make_button (
     color: UIColor = .black,
     size: Int = 15
 ) -> UIButton {
-    let button = UIButton()
-    button.addTouchDownEffect()
-    button.titleLabel?.font = UIFont(name: "ChakraPetch-Medium", size: CGFloat(size))
-    button.titleLabel?.textAlignment = .center
-    button.setTitle(text, for: .normal)
-    button.setTitleColor(color, for: .normal)
-    button.backgroundColor = background
-    button.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
-    button.titleLabel?.lineBreakMode = .byWordWrapping
-    return button
+    let button = Button()
+    return button.make(text: text, background: background, color: color, size: size)
+}
+
+class Button: UIButton {
+    func make(
+        text: String,
+        background: UIColor? = nil,
+        color: UIColor = .black,
+        size: Int = 15
+    ) -> Button {
+        self.addTouchDownEffect()
+        self.titleLabel?.font = UIFont(name: "ChakraPetch-Medium", size: CGFloat(size))
+        self.titleLabel?.textAlignment = .center
+        self.setTitle(text, for: .normal)
+        self.setTitleColor(color, for: .normal)
+        self.backgroundColor = background
+        self.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
+        self.titleLabel?.lineBreakMode = .byWordWrapping
+        return self
+    }
 }
 
 func _make_text_input(text: String) -> TextField {
@@ -91,6 +101,7 @@ func _make_text_input(text: String) -> TextField {
         string: text,
         attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
     )
+    textField.autocapitalizationType = .none
     textField.backgroundColor = .black
     textField.textColor = .white
     textField.layer.cornerRadius = _DEFAULT_CORNER_RADIUS

@@ -37,6 +37,35 @@ struct ChangePasswordRequestModel: Codable {
 }
 
 
+struct EditUserFieldRequestModel: Codable {
+    var field: String
+    var value: String
+}
+
+
+struct GarageItemModel: Codable {
+    var relation: String
+    var name: String
+    var make_name: String
+    var year: Int //TODO: Make String on server
+    var model_id: Int?
+}
+
+struct UserGarageResponseModel: Decodable {
+    var items: [GarageItemModel]
+}
+
+
+struct DeleteGarageItemRequestModel: Codable {
+    var model_id: Int
+}
+
+
+struct ForgotPasswordRequestModel: Codable {
+    var email: String
+}
+
+
 class UserApiClient: BaseApiClient {
 
     func signupUser(username: String, email: String, password: String) async -> SignupResponseModel? {
@@ -69,6 +98,49 @@ class UserApiClient: BaseApiClient {
         return await self._make_post_request(
             path: "/change-password",
             body: ChangePasswordRequestModel(old: oldPassword, new: newPassword),
+            responseModel: SuccessResponseModel.self
+        )
+    }
+    
+    func editFieldUser(field: String, value: String) async -> SuccessResponseModel? {
+        return await self._make_post_request(
+            path: "/edit",
+            body: EditUserFieldRequestModel(field: field, value: value),
+            responseModel: SuccessResponseModel.self
+        )
+    }
+    
+    func addGarageItem(racer: PartialRacer, relation: String) async -> SuccessResponseModel? {
+        return await self._make_post_request(
+            path: "/garage",
+            body: GarageItemModel(
+                relation: relation, name: racer.model, make_name: racer.make, year: Int(racer.year)!
+            ),
+            responseModel: SuccessResponseModel.self
+        )
+    }
+    
+    func deleteGarageItem(model_id: Int)  async -> SuccessResponseModel?  {
+        return await self._make_post_request(
+            path: "/garage/delete",
+            body: DeleteGarageItemRequestModel(model_id: model_id),
+            responseModel: SuccessResponseModel.self
+        )
+    }
+    
+    
+    func getGarageItems(userId: Int) async -> UserGarageResponseModel? {
+        return await self._make_get_request(
+            path: "/garage",
+            queryItems:  [URLQueryItem(name: "user_id", value: String(userId))],
+            responseModel: UserGarageResponseModel.self
+        )
+    }
+    
+    func forgotPassword(email: String) async -> SuccessResponseModel? {
+        return await self._make_post_request(
+            path: "/forgot-password",
+            body: ForgotPasswordRequestModel(email: email),
             responseModel: SuccessResponseModel.self
         )
     }

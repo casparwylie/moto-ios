@@ -88,7 +88,9 @@ class CommentComponent {
     }
     
     func makeDeleteButton() {
-        if (self.commentsController?.userStateController?.isLoggedin() ?? false && self.commentsController?.userStateController?.currentUser?.username == self.comment.username
+        if (
+            self.commentsController?.userStateController?.isLoggedin() ?? false
+            && self.commentsController?.userStateController?.currentUser?.username == self.comment.username
         ) {
             self.deleteButton = _make_button(text: "✕", color: _RED, size: self.deleteButtonSize)
             self.deleteButton!.frame = CGRect(

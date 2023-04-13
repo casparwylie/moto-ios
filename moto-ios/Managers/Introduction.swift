@@ -7,22 +7,40 @@
 
 import Foundation
 import UIKit
+import WebKit
 
 
-class IntroductionWindowComponent: WindowComponent {
-    var testLabel: UILabel!
 
-   override init() {
-        self.testLabel = _make_text(text: "This is the intro")
+class IntroductionWindowComponent: WindowComponent, WKUIDelegate {
+    var webView: WKWebView!
+    let contentRequestURL = URL(string: "\(BASE_DOMAIN)/intro.html")
+
+    override init() {
+        super.init()
+        self.webView = WKWebView(
+            frame: CGRect(
+                x: 0,
+                y: self.closeSize * 2,
+                width: global_width,
+                height: global_height - self.closeSize * 2
+            ),
+            configuration: WKWebViewConfiguration()
+        )
+        self.webView.uiDelegate = self
     }
     
     override func setWindowMeta() {
-        self.title = "Introduction"
+        self.title = ""
     }
     
+    func renderWebView() {
+        let request = URLRequest(url: self.contentRequestURL!)
+        self.webView.load(request)
+        self.view.addSubview(self.webView)
+    }
     override func render(parentView: UIView) {
         super.render(parentView: parentView)
-        self.view.addSubview(self.testLabel)
+        self.renderWebView()
     }
 }
 
