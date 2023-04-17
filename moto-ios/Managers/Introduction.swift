@@ -20,7 +20,7 @@ class IntroductionWindowComponent: WindowComponent, WKUIDelegate {
         self.webView = WKWebView(
             frame: CGRect(
                 x: 0,
-                y: self.closeSize * 2,
+                y: Self.headerOffset - Self.titleHeight,
                 width: global_width,
                 height: global_height - self.closeSize * 2
             ),

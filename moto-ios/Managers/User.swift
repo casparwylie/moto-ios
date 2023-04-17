@@ -60,7 +60,7 @@ class SignUpWindowComponent: WindowComponent {
         
         _ = expandDown(
             views: [self.usernameIn, self.emailIn, self.passwordIn, self.vpasswordIn, self.submitButton],
-            startY: CGFloat(Self.titleHeight)
+            startY: CGFloat(Self.headerOffset)
         )
     }
     
@@ -151,7 +151,7 @@ class LoginWindowComponent: WindowComponent {
         
         _ = expandDown(
             views: [self.usernameIn, self.passwordIn, self.submitButton],
-            startY: CGFloat(Self.titleHeight),
+            startY: CGFloat(Self.headerOffset),
             spacing: CGFloat(self.inputSpacing)
         )
         
@@ -198,6 +198,7 @@ class SignUpController {
     }
     
     @MainActor func signUpUser(username: String, email: String, password: String, vpassword: String) {
+        self.signUpWindowComponent.startLoading()
         if (
             username.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
             || email.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
@@ -220,6 +221,7 @@ class SignUpController {
                     self.finishSuccessfulSignUp()
                 }
             }
+            self.signUpWindowComponent.stopLoading()
         }
     }
     
@@ -247,6 +249,7 @@ class LoginController {
     }
     
     @MainActor func loginUser(username: String, password: String) {
+        self.loginWindowComponent.startLoading()
         if (
             username.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
             || password.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
@@ -264,6 +267,7 @@ class LoginController {
                     )
                 }
             }
+            self.loginWindowComponent.stopLoading()
         }
     }
     
@@ -413,7 +417,7 @@ class MyGarageWindowComponent: WindowComponent {
         self.garageView = UIView(
             frame: CGRect(
                 x: getCenterX(width: self.garageViewWidth),
-                y:  Self.titleHeight,
+                y:  Self.headerOffset,
                 width: self.garageViewWidth,
                 height: self.garageViewHeight
             )
@@ -440,6 +444,7 @@ class MyGarageWindowComponent: WindowComponent {
             self.garageListingView.frame.size.height = CGFloat(self.garageListingViewHeight)
             return
         }
+        self.startLoading()
         var rows: [UILabel] = []
         var deleteButtons: [UIButton] = []
         for item in items {
@@ -457,6 +462,7 @@ class MyGarageWindowComponent: WindowComponent {
         let lastY = expandDown(views: rows)
         _ = expandDown(views: deleteButtons)
         self.updateListingFrame(lastY: Int(lastY))
+        self.stopLoading()
 
     }
     
@@ -591,6 +597,7 @@ class MyGarageController {
     }
     
     @MainActor func addGarageItem(racer: PartialRacer, relationId: String) {
+        self.myGarageWindowComponent.startLoading()
         Task {
             if let response = await self.apiClient.addGarageItem(racer: racer, relation: relationId) {
                 if response.success {
@@ -600,6 +607,7 @@ class MyGarageController {
                     self.informerController?.inform(message: response.errors[0], mood: "bad")
                 }
             }
+            self.myGarageWindowComponent.stopLoading()
         }
     }
     
@@ -666,7 +674,7 @@ class ChangePasswordWindowComponent: WindowComponent {
         
         _ = expandDown(
             views: [self.oldPasswordIn, self.newPasswordIn, self.vPasswordIn, self.submitButton],
-            startY: CGFloat(Self.titleHeight)
+            startY: CGFloat(Self.headerOffset)
         )
     }
     
@@ -736,12 +744,12 @@ class EditProfileWindowComponent: WindowComponent {
         
         _ = expandDown(
             views: [self.editUsernameIn, self.editEmailIn],
-            startY: CGFloat(Self.titleHeight)
+            startY: CGFloat(Self.headerOffset)
         )
         
         _ = expandDown(
             views: [self.submitUsernameButton, self.submitEmailButton],
-            startY: CGFloat(Self.titleHeight)
+            startY: CGFloat(Self.headerOffset)
         )
     }
     
@@ -813,7 +821,7 @@ class ProfileWindowComponent: WindowComponent {
         self.userInfoLabel.lineBreakMode = .byWordWrapping
         self.userInfoLabel.frame = CGRect(
             x: getCenterX(width: global_width),
-            y: Self.titleHeight,
+            y: Self.headerOffset,
             width: global_width,
             height: self.userInfoHeight
         )
@@ -823,7 +831,7 @@ class ProfileWindowComponent: WindowComponent {
         self.tabButtonView = UIView(
             frame: CGRect(
                 x: 0,
-                y: Self.titleHeight + self.userInfoHeight + 20,
+                y: Self.headerOffset + self.userInfoHeight + 20,
                 width: 0,
                 height: self.tabButtonsHeight
             )
@@ -899,6 +907,7 @@ class MeController {
     @MainActor func changePassword(oldPassword: String, newPassword: String, vPassword: String) {
         if (oldPassword.count > 0 && newPassword.count > 0 && vPassword.count > 0) {
             if (newPassword == vPassword) {
+                self.changePasswordWindowComponent.startLoading()
                 Task {
                     if let response = await self.apiClient.changePassword(
                         oldPassword: oldPassword,
@@ -911,6 +920,7 @@ class MeController {
                             self.changePasswordWindowComponent.view.removeFromSuperview()
                         }
                     }
+                    self.changePasswordWindowComponent.stopLoading()
                 }
             } else {
                 self.informerController?.inform(message: "Passwords do not match.", mood: "bad")
@@ -920,6 +930,7 @@ class MeController {
     
     @MainActor func editUser(field: String, value: String) {
         if value.count > 0 {
+            self.editProfileWindowComponent.startLoading()
             Task {
                 if let response = await self.apiClient.editFieldUser(field: field, value: value) {
                     if response.errors.count > 0 {
@@ -931,6 +942,7 @@ class MeController {
                         self.informerController?.inform(message: "Successfully saved!")
                     }
                 }
+                self.editProfileWindowComponent.stopLoading()
             }
         }
     }

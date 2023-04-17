@@ -25,6 +25,7 @@ class UIDefaults {
     var HEADER_FONT_SIZE: Int { return 25 }
     var CORNER_RADIUS: CGFloat { return 5 }
     var MAX_RACERS_PER_RACE: Int { return 6 }
+    var HEADER_IMAGE_SIZE: Int { return 130 }
 }
 
 class iPadUIDefaults: UIDefaults {
@@ -32,6 +33,7 @@ class iPadUIDefaults: UIDefaults {
     override var FONT_SIZE:  Int { return 25 }
     override var HEADER_FONT_SIZE: Int { return 35 }
     override var MAX_RACERS_PER_RACE: Int { return 8 }
+    override var HEADER_IMAGE_SIZE: Int { return 200 }
 }
 
 func uiDef() -> UIDefaults {

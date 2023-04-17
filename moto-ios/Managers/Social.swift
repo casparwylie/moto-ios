@@ -169,13 +169,13 @@ class CommentsWindowComponent: WindowComponent {
                 commentComponent.render(parentView: self.view)
             }
             let lastY = expandDown(
-                views: self.commentComponents.map{ $0.view }, startY: CGFloat(Self.titleHeight)
+                views: self.commentComponents.map{ $0.view }, startY: CGFloat(Self.headerOffset)
             )
             self.updateFrames(lastY: lastY)
         } else {
             self.view.addSubview(self.noCommentsLabel)
             self.updateFrames(
-                lastY: CGFloat(Self.titleHeight)
+                lastY: CGFloat(Self.headerOffset)
                 + self.noCommentsLabel.frame.height
                 + self.commentTextBoxSpacing
             )
@@ -226,7 +226,7 @@ class CommentsWindowComponent: WindowComponent {
         self.noCommentsLabel = Label().make(text: "There are no comments for this race yet.", align: .center)
         self.noCommentsLabel.frame = CGRect(
             x: getCenterX(width: global_width),
-            y: Self.titleHeight,
+            y: Self.headerOffset,
             width: global_width,
             height: uiDef().ROW_HEIGHT
         )
@@ -286,18 +286,22 @@ class CommentsController {
     }
     
     @MainActor func addComment(text: String) {
+        self.commentsWindowComponent.startLoading()
         Task {
             if let uniqueRaceId = self.currentUniqueRaceId {
                 if let result = await self.apiClient.addComment(uniqueRaceId: uniqueRaceId, text: text) {
                     if result.success {
                         self.populateComments()
                         self.informerController?.inform(message: "Successfully commented!")
-                    }
+                    } else {
+                       self.informerController?.inform(message: result.errors[0], mood: "bad")
+                   }
                 } else {
                     // TODO: Handle 403 error code explicitly
                     self.informerController?.inform(message: "You must have an account to comment.", mood: "bad")
                 }
             }
+            self.commentsWindowComponent.stopLoading()
         }
     }
     

@@ -684,6 +684,7 @@ class RaceResultsWindowComponent: WindowComponent {
     let optionsViewHeight = uiDef().ROW_HEIGHT * 2
     let optionWidth = global_width / 6
     let optionFontSize = uiDef().FONT_SIZE
+    let resultsSpacing = 20
 
     
     var raceId: Int?
@@ -693,13 +694,14 @@ class RaceResultsWindowComponent: WindowComponent {
         self.backgroundColor = .black
         self.title = "Results"
         self.titleColor = .white
+        self.headerImageName = "images/header_street_type_white"
     }
     
     func makeOptionsView() {
         self.optionsView = UIView()
         self.optionsView.frame = CGRect(
             x: 0,
-            y: Self.titleHeight + 10,
+            y: Self.headerOffset + 10,
             width: 0,
             height: self.optionsViewHeight
         )
@@ -839,8 +841,8 @@ class RaceResultsWindowComponent: WindowComponent {
         }
         let lastY = expandDown(
             views: self.racerResultComponents.map{$0.view},
-            startY:  CGFloat(Int(self.titleLabel.frame.height) + self.optionsViewHeight + uiDef().ROW_HEIGHT),
-            spacing: 20
+            startY:  CGFloat(Self.headerOffset + self.optionsViewHeight + self.resultsSpacing),
+            spacing: CGFloat(self.resultsSpacing)
         )
         self.view.contentSize = CGSize(
             width: CGFloat(RacerResultComponent.width),

@@ -26,7 +26,7 @@ class RaceListingWindowComponent: WindowComponent {
         if races.count > 0 {
             self.raceButtons.forEach{ raceButton in raceButton.removeFromSuperview() }
             let buttons = races.map {self.addRaceButton(race: $0)}
-            let lastY = expandDown(views: buttons, startY: self.titleLabel.frame.height)
+            let lastY = expandDown(views: buttons, startY: CGFloat(Self.headerOffset))
             self.view.contentSize = CGSize(width: self.view.frame.width, height: lastY)
         } else {
             self.view.addSubview(self.noCommentsLabel)
@@ -38,7 +38,7 @@ class RaceListingWindowComponent: WindowComponent {
         self.noCommentsLabel = Label().make(text: "There are no races yet.", align: .center)
         self.noCommentsLabel.frame = CGRect(
             x: getCenterX(width: global_width),
-            y: Self.titleHeight,
+            y: Self.headerOffset,
             width: global_width,
             height: uiDef().ROW_HEIGHT
         )
@@ -77,8 +77,8 @@ class RaceListingWindowComponent: WindowComponent {
     
     
     override func render(parentView: UIView) {
-        self.insightController?.populate()
         super.render(parentView: parentView)
+        self.insightController?.populate()
         self.makeNoCommentsLabel()
     }
     
@@ -127,12 +127,15 @@ class InsightController {
     }
     
     func populate() {
+        self.windowComponent.startLoading()
         Task {
             if let results = await apiClient.getRaceInsights(
                 name: self.apiName, flags: self.apiFlags
             ) {
                 await self.windowComponent.populate(races: results.races)
             }
+            await self.windowComponent.stopLoading()
+
         }
     }
     

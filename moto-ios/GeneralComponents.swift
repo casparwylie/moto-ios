@@ -12,13 +12,19 @@ import UIKit
 
 class WindowComponent: NSObject {
     var view: UIScrollView!
+    var headerImageView: UIImageView!
     var closeButton: UIButton!
     let closeSize = uiDef().HEADER_FONT_SIZE
     let titleWidth = global_width
-    static let titleHeight = 100
+    static let titleHeight = uiDef().HEADER_FONT_SIZE + 2
+    
+    static let headerImageSize = uiDef().HEADER_IMAGE_SIZE
+    static let headerImageSizeHeight = Int(Double(headerImageSize) * 0.7)
+    static let headerOffset = titleHeight + WindowComponent.headerImageSizeHeight + 20
     var titleLabel: UILabel!
     var title: String = ""
     var titleColor: UIColor = .black
+    var headerImageName = "images/header_street_type_black"
     var backgroundColor = UIColor(
         red: 0.00, green: 0.55, blue: 0.55, alpha: 1.00
     )
@@ -33,15 +39,48 @@ class WindowComponent: NSObject {
     
     func setWindowMeta() {}
     
+    func startLoading() {
+        self.headerImageView.removeFromSuperview()
+        let file = "images/header_loading"
+        let gif = UIImage.gifImageWithName(file)
+        self.headerImageView = UIImageView(image: gif)
+        self.headerImageView.frame = CGRect(
+            x: getCenterX(width: Self.headerImageSize),
+            y: 0,
+            width: Self.headerImageSize,
+            height: Self.headerImageSizeHeight
+        )
+        self.view.addSubview(self.headerImageView)
+    }
+    
+    @MainActor func stopLoading() {
+        self.headerImageView.image = UIImage(named: self.headerImageName)
+    }
+    
     func makeTitle() {
         self.titleLabel = Label().make(
-            text: self.title, align: .center, font: "Tourney", size: CGFloat(uiDef().HEADER_FONT_SIZE), color: self.titleColor
+            text: self.title,
+            align: .center,
+            font: "Tourney",
+            size: CGFloat(uiDef().HEADER_FONT_SIZE),
+            color: self.titleColor
         )
         self.titleLabel.frame = CGRect(
             x: getCenterX(width: self.titleWidth),
-            y: 5,
+            y: Self.headerImageSizeHeight,
             width: self.titleWidth,
             height: Self.titleHeight
+        )
+    }
+    
+    func makeHeaderImage() {
+        self.headerImageView = UIImageView()
+        self.headerImageView.image = UIImage(named: self.headerImageName)
+        self.headerImageView.frame = CGRect(
+            x: getCenterX(width: Self.headerImageSize),
+            y: 0,
+            width: Self.headerImageSize,
+            height: Self.headerImageSizeHeight
         )
     }
     
@@ -69,10 +108,12 @@ class WindowComponent: NSObject {
         self.setWindowMeta()
         self.makeClose()
         self.makeTitle()
+        self.makeHeaderImage()
         self.view = UIScrollView(frame: self.frame)
         self.view.backgroundColor = self.backgroundColor
         self.view.addSubview(self.closeButton)
         self.view.addSubview(self.titleLabel)
+        self.view.addSubview(self.headerImageView)
         parentView.addSubview(self.view)
     }
 }
