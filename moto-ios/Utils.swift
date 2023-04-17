@@ -16,10 +16,77 @@ let _RED = UIColor(red: 1.00, green: 0.30, blue: 0.30, alpha: 1.00)
 let _BLUE = UIColor(red: 0.20, green: 0.60, blue: 1.00, alpha: 1.00)
 let _DARK_TBLUE = UIColor(red: 0.00, green: 0.49, blue: 0.49, alpha: 1.00)
 let _DARK2_TBLUE = UIColor(red: 0.00, green: 0.33, blue: 0.33, alpha: 1.00)
+let _LIGHT_GREY = UIColor(red: 0.72, green: 0.72, blue: 0.72, alpha: 1.00)
 
 
-let _DEFAULT_CORNER_RADIUS: CGFloat = 5
+class UIDefaults {
+    var ROW_HEIGHT: Int { return 30 }
+    var FONT_SIZE:  Int { return 15 }
+    var HEADER_FONT_SIZE: Int { return 25 }
+    var CORNER_RADIUS: CGFloat { return 5 }
+    var MAX_RACERS_PER_RACE: Int { return 6 }
+}
 
+class iPadUIDefaults: UIDefaults {
+    override var ROW_HEIGHT: Int { return 50 }
+    override var FONT_SIZE:  Int { return 25 }
+    override var HEADER_FONT_SIZE: Int { return 35 }
+    override var MAX_RACERS_PER_RACE: Int { return 8 }
+}
+
+func uiDef() -> UIDefaults {
+    if UIDevice.current.userInterfaceIdiom == .pad {
+        return iPadUIDefaults()
+    }
+    return UIDefaults()
+}
+
+
+func getCenterX(width: Int) -> Int {
+    return (global_width / 2) - (width / 2)
+}
+
+
+func getCenterY(height: Int) -> Int {
+    return (global_height / 2) - (height / 2)
+}
+
+
+class Label: UILabel {
+    func make (
+        text: String,
+        align: NSTextAlignment = .center,
+        font: String = "ChakraPetch-Medium",
+        size: CGFloat = CGFloat(uiDef().FONT_SIZE),
+        color: UIColor = .black
+    ) -> Label {
+        self.textAlignment = align
+        self.font = UIFont(name: font, size: size)
+        self.text = text
+        self.textColor = color
+        return self
+    }
+}
+
+
+class Button: UIButton {
+    func make(
+        text: String,
+        background: UIColor? = nil,
+        color: UIColor = .black,
+        size: Int = uiDef().FONT_SIZE
+    ) -> Button {
+        self.addTouchDownEffect()
+        self.titleLabel?.font = UIFont(name: "ChakraPetch-Medium", size: CGFloat(size))
+        self.titleLabel?.textAlignment = .center
+        self.setTitle(text, for: .normal)
+        self.setTitleColor(color, for: .normal)
+        self.backgroundColor = background
+        self.layer.cornerRadius = uiDef().CORNER_RADIUS
+        self.titleLabel?.lineBreakMode = .byWordWrapping
+        return self
+    }
+}
 
 class TextField: UITextField {
 
@@ -36,104 +103,46 @@ class TextField: UITextField {
     override open func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
     }
-}
-
-
-func _get_center_x(width: Int) -> Int {
-    return (global_width / 2) - (width / 2)
-}
-
-
-func _get_center_y(height: Int) -> Int {
-    return (global_height / 2) - (height / 2)
-}
-
-
-func _make_text (
-    text: String,
-    align: NSTextAlignment = .center,
-    font: String = "ChakraPetch-Medium",
-    size: CGFloat = 15,
-    color: UIColor = .black
-) -> UILabel {
-    let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-    label.textAlignment = align
-    label.font = UIFont(name: font, size: size)
-    label.text = text
-    label.textColor = color
-    return label
-}
-
-
-// TODO: Replace _make methods with Subclasses in GeneralComponents
-func _make_button (
-    text: String,
-    background: UIColor? = nil,
-    color: UIColor = .black,
-    size: Int = 15
-) -> UIButton {
-    let button = Button()
-    return button.make(text: text, background: background, color: color, size: size)
-}
-
-class Button: UIButton {
-    func make(
-        text: String,
-        background: UIColor? = nil,
-        color: UIColor = .black,
-        size: Int = 15
-    ) -> Button {
-        self.addTouchDownEffect()
-        self.titleLabel?.font = UIFont(name: "ChakraPetch-Medium", size: CGFloat(size))
-        self.titleLabel?.textAlignment = .center
-        self.setTitle(text, for: .normal)
-        self.setTitleColor(color, for: .normal)
-        self.backgroundColor = background
-        self.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
-        self.titleLabel?.lineBreakMode = .byWordWrapping
+    
+    func make(text: String) -> TextField {
+        self.attributedPlaceholder = NSAttributedString(
+            string: text,
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+        )
+        self.autocapitalizationType = .none
+        self.backgroundColor = .black
+        self.textColor = .white
+        self.layer.cornerRadius = uiDef().CORNER_RADIUS
+        self.font =  UIFont(name: "ChakraPetch-Medium", size: CGFloat(uiDef().FONT_SIZE))
         return self
     }
 }
 
-func _make_text_input(text: String) -> TextField {
-    let textField = TextField()
-    textField.attributedPlaceholder = NSAttributedString(
-        string: text,
-        attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
-    )
-    textField.autocapitalizationType = .none
-    textField.backgroundColor = .black
-    textField.textColor = .white
-    textField.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
-    textField.font =  UIFont(name: "ChakraPetch-Medium", size: 15)
-    return textField
-}
-
-func _make_text_box_input() -> UITextView {
-    let textBox = UITextView()
-    textBox.isEditable = true
-    textBox.isUserInteractionEnabled = true
-    textBox.isScrollEnabled = true
-    
-    textBox.backgroundColor = .black
-    textBox.textColor = .white
-    textBox.font =  UIFont(name: "ChakraPetch-Medium", size: 15)
-    textBox.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
-    return textBox
+class TextBox: UITextView {
+    func make() -> TextBox {
+        self.isEditable = true
+        self.isUserInteractionEnabled = true
+        self.isScrollEnabled = true
+        self.backgroundColor = .black
+        self.textColor = .white
+        self.font =  UIFont(name: "ChakraPetch-Medium", size: CGFloat(uiDef().FONT_SIZE))
+        self.layer.cornerRadius = uiDef().CORNER_RADIUS
+        return self
+    }
 }
 
 
-func _hide(view: UIView) {
+func hide(view: UIView) {
     view.isHidden = true
 }
 
 
-func _show(view: UIView) {
+func show(view: UIView) {
     view.isHidden = false
 }
 
 
-func _expand_as_list(views: [UIView], startY: CGFloat = 0, spacing: CGFloat = 5) -> CGFloat {
+func expandDown(views: [UIView], startY: CGFloat = 0, spacing: CGFloat = 5) -> CGFloat {
     var lastHeight: CGFloat = 0
     var lastY: CGFloat = startY
     for view in views {
@@ -144,7 +153,7 @@ func _expand_as_list(views: [UIView], startY: CGFloat = 0, spacing: CGFloat = 5)
     return lastY
 }
 
-func _expand_across(views: [UIView], startX: CGFloat = 0, spacing: CGFloat = 5) -> CGFloat {
+func expandAcross(views: [UIView], startX: CGFloat = 0, spacing: CGFloat = 5) -> CGFloat {
     var lastWidth: CGFloat = 0
     var lastX: CGFloat = startX
     for view in views {

@@ -8,9 +8,6 @@ import UIKit
 import Foundation
 
 
-let _MAX_RACERS_PER_RACE = 8
-
-
 struct PartialRacer {
     var make: String
     var model: String
@@ -40,7 +37,7 @@ class RacerInputComponent: RacerInputOwnerComponent {
     var yearIn: UITextField!
     
     static let width = Int(Double(global_width) * 0.8)
-    static let inputHeight = 30
+    static let inputHeight = uiDef().ROW_HEIGHT
     static let inputWidthSpacing = 2
     static let inputHeightSpacing = 2
 
@@ -68,14 +65,14 @@ class RacerInputComponent: RacerInputOwnerComponent {
         self.view = UIView(frame: CGRect(x: 0, y: 0, width: Int(Self.width), height: Self.inputHeight))
         let inputFrame = CGRect(x: 0, y: 0, width: inputWidth, height: Self.inputHeight)
         
-        self.makeIn = _make_text_input(text: "Make...")
+        self.makeIn = TextField().make(text: "Make...")
         self.makeIn.frame = inputFrame
         self.makeIn.addTarget(
             self, action: #selector(self.onMakeChange), for: .editingChanged
         )
-        self.modelIn = _make_text_input(text: "Model...")
+        self.modelIn = TextField().make(text: "Model...")
         self.modelIn.frame = inputFrame
-        self.yearIn = _make_text_input(text: "Year...")
+        self.yearIn = TextField().make(text: "Year...")
         self.yearIn.frame = inputFrame
         self.modelIn.addTarget(
             self, action: #selector(self.onModelChange), for: .editingChanged
@@ -83,7 +80,7 @@ class RacerInputComponent: RacerInputOwnerComponent {
         self.modelIn.addTarget(
             self, action: #selector(self.onModelChange), for: .editingDidBegin
         )
-        _ = _expand_across(
+        _ = expandAcross(
             views: [self.makeIn, self.modelIn, self.yearIn], spacing: CGFloat(Self.inputWidthSpacing)
         )
     }
@@ -129,10 +126,10 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     var skipButton: UIButton!
     
 
-    let optionsWidth = 50
+    let optionsWidth = ((RacerInputComponent.width / 3) / 2) - 1
     let optionsWidthSpacing = 2
     let optionsHeightSpacing = 2
-    let optionsHeight = 25
+    let optionsHeight = uiDef().ROW_HEIGHT
     let thirdWidth = RacerInputComponent.width / 3
     let halfSpacing = RacerInputComponent.inputWidthSpacing / 2
     
@@ -148,7 +145,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     func makeOptions() {
         self.optionsView = UIView(
             frame: CGRect(
-                x: _get_center_x(width: RacerInputComponent.width),
+                x: getCenterX(width: RacerInputComponent.width),
                 y: 0,
                 width:  RacerInputComponent.width,
                 height: self.optionsHeight * 2 + optionsHeightSpacing
@@ -163,7 +160,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
 
     
     func makeAddButton() {
-        self.addButton = _make_button(text: "+ Add", background: .black, color: .white)
+        self.addButton = Button().make(text: "+ Add", background: .black, color: .white)
         self.addButton.frame = CGRect(x: 0, y:  0, width: self.optionsWidth, height: self.optionsHeight)
         self.addButton.addTarget(
             self, action: #selector(self.onAddPress), for: .touchDown
@@ -171,7 +168,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     }
     
     func makeResetButton() {
-        self.resetButton = _make_button(text: "Reset", background: .black, color: .white)
+        self.resetButton = Button().make(text: "Reset", background: .black, color: .white)
         self.resetButton.frame = CGRect(
             x: self.optionsWidth + self.optionsWidthSpacing,
             y:  0,
@@ -184,7 +181,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     }
     
     func makeRaceButton() {
-        self.raceButton = _make_button(text: "Race!", background: _GREEN, color: .white)
+        self.raceButton = Button().make(text: "Race!", background: _GREEN, color: .white)
         self.raceButton.frame = CGRect(
             x: 0,
             y: self.optionsHeight + optionsHeightSpacing,
@@ -195,7 +192,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     }
     
     func makeSkipButton() {
-        self.skipButton = _make_button(text: "Skip to results", background: _YELLOW, color: .white)
+        self.skipButton = Button().make(text: "Skip to results", background: _YELLOW, color: .white)
         self.skipButton.frame = CGRect(
             x: (2 * thirdWidth) + halfSpacing,
             y: self.optionsHeight + optionsHeightSpacing,
@@ -206,7 +203,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     }
     
     @objc func onAddPress() {
-        if self.allInputs.count < _MAX_RACERS_PER_RACE {
+        if self.allInputs.count < uiDef().MAX_RACERS_PER_RACE {
             _ = self.addInput()
         }
     }
@@ -215,9 +212,9 @@ class RacerInputsComponent: RacerInputOwnerComponent {
         let input = RacerInputComponent()
         input.racerRecommendingController = self.racerRecommendingController
         input.render(parentView: self.view)
-        self.allInputs.append(input)
+        self.allInputs.insert(input, at: 0)
         self.currentInputY = Int(
-            _expand_as_list(
+            expandDown(
                 views: self.allInputs.map{$0.view}, spacing: CGFloat(RacerInputComponent.inputWidthSpacing)
             )
         )
@@ -279,8 +276,8 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: _get_center_x(width: RacerInputComponent.width),
-                y: 110,
+                x: getCenterX(width: RacerInputComponent.width),
+                y:  HeaderComponent.height + MenuComponent.height + (uiDef().ROW_HEIGHT),
                 width: RacerInputComponent.width,
                 height: 0
             )
@@ -383,7 +380,7 @@ class ControlPanelComponent {
     
     func render(parentView: UIView) {
         self.view = UIView(frame: CGRect(
-            x: _get_center_x(width: self.width),
+            x: getCenterX(width: self.width),
             y: 0,
             width: self.width,
             height: global_height
@@ -419,7 +416,7 @@ class TrafficLightComponent {
         self.light1 = self.makeLight()
         self.light2 = self.makeLight()
         self.light3 = self.makeLight()
-        _ = _expand_as_list(
+        _ = expandDown(
             views: [self.light1, self.light2, self.light3], spacing: CGFloat(self.lightSpacing)
         )
     }
@@ -432,7 +429,7 @@ class TrafficLightComponent {
     
     func run() {
         self.reset()
-        _show(view: self.view)
+        show(view: self.view)
         self.view.superview?.bringSubviewToFront(self.view)
         self.light1.backgroundColor = _RED
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { (timer) in
@@ -444,15 +441,15 @@ class TrafficLightComponent {
             self.light3.backgroundColor = _GREEN
         }
         Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
-            _hide(view: self.view)
+            hide(view: self.view)
         }
     }
     
     func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: _get_center_x(width: self.size),
-                y: _get_center_y(height: self.size * 3),
+                x: getCenterX(width: self.size),
+                y: getCenterY(height: self.size * 3),
                 width: self.size,
                 height: self.size * 3
             )
@@ -463,7 +460,7 @@ class TrafficLightComponent {
         self.view.addSubview(self.light3)
         self.view.backgroundColor = .black
         parentView.addSubview(self.view)
-        _hide(view: self.view)
+        hide(view: self.view)
     }
     
 }
@@ -513,7 +510,7 @@ class RacerComponent {
     }
     
     func makeRacerLabel() {
-        self.label = _make_text(
+        self.label = Label().make(
             text: "\(self.racer.make_name) \(self.racer.name)",
             align: .left,
             size: 15,
@@ -591,7 +588,7 @@ class RaceViewComponent {
         self.racerComponents.forEach {
             (racerComponent) in racerComponent.render(parentView: self.view)
         }
-        let lastY = _expand_as_list(
+        let lastY = expandDown(
             views: self.racerComponents.map{ $0.view },
             spacing: CGFloat(RacerComponent.labelHeight + RacerComponent.racerSpacing)
         )
@@ -606,7 +603,7 @@ class RacerResultComponent {
     var view: UIView!
     var finishPosition = 0
     static let width = global_width / 3
-    static let height = 130
+    static let height = uiDef().FONT_SIZE * 6
     
     var positionLabel: UILabel!
     var racerLabel: UILabel!
@@ -630,22 +627,23 @@ class RacerResultComponent {
             default:
                 positionText = String(self.finishPosition) + "th"
         }
-        self.positionLabel = _make_text(text: positionText, size: 25, color: _YELLOW)
-        self.racerLabel = _make_text(text: self.racer.full_name, color: _YELLOW)
+        self.positionLabel = Label().make(text: positionText, color: _YELLOW)
+        self.racerLabel = Label().make(text: self.racer.full_name, color: _YELLOW)
     }
     
     func makeStats() {
         let statsText = (
             "Power: \(self.racer.power) hp \nTorque: \(self.racer.torque) Nm \nWeight: \(self.racer.weight) kg"
         )
-        self.statsLabel = _make_text(text: statsText, color: .white)
+        self.statsLabel = Label().make(text: statsText, color: .white)
+        self.statsLabel.lineBreakMode = .byWordWrapping
         self.statsLabel.numberOfLines = 3
     }
     
     func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: _get_center_x(width: Self.width),
+                x: getCenterX(width: Self.width),
                 y: 0,
                 width: Self.width,
                 height: Self.height
@@ -654,13 +652,13 @@ class RacerResultComponent {
         self.makeHeader()
         self.makeStats()
         self.view.addSubview(self.positionLabel)
-        self.positionLabel.frame = CGRect(x: 0, y: 0, width: Self.width, height: 30)
+        self.positionLabel.frame = CGRect(x: 0, y: 0, width: Self.width, height: uiDef().FONT_SIZE)
 
         self.view.addSubview(self.racerLabel)
-        self.racerLabel.frame = CGRect(x: 0, y: 30, width: Self.width, height: 20)
+        self.racerLabel.frame = CGRect(x: 0, y: uiDef().FONT_SIZE, width: Self.width, height: uiDef().FONT_SIZE)
 
         self.view.addSubview(self.statsLabel)
-        self.statsLabel.frame = CGRect(x: 0, y: 50, width: Self.width, height: 60)
+        self.statsLabel.frame = CGRect(x: 0, y: uiDef().FONT_SIZE * 2, width: Self.width, height: uiDef().FONT_SIZE * 4)
 
         parentView.addSubview(self.view)
     }
@@ -683,9 +681,9 @@ class RaceResultsWindowComponent: WindowComponent {
     var voteOptionsView: UIView!
     var optionsView: UIView!
     
-    let optionsViewHeight = 40
+    let optionsViewHeight = uiDef().ROW_HEIGHT * 2
     let optionWidth = global_width / 6
-    let optionFontSize = 15
+    let optionFontSize = uiDef().FONT_SIZE
 
     
     var raceId: Int?
@@ -701,8 +699,9 @@ class RaceResultsWindowComponent: WindowComponent {
         self.optionsView = UIView()
         self.optionsView.frame = CGRect(
             x: 0,
-            y: self.titleHeight + 10,
-            width: 0, height: self.optionsViewHeight
+            y: Self.titleHeight + 10,
+            width: 0,
+            height: self.optionsViewHeight
         )
     }
     
@@ -714,7 +713,7 @@ class RaceResultsWindowComponent: WindowComponent {
             x: 0, y: 0, width: self.optionWidth, height: self.optionsViewHeight
         )
         
-        self.voteUpButton = _make_button(
+        self.voteUpButton = Button().make(
             text: "Upvote", background: _GREEN, color: .white, size: self.optionFontSize
         )
         self.voteUpButton.frame = CGRect(
@@ -724,7 +723,7 @@ class RaceResultsWindowComponent: WindowComponent {
             self, action: #selector(self.onVoteUpPress), for: .touchDown
         )
         
-        self.voteDownButton = _make_button(
+        self.voteDownButton = Button().make(
             text: "Downvote", background: _RED, color: .white, size: self.optionFontSize
         )
         self.voteDownButton.frame = CGRect(
@@ -734,7 +733,7 @@ class RaceResultsWindowComponent: WindowComponent {
             self, action: #selector(self.onVoteDownPress), for: .touchDown
         )
         
-        self.viewCommentsButton = _make_button(
+        self.viewCommentsButton = Button().make(
             text: "View Comments", background: _YELLOW, color: .white, size: self.optionFontSize
         )
         self.viewCommentsButton.frame = CGRect(
@@ -744,7 +743,7 @@ class RaceResultsWindowComponent: WindowComponent {
             self, action: #selector(self.onViewCommentsPress), for: .touchDown
         )
         
-        self.shareButton = _make_button(
+        self.shareButton = Button().make(
             text: "✄ Share Race URL", background: _YELLOW, color: .white, size: self.optionFontSize
         )
         self.shareButton.frame = CGRect(
@@ -754,7 +753,7 @@ class RaceResultsWindowComponent: WindowComponent {
             self, action: #selector(self.onShareButtonPress), for: .touchDown
         )
         
-        self.fbButton = _make_button(
+        self.fbButton = Button().make(
             text: "f Share", background: _BLUE, color: .white, size: self.optionFontSize
         )
         self.fbButton.frame = CGRect(
@@ -762,12 +761,12 @@ class RaceResultsWindowComponent: WindowComponent {
         )
         self.fbButton.addTarget(self, action: #selector(self.onShareFbPress), for: .touchDown)
         
-        let width = _expand_across(
+        let width = expandAcross(
             views: [self.voteOptionsView, self.viewCommentsButton, self.shareButton, self.fbButton],
             spacing: 2
         )
         self.optionsView.frame.size.width = width
-        self.optionsView.frame.origin.x = CGFloat(_get_center_x(width: Int(width)))
+        self.optionsView.frame.origin.x = CGFloat(getCenterX(width: Int(width)))
     }
     
     
@@ -838,9 +837,10 @@ class RaceResultsWindowComponent: WindowComponent {
         self.racerResultComponents.forEach { racerResultComponent in
             racerResultComponent.render(parentView: self.view)
         }
-        let lastY = _expand_as_list(
+        let lastY = expandDown(
             views: self.racerResultComponents.map{$0.view},
-            startY: self.titleLabel.frame.height + CGFloat(self.optionsViewHeight) + 20
+            startY:  CGFloat(Int(self.titleLabel.frame.height) + self.optionsViewHeight + uiDef().ROW_HEIGHT),
+            spacing: 20
         )
         self.view.contentSize = CGSize(
             width: CGFloat(RacerResultComponent.width),

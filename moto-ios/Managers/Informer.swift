@@ -13,8 +13,8 @@ class InformerComponent {
     var view: UILabel!
     
     func render(parentView: UIView) {
-        self.view = _make_text(text: "", align: .center, color: .white)
-        self.view.frame = CGRect(x: 0, y: 0, width: global_width, height: 30)
+        self.view = Label().make(text: "", align: .center, color: .white)
+        self.view.frame = CGRect(x: 0, y: 0, width: global_width, height: uiDef().ROW_HEIGHT)
         parentView.addSubview(self.view)
     }
     
@@ -44,10 +44,10 @@ class InformerController {
     
     func inform(message: String, mood: String = "good", duration: Int = 3) {
         self.informerComponent.setText(message: message, mood: mood)
-        _show(view: self.informerComponent.view)
+        show(view: self.informerComponent.view)
         self.parentView.bringSubviewToFront(self.informerComponent.view)
         Timer.scheduledTimer(withTimeInterval: TimeInterval(duration), repeats: false) { (timer) in
-            _hide(view: self.informerComponent.view)
+            hide(view: self.informerComponent.view)
         }
     }
 }

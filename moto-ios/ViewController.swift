@@ -96,13 +96,17 @@ class ViewController: UIViewController {
             informerController: self.informerManager.informerController,
             userStateController: self.userManager.userStateController
         )
+        
+        self.menuManager.injectControllers(
+            userStateController: self.userManager.userStateController
+        )
     }
     
     func renderAll(isLoggedin: Bool) {
         self.informerManager.render()
         self.racingManager.render()
         self.userManager.render()
-        self.menuManager.render(isLoggedin: isLoggedin)
+        self.menuManager.render()
         self.socialManager.render()
         
         self.networkCheckManager.start()

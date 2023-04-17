@@ -12,14 +12,36 @@ import Foundation
 class HeaderComponent {
     var view: UIView!
     let width = 300
-    static let height = 60
+    let headerLabelSize = uiDef().HEADER_FONT_SIZE
+    let creditLabelSize = uiDef().FONT_SIZE
+    static let height = uiDef().HEADER_FONT_SIZE + uiDef().FONT_SIZE
     var headerLabel: UILabel!
     var creditLabel: UILabel!
     
-    init() {
+    var menuController: MenuController?
+
+    func makeHeaderLabel() {
+        self.headerLabel = Label().make(
+            text: "What Bikes Win?", font: "Tourney", size: CGFloat(self.headerLabelSize)
+        )
+        self.headerLabel.frame = CGRect(x: 0, y: 0, width: self.width, height: self.headerLabelSize)
+    }
+    
+    func makeHeaderCreditLabel() {
+        var text = ""
+        if let username = self.menuController?.userStateController?.currentUser?.username {
+            text = "Welcome, \(username)"
+        }
+        self.creditLabel = Label().make(text: text, font: "Tourney", size: CGFloat(self.creditLabelSize), color: _LIGHT_GREY)
+        self.creditLabel.frame = CGRect(
+            x: 0, y: Int(self.headerLabel.frame.height), width: self.width, height: self.creditLabelSize
+        )
+    }
+    
+    func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: _get_center_x(width: self.width),
+                x: getCenterX(width: self.width),
                 y: 20,
                 width: self.width,
                 height: HeaderComponent.height
@@ -27,23 +49,8 @@ class HeaderComponent {
         )
         self.makeHeaderLabel()
         self.makeHeaderCreditLabel()
-    }
-    
-    func makeHeaderLabel() {
-        self.headerLabel = _make_text(text: "What Bikes Win?", font: "Tourney", size: 30)
-        self.headerLabel.frame = CGRect(x: 0, y: 0, width: self.width, height: 30)
-    }
-    
-    func makeHeaderCreditLabel() {
-        self.creditLabel = _make_text(text: "By Caspar Wylie", font: "Tourney")
-        self.creditLabel.frame = CGRect(
-            x: 0, y: Int(self.headerLabel.frame.height), width: self.width, height: 20
-        )
-    }
-    
-    func render(parentView: UIView) {
         self.view.addSubview(self.headerLabel)
-        //self.view.addSubview(self.creditLabel)
+        self.view.addSubview(self.creditLabel)
         parentView.addSubview(self.view)
     }
 }
@@ -56,7 +63,7 @@ class MenuItemComponent {
     
     init(text: String) {
         self.text = text
-        self.button = _make_button(text: self.text)
+        self.button = Button().make(text: self.text)
         self.button.frame.size = self.button.intrinsicContentSize
         self.button.addBottomBorderWithColor(color: .black, width: 1)
         self.button.addTarget(
@@ -75,6 +82,7 @@ class MenuItemComponent {
 
 class MenuComponent {
     var view: UIView!
+    static let height = uiDef().ROW_HEIGHT
     var menuItems: [MenuItemComponent] = []
     let spacing = 10
     var menuController: MenuController?
@@ -107,16 +115,17 @@ class MenuComponent {
     }
     
 
-    func render(parentView: UIView, isLoggedin: Bool) {
+    func render(parentView: UIView) {
         self.view = UIView()
+        let isLoggedin = (self.menuController?.userStateController?.isLoggedin())!
         self.setMenuItems(isLoggedin: isLoggedin)
         self.menuItems.forEach { item in item.render(parentView: self.view) }
-        let lastX = _expand_across(views: self.menuItems.map {$0.button}, spacing: 15)
+        let lastX = expandAcross(views: self.menuItems.map {$0.button}, spacing: 15)
         self.view.frame = CGRect(
-            x: _get_center_x(width: Int(lastX)),
-            y: HeaderComponent.height,
+            x: getCenterX(width: Int(lastX)),
+            y: HeaderComponent.height + uiDef().ROW_HEIGHT / 2,
             width: Int(lastX),
-            height: 30
+            height: MenuComponent.height
         )
         parentView.addSubview(self.view)
     }
@@ -125,12 +134,17 @@ class MenuComponent {
 
 class MenuController {
     var menuComponent: MenuComponent!
+    var headerComponent: HeaderComponent!
     var viewController: ViewController!
+    
+    var userStateController: UserStateController?
 
 
-    init (menuComponent: MenuComponent, viewController: ViewController) {
+    init (menuComponent: MenuComponent, headerComponent: HeaderComponent, viewController: ViewController) {
         self.viewController = viewController
         self.menuComponent = menuComponent
+        self.headerComponent = headerComponent
+        self.headerComponent.menuController = self
         self.menuComponent.menuController = self
     }
     
@@ -165,6 +179,7 @@ class MenuManager {
     var headerComponent: HeaderComponent!
     var menuComponent: MenuComponent!
     var menuController: MenuController!
+    var userStateController: UserStateController!
 
     
     init(viewController: ViewController) {
@@ -179,11 +194,19 @@ class MenuManager {
     }
     
     func makeControllers() {
-        self.menuController = MenuController(menuComponent: self.menuComponent, viewController: self.viewController)
+        self.menuController = MenuController(
+            menuComponent: self.menuComponent,
+            headerComponent: self.headerComponent,
+            viewController: self.viewController
+        )
     }
     
-    func render(isLoggedin: Bool) {
+    func render() {
         self.headerComponent.render(parentView: self.viewController.view)
-        self.menuComponent.render(parentView: self.viewController.view, isLoggedin: isLoggedin)
+        self.menuComponent.render(parentView: self.viewController.view)
+    }
+    
+    func injectControllers(userStateController: UserStateController) {
+        self.menuController.userStateController = userStateController
     }
 }

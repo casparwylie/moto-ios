@@ -35,32 +35,32 @@ class SignUpWindowComponent: WindowComponent {
     
     func makeInputs() {
         let inputFrame = CGRect(
-            x: _get_center_x(width: self.inputWidth), y: 0, width: self.inputWidth, height: 30
+            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth, height: uiDef().ROW_HEIGHT
         )
         
-        self.usernameIn = _make_text_input(text: "Username...")
+        self.usernameIn = TextField().make(text: "Username...")
         self.usernameIn.frame = inputFrame
         
-        self.emailIn = _make_text_input(text: "Email...")
+        self.emailIn = TextField().make(text: "Email...")
         self.emailIn.frame = inputFrame
         
-        self.passwordIn = _make_text_input(text: "Password...")
+        self.passwordIn = TextField().make(text: "Password...")
         self.passwordIn.frame = inputFrame
         self.passwordIn.isSecureTextEntry = true
         
-        self.vpasswordIn = _make_text_input(text: "Verify Password...")
+        self.vpasswordIn = TextField().make(text: "Verify Password...")
         self.vpasswordIn.frame = inputFrame
         self.vpasswordIn.isSecureTextEntry = true
         
-        self.submitButton = _make_button(text: "Sign Up", background: .black, color: .white)
+        self.submitButton = Button().make(text: "Sign Up", background: .black, color: .white)
         self.submitButton.frame = CGRect(
-            x: _get_center_x(width: self.inputWidth), y: 0, width: self.inputWidth / 3, height: 30
+            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth / 3, height: uiDef().ROW_HEIGHT
         )
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
-        _ = _expand_as_list(
+        _ = expandDown(
             views: [self.usernameIn, self.emailIn, self.passwordIn, self.vpasswordIn, self.submitButton],
-            startY: CGFloat(self.titleHeight)
+            startY: CGFloat(Self.titleHeight)
         )
     }
     
@@ -92,7 +92,7 @@ class LoginWindowComponent: WindowComponent {
     var toggleForgotPasswordButton: UIButton!
     
     let inputWidth = Int(Double(global_width) * 0.6)
-    let inputHeight = 30 // Make 30 a global
+    let inputHeight = uiDef().ROW_HEIGHT
     let inputSpacing = 2
 
     
@@ -116,13 +116,13 @@ class LoginWindowComponent: WindowComponent {
         self.usernameIn.text = ""
         self.forgotPasswordToggled = !self.forgotPasswordToggled
         if self.forgotPasswordToggled {
-            _hide(view: self.passwordIn)
+            hide(view: self.passwordIn)
             self.usernameIn.placeholder = "Email..."
             self.submitButton.setTitle("Send me a link", for: .normal)
             self.toggleForgotPasswordButton.setTitle("Back to login", for: .normal)
             self.usernameIn.frame.origin.y += CGFloat(self.inputHeight + self.inputSpacing)
         } else {
-            _show(view: self.passwordIn)
+            show(view: self.passwordIn)
             self.usernameIn.placeholder = self.usernamePlaceholderText
             self.submitButton.setTitle("Login", for: .normal)
             self.toggleForgotPasswordButton.setTitle(self.forgotPasswordText, for: .normal)
@@ -133,30 +133,30 @@ class LoginWindowComponent: WindowComponent {
     
     func renderInputs() {
         let inputFrame = CGRect(
-            x: _get_center_x(width: self.inputWidth), y: 0, width: self.inputWidth, height: self.inputHeight
+            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth, height: self.inputHeight
         )
 
-        self.usernameIn = _make_text_input(text: self.usernamePlaceholderText)
+        self.usernameIn = TextField().make(text: self.usernamePlaceholderText)
         self.usernameIn.frame = inputFrame
 
-        self.passwordIn = _make_text_input(text: "Password...")
+        self.passwordIn = TextField().make(text: "Password...")
         self.passwordIn.frame = inputFrame
         self.passwordIn.isSecureTextEntry = true
 
-        self.submitButton = _make_button(text: "Login", background: .black, color: .white)
+        self.submitButton = Button().make(text: "Login", background: .black, color: .white)
         self.submitButton.frame = CGRect(
-            x: _get_center_x(width: self.inputWidth), y: 0, width: self.inputWidth / 3, height: self.inputHeight
+            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth / 3, height: self.inputHeight
         )
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
-        _ = _expand_as_list(
+        _ = expandDown(
             views: [self.usernameIn, self.passwordIn, self.submitButton],
-            startY: CGFloat(self.titleHeight),
+            startY: CGFloat(Self.titleHeight),
             spacing: CGFloat(self.inputSpacing)
         )
         
         
-        self.toggleForgotPasswordButton = _make_button(text: self.forgotPasswordText)
+        self.toggleForgotPasswordButton = Button().make(text: self.forgotPasswordText)
         self.toggleForgotPasswordButton.addTarget(self, action: #selector(self.toggleForgotPassword), for: .touchDown)
         self.toggleForgotPasswordButton.frame = self.submitButton.frame
         self.toggleForgotPasswordButton.frame.origin.x += self.submitButton.frame.width + 5
@@ -259,7 +259,9 @@ class LoginController {
                 if response.success {
                     self.finishSuccessfulLogin()
                 } else {
-                    self.informerController?.inform(message: "Incorrect username or password.", mood: "bad")
+                    self.informerController?.inform(
+                        message: "Incorrect username or password.", mood: "bad"
+                    )
                 }
             }
         }
@@ -269,7 +271,9 @@ class LoginController {
         Task {
             if let response = await self.apiClient.forgotPassword(email: email) {
                 if response.success {
-                    self.informerController?.inform(message: "You have been sent an email to reset your password.", mood: "good")
+                    self.informerController?.inform(
+                        message: "You have been sent an email to reset your password.", mood: "good"
+                    )
                     self.loginWindowComponent.toggleForgotPassword()
                 } else {
                     self.informerController?.inform(message: response.errors[0], mood: "bad")
@@ -337,8 +341,8 @@ class ProfileTabButtonComponent {
     }
     
     func makeTabButton() {
-        self.button = _make_button(text: self.name, background: .black, color: .white, size: 20)
-        self.button.frame = CGRect(x: 0, y: 0, width: global_width / 5, height: 60)
+        self.button = Button().make(text: self.name, background: .black, color: .white)
+        self.button.frame = CGRect(x: 0, y: 0, width: global_width / 5, height: uiDef().ROW_HEIGHT * 2)
         self.button.addTarget(self, action: #selector(self.openWindow), for: .touchDown)
     }
     
@@ -371,15 +375,14 @@ class MyGarageWindowComponent: WindowComponent {
     var submitButton: UIButton!
     
     let inputSpacing = 2
-    let inputHeight = 30
-    let garageItemDeleteButtonSize = 30
+    let inputHeight = uiDef().ROW_HEIGHT
+    let garageItemDeleteButtonSize = uiDef().ROW_HEIGHT
     
-    let addGarageViewWidth = Int(CGFloat(global_width) * 0.8)
+    let garageViewWidth = Int(CGFloat(global_width) * 0.8)
     let garageListingViewWidth = Int(CGFloat(global_width) * 0.8)
-    
-    let addGarageViewHeight = 200
-    let garageListingViewY = 70
-    let garageListingViewHeight = 50
+    let garageViewHeight = global_height
+    let garageListingViewY = uiDef().ROW_HEIGHT * 3
+    let garageListingViewHeight = uiDef().ROW_HEIGHT + 10
     let garageListingViewMaxHeight = 150
     
     var addGarageCurrentRelationId: String = ""
@@ -406,13 +409,13 @@ class MyGarageWindowComponent: WindowComponent {
     }
     
     
-    func makeAddGarageItemView() {
+    func makeGarageView() {
         self.garageView = UIView(
             frame: CGRect(
-                x: _get_center_x(width: self.addGarageViewWidth),
-                y:  self.titleHeight,
-                width: self.addGarageViewWidth,
-                height: self.addGarageViewHeight
+                x: getCenterX(width: self.garageViewWidth),
+                y:  Self.titleHeight,
+                width: self.garageViewWidth,
+                height: self.garageViewHeight
             )
         )
     }
@@ -443,7 +446,7 @@ class MyGarageWindowComponent: WindowComponent {
             let relation = Array(
                 self.garageItemRelationMap.keys
             )[Array(self.garageItemRelationMap.values).firstIndex(of: item.relation)!]
-            let row = _make_text(text: "\(item.make_name) \(item.name) - \(relation)", align: .center)
+            let row = Label().make(text: "\(item.make_name) \(item.name) - \(relation)", align: .center)
             row.frame = CGRect(x: 0, y: 0, width: self.garageListingViewWidth, height: self.inputHeight)
             rows.append(row)
             let deleteButton = self.makeDeleteGarageItemOption(modelId: item.model_id)
@@ -451,8 +454,8 @@ class MyGarageWindowComponent: WindowComponent {
             self.garageListingView.addSubview(row)
             self.garageListingView.addSubview(deleteButton)
         }
-        let lastY = _expand_as_list(views: rows)
-        _ = _expand_as_list(views: deleteButtons)
+        let lastY = expandDown(views: rows)
+        _ = expandDown(views: deleteButtons)
         self.updateListingFrame(lastY: Int(lastY))
 
     }
@@ -467,12 +470,12 @@ class MyGarageWindowComponent: WindowComponent {
     }
     
     func makeNoGarageItemsLabel() {
-        self.noGarageItemsLabel = _make_text(
+        self.noGarageItemsLabel = Label().make(
             text: "Your garage is empty. Add bikes now so others can see what you ride. ",
             align: .center
         )
         self.noGarageItemsLabel.frame = CGRect(
-            x: _get_center_x(width: global_width),
+            x: getCenterX(width: global_width),
             y: 10,
             width: self.garageListingViewWidth,
             height: self.inputHeight
@@ -510,7 +513,7 @@ class MyGarageWindowComponent: WindowComponent {
     }
 
     func makeAddGarageInputs() {
-        let width: Int = (self.addGarageViewWidth / 2) - (self.inputSpacing / 2)
+        let width: Int = (self.garageViewWidth / 2) - (self.inputSpacing / 2)
         let y = self.inputHeight + self.inputSpacing
     
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.closeDropDown))
@@ -522,9 +525,15 @@ class MyGarageWindowComponent: WindowComponent {
         self.relationDropDownComponent.setFrame(
             frame: CGRect(x: 0, y: y, width: width, height: self.inputHeight)
         )
-        self.garageItemRelationMap.keys.forEach {value in self.relationDropDownComponent.addRow(text: value) {}}
-        self.submitButton = _make_button(text: "Add", background: .black, color: .white)
-        self.submitButton.frame = CGRect(x:  width + self.inputSpacing, y: y, width: width, height: self.inputHeight)
+        self.garageItemRelationMap.keys.forEach {
+            value in self.relationDropDownComponent.addRow(text: value) {}
+        }
+        self.submitButton = Button().make(
+            text: "Add", background: .black, color: .white
+        )
+        self.submitButton.frame = CGRect(
+            x: width + self.inputSpacing, y: y, width: width, height: self.inputHeight
+        )
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
     }
     
@@ -547,7 +556,7 @@ class MyGarageWindowComponent: WindowComponent {
 
     override func render(parentView: UIView) {
         super.render(parentView: parentView)
-        self.makeAddGarageItemView()
+        self.makeGarageView()
         self.makeGarageListingView()
         
         self.garageView.addSubview(self.garageListingView)
@@ -636,28 +645,28 @@ class ChangePasswordWindowComponent: WindowComponent {
     
     func makePasswordInputs() {
         let inputFrame = CGRect(
-            x: _get_center_x(width: self.inputWidth), y: 0, width: self.inputWidth, height: 30
+            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth, height: uiDef().ROW_HEIGHT
         )
-        self.oldPasswordIn = _make_text_input(text: "Current Password...")
+        self.oldPasswordIn = TextField().make(text: "Current Password...")
         self.oldPasswordIn.frame = inputFrame
         self.oldPasswordIn.isSecureTextEntry = true
         
-        self.newPasswordIn = _make_text_input(text: "New Password...")
+        self.newPasswordIn = TextField().make(text: "New Password...")
         self.newPasswordIn.frame = inputFrame
         self.newPasswordIn.isSecureTextEntry = true
         
-        self.vPasswordIn = _make_text_input(text: "Verify Password...")
+        self.vPasswordIn = TextField().make(text: "Verify Password...")
         self.vPasswordIn.frame = inputFrame
         self.vPasswordIn.isSecureTextEntry = true
         
-        self.submitButton = _make_button(text: "Change", background: .black, color: .white)
+        self.submitButton = Button().make(text: "Change", background: .black, color: .white)
         self.submitButton.frame = inputFrame
         self.submitButton.frame.size.width = CGFloat(self.inputWidth / 3)
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
-        _ = _expand_as_list(
+        _ = expandDown(
             views: [self.oldPasswordIn, self.newPasswordIn, self.vPasswordIn, self.submitButton],
-            startY: CGFloat(self.titleHeight)
+            startY: CGFloat(Self.titleHeight)
         )
     }
     
@@ -701,31 +710,38 @@ class EditProfileWindowComponent: WindowComponent {
     }
     
     func makeEditInputs() {
-        let centerX = _get_center_x(width: self.inputWidth + self.submitButtonWidth + self.submitSpacing)
-        let inputFrame = CGRect(x: centerX, y: 0, width: self.inputWidth, height: 30)
-        let submitFrame = CGRect(x: centerX + self.inputWidth + self.submitSpacing, y: 0, width: self.submitButtonWidth, height: 30)
-        self.editUsernameIn = _make_text_input(text: "New username...")
+        let centerX = getCenterX(width: self.inputWidth + self.submitButtonWidth + self.submitSpacing)
+        let inputFrame = CGRect(
+            x: centerX, y: 0, width: self.inputWidth, height: uiDef().ROW_HEIGHT
+        )
+        let submitFrame = CGRect(
+            x: centerX + self.inputWidth + self.submitSpacing,
+            y: 0,
+            width: self.submitButtonWidth,
+            height: uiDef().ROW_HEIGHT
+        )
+        self.editUsernameIn = TextField().make(text: "New username...")
         self.editUsernameIn.frame = inputFrame
         
-        self.editEmailIn = _make_text_input(text: "New email...")
+        self.editEmailIn = TextField().make(text: "New email...")
         self.editEmailIn.frame = inputFrame
         
-        self.submitUsernameButton = _make_button(text: "Save", background: .black, color: .white)
+        self.submitUsernameButton = Button().make(text: "Save", background: .black, color: .white)
         self.submitUsernameButton.frame = submitFrame
         self.submitUsernameButton.addTarget(self, action: #selector(self.onUsernameSubmitPress), for: .touchDown)
         
-        self.submitEmailButton = _make_button(text: "Save", background: .black, color: .white)
+        self.submitEmailButton = Button().make(text: "Save", background: .black, color: .white)
         self.submitEmailButton.frame = submitFrame
         self.submitEmailButton.addTarget(self, action: #selector(self.onEmailSubmitPress), for: .touchDown)
         
-        _ = _expand_as_list(
+        _ = expandDown(
             views: [self.editUsernameIn, self.editEmailIn],
-            startY: CGFloat(self.titleHeight)
+            startY: CGFloat(Self.titleHeight)
         )
         
-        _ = _expand_as_list(
+        _ = expandDown(
             views: [self.submitUsernameButton, self.submitEmailButton],
-            startY: CGFloat(self.titleHeight)
+            startY: CGFloat(Self.titleHeight)
         )
     }
     
@@ -760,7 +776,7 @@ class ProfileWindowComponent: WindowComponent {
     var tabButtonView: UIView!
     var userInfoLabel: UILabel!
     
-    let userInfoHeight = 50
+    let userInfoHeight = uiDef().ROW_HEIGHT * 2
     var tabButtonsHeight = 50
     
     override func setWindowMeta() {
@@ -792,12 +808,12 @@ class ProfileWindowComponent: WindowComponent {
         let email = (self.meController?.userStateController?.currentUser?.email)!
         let username = (self.meController?.userStateController?.currentUser?.username)!
         let infoText = "Email: \(email) \n Username: \(username)"
-        self.userInfoLabel = _make_text(text: infoText, align: .center)
+        self.userInfoLabel = Label().make(text: infoText, align: .center)
         self.userInfoLabel.numberOfLines = 0
         self.userInfoLabel.lineBreakMode = .byWordWrapping
         self.userInfoLabel.frame = CGRect(
-            x: _get_center_x(width: global_width),
-            y: self.titleHeight,
+            x: getCenterX(width: global_width),
+            y: Self.titleHeight,
             width: global_width,
             height: self.userInfoHeight
         )
@@ -807,7 +823,7 @@ class ProfileWindowComponent: WindowComponent {
         self.tabButtonView = UIView(
             frame: CGRect(
                 x: 0,
-                y: self.titleHeight + self.userInfoHeight + 20,
+                y: Self.titleHeight + self.userInfoHeight + 20,
                 width: 0,
                 height: self.tabButtonsHeight
             )
@@ -817,9 +833,9 @@ class ProfileWindowComponent: WindowComponent {
             self.tabButtonView.addSubview(tabButtonComponent.button)
             tabButtonComponent.meController = self.meController
         }
-        let lastX = _expand_across(views: self.tabButtonComponents.map{ $0.button })
+        let lastX = expandAcross(views: self.tabButtonComponents.map{ $0.button })
         self.tabButtonView.frame.size.width = lastX
-        self.tabButtonView.frame.origin.x = CGFloat(_get_center_x(width: Int(lastX)))
+        self.tabButtonView.frame.origin.x = CGFloat(getCenterX(width: Int(lastX)))
     }
 
     override func render(parentView: UIView) {

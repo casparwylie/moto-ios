@@ -13,9 +13,9 @@ import UIKit
 class WindowComponent: NSObject {
     var view: UIScrollView!
     var closeButton: UIButton!
-    let closeSize = 25
+    let closeSize = uiDef().HEADER_FONT_SIZE
     let titleWidth = global_width
-    let titleHeight = 100
+    static let titleHeight = 100
     var titleLabel: UILabel!
     var title: String = ""
     var titleColor: UIColor = .black
@@ -34,19 +34,19 @@ class WindowComponent: NSObject {
     func setWindowMeta() {}
     
     func makeTitle() {
-        self.titleLabel = _make_text(
-            text: self.title, align: .center, font: "Tourney", size: 25, color: self.titleColor
+        self.titleLabel = Label().make(
+            text: self.title, align: .center, font: "Tourney", size: CGFloat(uiDef().HEADER_FONT_SIZE), color: self.titleColor
         )
         self.titleLabel.frame = CGRect(
-            x: _get_center_x(width: self.titleWidth),
+            x: getCenterX(width: self.titleWidth),
             y: 5,
             width: self.titleWidth,
-            height: self.titleHeight
+            height: Self.titleHeight
         )
     }
     
     func makeClose() {
-        self.closeButton = _make_button(text: "✕", color: .white, size: self.closeSize)
+        self.closeButton = Button().make(text: "✕", color: .white, size: self.closeSize)
         self.closeButton.frame = CGRect(
             x: global_width - self.closeSize * 2,
             y: self.closeSize,
@@ -82,7 +82,7 @@ class OptionListingComponent {
 
     var view: UIScrollView!
     var rows: [UIButton: () -> ()] = [:]
-    let rowHeight = 25
+    let rowHeight = uiDef().ROW_HEIGHT
     let width = global_width / 3
     let maxHeight: CGFloat = 150
     
@@ -98,7 +98,7 @@ class OptionListingComponent {
     }
     
     func addRow(text: String, callback: @escaping () -> ()) {
-        let button = _make_button(text: text, color: .white)
+        let button = Button().make(text: text, color: .white)
         button.titleLabel!.lineBreakMode = .byTruncatingTail
         button.frame = CGRect(
             x: 0,
@@ -113,7 +113,7 @@ class OptionListingComponent {
         )
         self.rows[button] = callback
         
-        let lastY = _expand_as_list(views: Array(self.rows.keys), spacing: 2)
+        let lastY = expandDown(views: Array(self.rows.keys), spacing: 2)
         self.view.frame.size.height = (
             (lastY > self.maxHeight) ? self.maxHeight : lastY
         ) - self.bottomBorderClip
@@ -135,7 +135,7 @@ class OptionListingComponent {
     
     func render(parentView: UIView) {
         self.view = UIScrollView()
-        self.view.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
+        self.view.layer.cornerRadius = uiDef().CORNER_RADIUS
         self.view.backgroundColor = _DARK_BLUE
         parentView.addSubview(self.view)
     }
@@ -146,7 +146,7 @@ class DropDownComponent {
     var view: UIView!
     var listingComponent: OptionListingComponent!
     var toggleButton: UIButton!
-    var height: CGFloat = 30
+    var height = CGFloat(uiDef().ROW_HEIGHT)
         
     init() {
         self.listingComponent = OptionListingComponent()
@@ -166,7 +166,7 @@ class DropDownComponent {
     }
     
     func close () {
-        _hide(view: self.listingComponent.view)
+        hide(view: self.listingComponent.view)
     }
     
     func setTitle(title: String) {
@@ -174,7 +174,7 @@ class DropDownComponent {
     }
 
     func makeToggleButton() {
-        self.toggleButton = _make_button(text: "", background: .black, color: .white)
+        self.toggleButton = Button().make(text: "", background: .black, color: .white)
         self.toggleButton.addTarget(self, action: #selector(self.onTogglePress), for: .touchDown)
     }
     

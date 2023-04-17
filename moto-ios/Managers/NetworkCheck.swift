@@ -14,7 +14,7 @@ class BannerComponent {
     var mainLabel: UILabel!
     
     func makeLabel() {
-        self.mainLabel = _make_text(
+        self.mainLabel = Label().make(
             text: "Internet connection is required!", align: .center, size: 40, color: .black
         )
         self.mainLabel.frame = CGRect(

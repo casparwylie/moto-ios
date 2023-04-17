@@ -29,7 +29,7 @@ class CommentComponent {
     }
     
     func makeTextLabel() {
-        self.mainLabel = _make_text(text: self.comment.text!, align: .center)
+        self.mainLabel = Label().make(text: self.comment.text!, align: .center)
         self.mainLabel.numberOfLines = 0
         self.mainLabel.lineBreakMode = .byWordWrapping
         self.mainLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -54,7 +54,7 @@ class CommentComponent {
             )
         )
         
-        let infoLabel = _make_text(
+        let infoLabel = Label().make(
             text: "- \(self.comment.username!) | \(self.comment.created_at!)",
             align: .center,
             size: 12,
@@ -70,7 +70,7 @@ class CommentComponent {
         
         if let relationString = self.comment.garage_relation_sentence {
             if relationString.count > 0 {
-                let relationLabel = _make_text(
+                let relationLabel = Label().make(
                     text: "* \(relationString)",
                     align: .center,
                     size: 12,
@@ -92,7 +92,7 @@ class CommentComponent {
             self.commentsController?.userStateController?.isLoggedin() ?? false
             && self.commentsController?.userStateController?.currentUser?.username == self.comment.username
         ) {
-            self.deleteButton = _make_button(text: "✕", color: _RED, size: self.deleteButtonSize)
+            self.deleteButton = Button().make(text: "✕", color: _RED, size: self.deleteButtonSize)
             self.deleteButton!.frame = CGRect(
                 x: Int(self.width - deleteButtonSize),
                 y: 0,
@@ -112,13 +112,13 @@ class CommentComponent {
     func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: _get_center_x(width: self.width),
+                x: getCenterX(width: self.width),
                 y: 0,
                 width: self.width,
                 height: 0
             )
         )
-        self.view.layer.cornerRadius = _DEFAULT_CORNER_RADIUS
+        self.view.layer.cornerRadius = uiDef().CORNER_RADIUS
         self.view.backgroundColor = _DARK_TBLUE
         
         self.makeTextLabel()
@@ -149,7 +149,7 @@ class CommentsWindowComponent: WindowComponent {
     
     var commentButton: UIButton!
     let commentButtonWidth = Int(Double(global_width) * 0.3)
-    let commentButtonHeight = 30
+    let commentButtonHeight = uiDef().ROW_HEIGHT
 
 
     override func setWindowMeta() {
@@ -168,14 +168,14 @@ class CommentsWindowComponent: WindowComponent {
                 self.commentComponents.append(commentComponent)
                 commentComponent.render(parentView: self.view)
             }
-            let lastY = _expand_as_list(
-                views: self.commentComponents.map{ $0.view }, startY: CGFloat(self.titleHeight)
+            let lastY = expandDown(
+                views: self.commentComponents.map{ $0.view }, startY: CGFloat(Self.titleHeight)
             )
             self.updateFrames(lastY: lastY)
         } else {
             self.view.addSubview(self.noCommentsLabel)
             self.updateFrames(
-                lastY: CGFloat(self.titleHeight)
+                lastY: CGFloat(Self.titleHeight)
                 + self.noCommentsLabel.frame.height
                 + self.commentTextBoxSpacing
             )
@@ -202,9 +202,9 @@ class CommentsWindowComponent: WindowComponent {
     }
     
     func makeCommentBox() {
-        self.commentTextBox = _make_text_box_input()
+        self.commentTextBox = TextBox().make()
         self.commentTextBox.frame = CGRect(
-            x: _get_center_x(width: self.commentTextBoxWidth),
+            x: getCenterX(width: self.commentTextBoxWidth),
             y: 0,
             width: self.commentTextBoxWidth,
             height: commentTextBoxHeight
@@ -212,7 +212,7 @@ class CommentsWindowComponent: WindowComponent {
     }
     
     func makeCommentButton() {
-        self.commentButton = _make_button(text: "Comment", background: .black, color: .white)
+        self.commentButton = Button().make(text: "Comment", background: .black, color: .white)
         self.commentButton.frame = CGRect(
             x: Int(self.commentTextBox.frame.origin.x),
             y: 0,
@@ -223,12 +223,12 @@ class CommentsWindowComponent: WindowComponent {
     }
     
     func makeNoCommentsLabel() {
-        self.noCommentsLabel = _make_text(text: "There are no comments for this race yet.", align: .center)
+        self.noCommentsLabel = Label().make(text: "There are no comments for this race yet.", align: .center)
         self.noCommentsLabel.frame = CGRect(
-            x: _get_center_x(width: global_width),
-            y: self.titleHeight,
+            x: getCenterX(width: global_width),
+            y: Self.titleHeight,
             width: global_width,
-            height: 30
+            height: uiDef().ROW_HEIGHT
         )
     }
     

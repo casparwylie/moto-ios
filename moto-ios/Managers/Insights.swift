@@ -26,7 +26,7 @@ class RaceListingWindowComponent: WindowComponent {
         if races.count > 0 {
             self.raceButtons.forEach{ raceButton in raceButton.removeFromSuperview() }
             let buttons = races.map {self.addRaceButton(race: $0)}
-            let lastY = _expand_as_list(views: buttons, startY: self.titleLabel.frame.height)
+            let lastY = expandDown(views: buttons, startY: self.titleLabel.frame.height)
             self.view.contentSize = CGSize(width: self.view.frame.width, height: lastY)
         } else {
             self.view.addSubview(self.noCommentsLabel)
@@ -35,24 +35,24 @@ class RaceListingWindowComponent: WindowComponent {
     
     
     func makeNoCommentsLabel() {
-        self.noCommentsLabel = _make_text(text: "There are no races yet.", align: .center)
+        self.noCommentsLabel = Label().make(text: "There are no races yet.", align: .center)
         self.noCommentsLabel.frame = CGRect(
-            x: _get_center_x(width: global_width),
-            y: self.titleHeight,
+            x: getCenterX(width: global_width),
+            y: Self.titleHeight,
             width: global_width,
-            height: 30
+            height: uiDef().ROW_HEIGHT
         )
     }
 
     func addRaceButton(race: RaceModel) -> UILabel {
         let buttonLabel = race.racers.map { $0.full_name }.joined(separator: "   VS   ")
-        let label = _make_text(text: buttonLabel, align: .center)
+        let label = Label().make(text: buttonLabel, align: .center)
 
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.translatesAutoresizingMaskIntoConstraints = false
         label.frame = CGRect(
-            x: _get_center_x(width: Int(self.buttonWidth)),
+            x: getCenterX(width: Int(self.buttonWidth)),
             y: 0,
             width: Int(self.buttonWidth),
             height: 0
