@@ -320,12 +320,12 @@ class UserStateController {
         self.currentUser = await self.apiClient.getUser()
     }
     
-    @MainActor func logoutUser() {
+    @MainActor func logoutUser(message: String = "Successfully logged out!") {
         Task {
             _ = await self.apiClient.logoutUser()
             await self.setUser()
             self.viewController.renderAll(isLoggedin: self.isLoggedin())
-            self.informerController?.inform(message: "Successfully logged out!")
+            self.informerController?.inform(message: message)
         }
     }
 }
@@ -704,17 +704,19 @@ class EditProfileWindowComponent: WindowComponent {
     
     var submitUsernameButton: UIButton!
     var submitEmailButton: UIButton!
+    var deleteAccountButton: UIButton!
 
     var editUsernameIn: UITextField!
     var editEmailIn: UITextField!
     
+    let deleteAccountButtonWidth = global_width / 3
     var inputWidth = Int(Double(global_width) * 0.5)
     var submitButtonWidth = Int(Double(global_width) * 0.1)
     var submitSpacing = 5
 
     
     override func setWindowMeta() {
-        self.title = "Me > Edit Profile"
+        self.title = "Me > Edit Account"
     }
     
     func makeEditInputs() {
@@ -747,11 +749,25 @@ class EditProfileWindowComponent: WindowComponent {
             startY: CGFloat(Self.headerOffset)
         )
         
-        _ = expandDown(
+        let lastY = expandDown(
             views: [self.submitUsernameButton, self.submitEmailButton],
             startY: CGFloat(Self.headerOffset)
         )
+        
+        self.deleteAccountButton = Button().make(text: "Keep tapping to delete account", background: _RED, color: .white)
+        self.deleteAccountButton.frame = CGRect(
+            x: getCenterX(width: self.deleteAccountButtonWidth),
+            y: Int(lastY) + uiDef().ROW_HEIGHT,
+            width: self.deleteAccountButtonWidth,
+            height: uiDef().ROW_HEIGHT
+        )
+        self.deleteAccountButton.addTarget(self, action: #selector(self.onDeleteAccountPress), for: .touchDownRepeat)
     }
+    
+    @MainActor @objc func onDeleteAccountPress() {
+        self.meController?.deleteAccount()
+    }
+
     
     @MainActor @objc func onEmailSubmitPress() {
         self.meController?.editUser(field: "email", value: self.editEmailIn.text!)
@@ -770,6 +786,7 @@ class EditProfileWindowComponent: WindowComponent {
         self.view.addSubview(self.editEmailIn)
         self.view.addSubview(self.submitUsernameButton)
         self.view.addSubview(self.submitEmailButton)
+        self.view.addSubview(self.deleteAccountButton)
     }
 
 }
@@ -806,7 +823,7 @@ class ProfileWindowComponent: WindowComponent {
                 targetWindow: self.meController?.changePasswordWindowComponent
             ),
             ProfileTabButtonComponent(
-                name: "Edit Profile",
+                name: "Edit Account",
                 targetWindow: self.meController?.editProfileWindowComponent
             )
         ]
@@ -944,6 +961,19 @@ class MeController {
                 }
                 self.editProfileWindowComponent.stopLoading()
             }
+        }
+    }
+    
+    @MainActor func deleteAccount() {
+        Task {
+            if let response = await self.apiClient.deleteAccount() {
+                if response.errors.count > 0 {
+                    self.informerController?.inform(message: response.errors[0], mood: "bad")
+                } else {
+                    await self.userStateController?.logoutUser(message: "Successfully deleted account!")
+                }
+            }
+            self.editProfileWindowComponent.stopLoading()
         }
     }
 }

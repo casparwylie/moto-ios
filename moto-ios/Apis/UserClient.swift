@@ -65,6 +65,10 @@ struct ForgotPasswordRequestModel: Codable {
     var email: String
 }
 
+struct DeleteAccountRequestModel: Codable {
+    
+}
+
 
 class UserApiClient: BaseApiClient {
 
@@ -141,6 +145,14 @@ class UserApiClient: BaseApiClient {
         return await self._make_post_request(
             path: "/forgot-password",
             body: ForgotPasswordRequestModel(email: email),
+            responseModel: SuccessResponseModel.self
+        )
+    }
+    
+    func deleteAccount()  async -> SuccessResponseModel? {
+        return await self._make_post_request(
+            path: "/delete",
+            body: DeleteAccountRequestModel(),
             responseModel: SuccessResponseModel.self
         )
     }

@@ -112,13 +112,6 @@ class ViewController: UIViewController {
         self.networkCheckManager.start()
     }
 
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .landscape
-    }
-
-    override var shouldAutorotate: Bool {
-        return true
-    }
     
     @MainActor @objc func appDidBecomeActive() {
         if let url = self.sceneDelegate()?.shareUrl {

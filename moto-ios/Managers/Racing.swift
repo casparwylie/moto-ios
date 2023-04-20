@@ -627,7 +627,7 @@ class RacerResultComponent {
             default:
                 positionText = String(self.finishPosition) + "th"
         }
-        self.positionLabel = Label().make(text: positionText, color: _YELLOW)
+        self.positionLabel = Label().make(text: positionText, size: CGFloat(uiDef().HEADER_FONT_SIZE), color: _YELLOW)
         self.racerLabel = Label().make(text: self.racer.full_name, color: _YELLOW)
     }
     
@@ -652,13 +652,15 @@ class RacerResultComponent {
         self.makeHeader()
         self.makeStats()
         self.view.addSubview(self.positionLabel)
-        self.positionLabel.frame = CGRect(x: 0, y: 0, width: Self.width, height: uiDef().FONT_SIZE)
+        self.positionLabel.frame = CGRect(x: 0, y: 0, width: Self.width, height:uiDef().HEADER_FONT_SIZE)
 
         self.view.addSubview(self.racerLabel)
-        self.racerLabel.frame = CGRect(x: 0, y: uiDef().FONT_SIZE, width: Self.width, height: uiDef().FONT_SIZE)
+        self.racerLabel.frame = CGRect(x: 0, y: 0, width: Self.width, height: uiDef().FONT_SIZE)
 
         self.view.addSubview(self.statsLabel)
-        self.statsLabel.frame = CGRect(x: 0, y: uiDef().FONT_SIZE * 2, width: Self.width, height: uiDef().FONT_SIZE * 4)
+        self.statsLabel.frame = CGRect(x: 0, y: 0, width: Self.width, height: uiDef().FONT_SIZE * 4)
+        
+        _ = expandDown(views: [self.positionLabel, self.racerLabel, self.statsLabel])
 
         parentView.addSubview(self.view)
     }
@@ -684,7 +686,7 @@ class RaceResultsWindowComponent: WindowComponent {
     let optionsViewHeight = uiDef().ROW_HEIGHT * 2
     let optionWidth = global_width / 6
     let optionFontSize = uiDef().FONT_SIZE
-    let resultsSpacing = 20
+    let resultsSpacing = 30
 
     
     var raceId: Int?
