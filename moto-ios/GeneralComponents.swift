@@ -29,13 +29,39 @@ class WindowComponent: NSObject {
         red: 0.00, green: 0.55, blue: 0.55, alpha: 1.00
     )
     
+    var focusForm: UIView?
+    static let focusFormWidth = Int(Double(global_width) * 0.6)
+    
     let frame = CGRect(
         x: 0,
         y: 0,
         width: global_width,
         height: global_height
     )
-
+    
+    func setKeyboardView() {
+        self.titleLabel?.removeFromSuperview()
+        self.headerImageView?.removeFromSuperview()
+        self.focusForm?.frame.origin.y = CGFloat(uiDef().ROW_HEIGHT)
+    }
+    
+    func unsetKeyboardView() {
+        self.view?.addSubview(self.titleLabel)
+        self.view?.addSubview(self.headerImageView)
+        self.focusForm?.frame.origin.y = CGFloat(Self.headerOffset)
+    }
+    
+    func renderFocusForm() {
+        self.focusForm = UIView(
+            frame: CGRect(
+                x: getCenterX(width: Self.focusFormWidth),
+                y: Self.headerOffset,
+                width: Self.focusFormWidth,
+                height: 0
+            )
+        )
+        self.view.addSubview(self.focusForm!)
+    }
     
     func setWindowMeta() {}
     

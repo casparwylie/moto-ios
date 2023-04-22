@@ -17,9 +17,7 @@ class SignUpWindowComponent: WindowComponent {
     var passwordIn: UITextField!
     var vpasswordIn: UITextField!
     var submitButton: UIButton!
-    
-    let inputWidth = Int(Double(global_width) * 0.7)
-    
+        
     var signUpController: SignUpController?
 
     override func setWindowMeta() {
@@ -33,11 +31,13 @@ class SignUpWindowComponent: WindowComponent {
         self.vpasswordIn.text = ""
     }
     
-    func makeInputs() {
-        let inputFrame = CGRect(
-            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth, height: uiDef().ROW_HEIGHT
-        )
+    func renderForm() {
+        self.renderFocusForm()
         
+        let inputFrame = CGRect(
+            x: 0, y: 0, width: Self.focusFormWidth, height: uiDef().ROW_HEIGHT
+        )
+
         self.usernameIn = TextField().make(text: "Username...")
         self.usernameIn.frame = inputFrame
         
@@ -54,17 +54,28 @@ class SignUpWindowComponent: WindowComponent {
         
         self.submitButton = Button().make(text: "Sign Up", background: .black, color: .white)
         self.submitButton.frame = CGRect(
-            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth / 3, height: uiDef().ROW_HEIGHT
+            x: 0,
+            y: 0,
+            width: Self.focusFormWidth / 3,
+            height: uiDef().ROW_HEIGHT
         )
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
-        _ = expandDown(
-            views: [self.usernameIn, self.emailIn, self.passwordIn, self.vpasswordIn, self.submitButton],
-            startY: CGFloat(Self.headerOffset)
+        let lastY = expandDown(
+            views: [self.usernameIn, self.emailIn, self.passwordIn, self.vpasswordIn, self.submitButton]
         )
+        
+        self.focusForm!.addSubview(self.usernameIn)
+        self.focusForm!.addSubview(self.emailIn)
+        self.focusForm!.addSubview(self.passwordIn)
+        self.focusForm!.addSubview(self.vpasswordIn)
+        self.focusForm!.addSubview(self.submitButton)
+        
+        self.focusForm!.frame.size.height = lastY + CGFloat(uiDef().ROW_HEIGHT)
     }
     
     @MainActor @objc func onSubmitPress() {
+        self.view.endEditing(true)
         self.signUpController?.signUpUser(
             username: self.usernameIn.text!,
             email: self.emailIn.text!,
@@ -74,13 +85,8 @@ class SignUpWindowComponent: WindowComponent {
     }
     
     override func render(parentView: UIView) {
-        self.makeInputs()
         super.render(parentView: parentView)
-        self.view.addSubview(self.usernameIn)
-        self.view.addSubview(self.emailIn)
-        self.view.addSubview(self.passwordIn)
-        self.view.addSubview(self.vpasswordIn)
-        self.view.addSubview(self.submitButton)
+        self.renderForm()
     }
 }
 
@@ -91,11 +97,9 @@ class LoginWindowComponent: WindowComponent {
     var submitButton: UIButton!
     var toggleForgotPasswordButton: UIButton!
     
-    let inputWidth = Int(Double(global_width) * 0.6)
     let inputHeight = uiDef().ROW_HEIGHT
     let inputSpacing = 2
 
-    
     var loginController: LoginController?
     
     var forgotPasswordToggled = false
@@ -131,11 +135,12 @@ class LoginWindowComponent: WindowComponent {
         }
     }
     
-    func renderInputs() {
+    func renderForm() {
+        self.renderFocusForm()
+        
         let inputFrame = CGRect(
-            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth, height: self.inputHeight
+            x: 0, y: 0, width: Self.focusFormWidth, height: self.inputHeight
         )
-
         self.usernameIn = TextField().make(text: self.usernamePlaceholderText)
         self.usernameIn.frame = inputFrame
 
@@ -145,29 +150,30 @@ class LoginWindowComponent: WindowComponent {
 
         self.submitButton = Button().make(text: "Login", background: .black, color: .white)
         self.submitButton.frame = CGRect(
-            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth / 3, height: self.inputHeight
+            x: 0, y: 0, width: Self.focusFormWidth / 3, height: self.inputHeight
         )
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
-        _ = expandDown(
+        let lastY = expandDown(
             views: [self.usernameIn, self.passwordIn, self.submitButton],
-            startY: CGFloat(Self.headerOffset),
             spacing: CGFloat(self.inputSpacing)
         )
-        
         
         self.toggleForgotPasswordButton = Button().make(text: self.forgotPasswordText)
         self.toggleForgotPasswordButton.addTarget(self, action: #selector(self.toggleForgotPassword), for: .touchDown)
         self.toggleForgotPasswordButton.frame = self.submitButton.frame
         self.toggleForgotPasswordButton.frame.origin.x += self.submitButton.frame.width + 5
         
-        self.view.addSubview(self.usernameIn)
-        self.view.addSubview(self.passwordIn)
-        self.view.addSubview(self.submitButton)
-        self.view.addSubview(self.toggleForgotPasswordButton)
+        self.focusForm!.addSubview(self.usernameIn)
+        self.focusForm!.addSubview(self.passwordIn)
+        self.focusForm!.addSubview(self.submitButton)
+        self.focusForm!.addSubview(self.toggleForgotPasswordButton)
+        
+        self.focusForm!.frame.size.height = lastY
     }
     
     @MainActor @objc func onSubmitPress() {
+        self.view.endEditing(true)
         if self.forgotPasswordToggled {
             self.loginController?.forgotPassword(email: self.usernameIn.text!)
         } else {
@@ -180,7 +186,7 @@ class LoginWindowComponent: WindowComponent {
     
     override func render(parentView: UIView) {
         super.render(parentView: parentView)
-        self.renderInputs()
+        self.renderForm()
     }
     
 }
@@ -198,7 +204,6 @@ class SignUpController {
     }
     
     @MainActor func signUpUser(username: String, email: String, password: String, vpassword: String) {
-        self.signUpWindowComponent.startLoading()
         if (
             username.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
             || email.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
@@ -214,6 +219,7 @@ class SignUpController {
         }
 
         Task {
+            self.signUpWindowComponent.startLoading()
             if let response = await self.apiClient.signupUser(username: username, email: email, password: password) {
                 if response.errors.count > 0 {
                     self.informerController?.inform(message: response.errors[0], mood: "bad")
@@ -249,7 +255,6 @@ class LoginController {
     }
     
     @MainActor func loginUser(username: String, password: String) {
-        self.loginWindowComponent.startLoading()
         if (
             username.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
             || password.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
@@ -258,6 +263,7 @@ class LoginController {
             return
         }
         Task {
+            self.loginWindowComponent.startLoading()
             if let response = await self.apiClient.loginUser(username: username, password: password) {
                 if response.success {
                     self.finishSuccessfulLogin()
@@ -374,7 +380,6 @@ class MyGarageWindowComponent: WindowComponent {
     var racerRecommenderComponent: RacerRecommenderComponent!
     var relationDropDownComponent: DropDownComponent!
     
-    var garageView: UIView!
     var garageListingView: UIScrollView!
     var submitButton: UIButton!
     
@@ -382,9 +387,9 @@ class MyGarageWindowComponent: WindowComponent {
     let inputHeight = uiDef().ROW_HEIGHT
     let garageItemDeleteButtonSize = uiDef().ROW_HEIGHT
     
-    let garageViewWidth = Int(CGFloat(global_width) * 0.8)
+    let focusFormWidth = Int(CGFloat(global_width) * 0.8)
     let garageListingViewWidth = Int(CGFloat(global_width) * 0.8)
-    let garageViewHeight = global_height
+    let focusFormHeight = global_height
     let garageListingViewY = uiDef().ROW_HEIGHT * 3
     let garageListingViewHeight = uiDef().ROW_HEIGHT + 10
     let garageListingViewMaxHeight = 150
@@ -414,12 +419,12 @@ class MyGarageWindowComponent: WindowComponent {
     
     
     func makeGarageView() {
-        self.garageView = UIView(
+        self.focusForm = UIView(
             frame: CGRect(
-                x: getCenterX(width: self.garageViewWidth),
+                x: getCenterX(width: self.focusFormWidth),
                 y:  Self.headerOffset,
-                width: self.garageViewWidth,
-                height: self.garageViewHeight
+                width: self.focusFormWidth,
+                height: self.focusFormHeight
             )
         )
     }
@@ -488,6 +493,11 @@ class MyGarageWindowComponent: WindowComponent {
         )
     }
     
+    override func setKeyboardView() {
+        super.setKeyboardView()
+        self.racerRecommenderComponent?.racerRecommendingController?.placeRecommender()
+    }
+    
     func makeDeleteGarageItemOption(modelId: Int?) -> UIButton {
         let deleteButton = DeleteGarageItemButton().make(text: "✕", color: _RED) as! DeleteGarageItemButton
         deleteButton.modelId = modelId
@@ -510,7 +520,6 @@ class MyGarageWindowComponent: WindowComponent {
     @MainActor func clearGarageListing() {
         self.garageListingView.subviews.forEach{subview in subview.removeFromSuperview()}
         self.garageListingLabels = []
-        
     }
     
     func resetAddInputs() {
@@ -519,7 +528,7 @@ class MyGarageWindowComponent: WindowComponent {
     }
 
     func makeAddGarageInputs() {
-        let width: Int = (self.garageViewWidth / 2) - (self.inputSpacing / 2)
+        let width: Int = (self.focusFormWidth / 2) - (self.inputSpacing / 2)
         let y = self.inputHeight + self.inputSpacing
     
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.closeDropDown))
@@ -545,10 +554,13 @@ class MyGarageWindowComponent: WindowComponent {
     
     @objc func closeDropDown() {
         self.relationDropDownComponent.close()
+        self.racerRecommenderComponent.view.frame.size.height = 0
+        self.view.endEditing(true)
     }
  
     
     @MainActor @objc func onSubmitPress () {
+        self.view.endEditing(true)
         if let relationId = self.garageItemRelationMap[self.relationDropDownComponent.getLastSelectedText()] {
             if let partialRacer = self.racerInputComponent.getPartialRacerFromInputs() {
                 self.myGarageController?.addGarageItem(
@@ -556,7 +568,12 @@ class MyGarageWindowComponent: WindowComponent {
                     relationId: relationId
                 )
                 self.resetAddInputs()
+            } else {
+                self.meController?.informerController?.inform(message: "Please enter a make and model", mood: "bad")
+
             }
+        } else {
+            self.meController?.informerController?.inform(message: "Please select a relationship", mood: "bad")
         }
     }
 
@@ -565,17 +582,17 @@ class MyGarageWindowComponent: WindowComponent {
         self.makeGarageView()
         self.makeGarageListingView()
         
-        self.garageView.addSubview(self.garageListingView)
-        self.view.addSubview(self.garageView)
+        self.focusForm!.addSubview(self.garageListingView)
+        self.view.addSubview(self.focusForm!)
         
         self.makeNoGarageItemsLabel()
         
-        self.relationDropDownComponent.render(parentView: self.garageView)
+        self.relationDropDownComponent.render(parentView: self.focusForm!)
         self.relationDropDownComponent.view.layer.zPosition = 1
-        self.racerInputComponent.render(parentView: self.garageView)
+        self.racerInputComponent.render(parentView: self.focusForm!)
 
         self.makeAddGarageInputs()
-        self.garageView.addSubview(self.submitButton)
+        self.focusForm!.addSubview(self.submitButton)
         self.racerRecommenderComponent.render(parentView: self.view)
         
         self.myGarageController?.populateGarageItems()
@@ -651,9 +668,11 @@ class ChangePasswordWindowComponent: WindowComponent {
         self.title = "Me > Change Password"
     }
     
-    func makePasswordInputs() {
+    func makeForm() {
+        self.renderFocusForm()
+        
         let inputFrame = CGRect(
-            x: getCenterX(width: self.inputWidth), y: 0, width: self.inputWidth, height: uiDef().ROW_HEIGHT
+            x: 0, y: 0, width: Self.focusFormWidth, height: uiDef().ROW_HEIGHT
         )
         self.oldPasswordIn = TextField().make(text: "Current Password...")
         self.oldPasswordIn.frame = inputFrame
@@ -672,13 +691,20 @@ class ChangePasswordWindowComponent: WindowComponent {
         self.submitButton.frame.size.width = CGFloat(self.inputWidth / 3)
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
-        _ = expandDown(
-            views: [self.oldPasswordIn, self.newPasswordIn, self.vPasswordIn, self.submitButton],
-            startY: CGFloat(Self.headerOffset)
+        let lastY = expandDown(
+            views: [self.oldPasswordIn, self.newPasswordIn, self.vPasswordIn, self.submitButton]
         )
+        
+        self.focusForm!.addSubview(self.oldPasswordIn)
+        self.focusForm!.addSubview(self.newPasswordIn)
+        self.focusForm!.addSubview(self.vPasswordIn)
+        self.focusForm!.addSubview(self.submitButton)
+        
+        self.focusForm!.frame.size.height = lastY + CGFloat(uiDef().ROW_HEIGHT)
     }
     
     @MainActor @objc func onSubmitPress() {
+        self.view.endEditing(true)
         self.meController?.changePassword(
             oldPassword: self.oldPasswordIn.text!,
             newPassword: self.newPasswordIn.text!,
@@ -688,12 +714,7 @@ class ChangePasswordWindowComponent: WindowComponent {
     
     override func render(parentView: UIView) {
         super.render(parentView: parentView)
-        self.makePasswordInputs()
-        self.view.addSubview(self.oldPasswordIn)
-        self.view.addSubview(self.newPasswordIn)
-        self.view.addSubview(self.vPasswordIn)
-        self.view.addSubview(self.submitButton)
-
+        self.makeForm()
     }
 
 }
@@ -719,13 +740,14 @@ class EditProfileWindowComponent: WindowComponent {
         self.title = "Me > Edit Account"
     }
     
-    func makeEditInputs() {
-        let centerX = getCenterX(width: self.inputWidth + self.submitButtonWidth + self.submitSpacing)
+    func renderForm() {
+        self.renderFocusForm()
+        
         let inputFrame = CGRect(
-            x: centerX, y: 0, width: self.inputWidth, height: uiDef().ROW_HEIGHT
+            x: 0, y: 0, width: Self.focusFormWidth - self.submitButtonWidth, height: uiDef().ROW_HEIGHT
         )
         let submitFrame = CGRect(
-            x: centerX + self.inputWidth + self.submitSpacing,
+            x: self.inputWidth + self.submitSpacing,
             y: 0,
             width: self.submitButtonWidth,
             height: uiDef().ROW_HEIGHT
@@ -744,24 +766,34 @@ class EditProfileWindowComponent: WindowComponent {
         self.submitEmailButton.frame = submitFrame
         self.submitEmailButton.addTarget(self, action: #selector(self.onEmailSubmitPress), for: .touchDown)
         
+        self.focusForm!.addSubview(self.editUsernameIn)
+        self.focusForm!.addSubview(self.editEmailIn)
+        self.focusForm!.addSubview(self.submitUsernameButton)
+        self.focusForm!.addSubview(self.submitEmailButton)
+        
         _ = expandDown(
-            views: [self.editUsernameIn, self.editEmailIn],
-            startY: CGFloat(Self.headerOffset)
+            views: [self.editUsernameIn, self.editEmailIn]
         )
         
         let lastY = expandDown(
-            views: [self.submitUsernameButton, self.submitEmailButton],
-            startY: CGFloat(Self.headerOffset)
+            views: [self.submitUsernameButton, self.submitEmailButton]
         )
         
-        self.deleteAccountButton = Button().make(text: "Keep tapping to delete account", background: _RED, color: .white)
+        self.focusForm!.frame.size.height = lastY
+        
+        self.deleteAccountButton = Button().make(
+            text: "Keep tapping to delete account",
+            background: _RED,
+            color: .white
+        )
         self.deleteAccountButton.frame = CGRect(
             x: getCenterX(width: self.deleteAccountButtonWidth),
-            y: Int(lastY) + uiDef().ROW_HEIGHT,
+            y: Self.headerOffset + Int(lastY) + uiDef().ROW_HEIGHT,
             width: self.deleteAccountButtonWidth,
             height: uiDef().ROW_HEIGHT
         )
         self.deleteAccountButton.addTarget(self, action: #selector(self.onDeleteAccountPress), for: .touchDownRepeat)
+        self.view.addSubview(self.deleteAccountButton)
     }
     
     @MainActor @objc func onDeleteAccountPress() {
@@ -770,23 +802,21 @@ class EditProfileWindowComponent: WindowComponent {
 
     
     @MainActor @objc func onEmailSubmitPress() {
+        self.view.endEditing(true)
         self.meController?.editUser(field: "email", value: self.editEmailIn.text!)
         self.editEmailIn.text = ""
     }
     
     @MainActor @objc func onUsernameSubmitPress() {
+        self.view.endEditing(true)
         self.meController?.editUser(field: "username", value: self.editUsernameIn.text!)
         self.editUsernameIn.text = ""
     }
     
     override func render(parentView: UIView) {
         super.render(parentView: parentView)
-        self.makeEditInputs()
-        self.view.addSubview(self.editUsernameIn)
-        self.view.addSubview(self.editEmailIn)
-        self.view.addSubview(self.submitUsernameButton)
-        self.view.addSubview(self.submitEmailButton)
-        self.view.addSubview(self.deleteAccountButton)
+        self.renderForm()
+
     }
 
 }

@@ -146,10 +146,20 @@ class ViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         self.view.addGestureRecognizer(tap)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification , object:nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object:nil
+        )
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification , object:nil)
-        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification ,
+            object:nil
+        )
+
         await self.userManager.userStateController.setUser()
         self.injectDependencies()
         self.renderAll(isLoggedin: self.userManager.userStateController.isLoggedin())
@@ -159,12 +169,26 @@ class ViewController: UIViewController {
     @objc func keyboardWillShow() {
         self.menuManager.menuController.setKeyboardView()
         self.racingManager.raceController.setKeyboardView()
+        
+        self.userManager.loginWindowComponent.setKeyboardView()
+        self.userManager.signUpWindowComponent.setKeyboardView()
+        self.userManager.changePasswordWindowComponent.setKeyboardView()
+        self.userManager.myGarageWindowComponent.setKeyboardView()
+        self.userManager.editProfileWindowComponent.setKeyboardView()
+
+
     }
     
     
     @objc func keyboardWillHide() {
         self.menuManager.menuController.unsetKeyboardView()
         self.racingManager.raceController.unsetKeyboardView()
+        
+        self.userManager.loginWindowComponent.unsetKeyboardView()
+        self.userManager.signUpWindowComponent.unsetKeyboardView()
+        self.userManager.changePasswordWindowComponent.unsetKeyboardView()
+        self.userManager.myGarageWindowComponent.unsetKeyboardView()
+        self.userManager.editProfileWindowComponent.unsetKeyboardView()
     }
 
     @objc func dismissKeyboard() {

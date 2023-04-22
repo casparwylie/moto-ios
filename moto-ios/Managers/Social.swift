@@ -194,7 +194,7 @@ class CommentsWindowComponent: WindowComponent {
             width: CGFloat(global_width),
             height: (
                 CGFloat(lastY)
-                + self.commentTextBox.frame.height
+                + self.commentTextBox.frame.height * 3
                 + self.commentButton.frame.height
                 + self.commentTextBoxSpacing * 3
             )

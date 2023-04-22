@@ -139,7 +139,6 @@ class MenuController {
     
     var userStateController: UserStateController?
 
-
     init (menuComponent: MenuComponent, headerComponent: HeaderComponent, viewController: ViewController) {
         self.viewController = viewController
         self.menuComponent = menuComponent
@@ -178,8 +177,8 @@ class MenuController {
     }
     
     func unsetKeyboardView() {
-        self.headerComponent.render(parentView: self.viewController.view)
-        self.menuComponent.render(parentView: self.viewController.view)
+        self.headerComponent.render(parentView: self.viewController.racingManager.controlPanelComponent.view)
+        self.menuComponent.render(parentView: self.viewController.racingManager.controlPanelComponent.view)
     }
 }
 

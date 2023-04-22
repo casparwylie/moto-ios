@@ -342,17 +342,18 @@ class RacerRecommendingController {
 
     func placeRecommender() {
         if let inputComponent = self.currentInputComponent {
-            let point = inputComponent.view.superview?.convert(
+            if let point = inputComponent.view.superview?.convert(
                 inputComponent.view.frame.origin, to: nil
-            )
-            self.currentRacerRecommenderComponent?.setFrame(
-                frame: CGRect(
-                    x: point!.x,
-                    y: point!.y + self.currentInputComponent!.view.frame.size.height,
-                    width: self.currentInputComponent!.view.frame.size.width,
-                    height: 0
+            ) {
+                self.currentRacerRecommenderComponent?.setFrame(
+                    frame: CGRect(
+                        x: point.x,
+                        y: point.y + self.currentInputComponent!.view.frame.size.height,
+                        width: self.currentInputComponent!.view.frame.size.width,
+                        height: 0
+                    )
                 )
-            )
+            }
         }
     }
 
