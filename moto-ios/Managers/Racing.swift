@@ -132,6 +132,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
     let optionsHeight = uiDef().ROW_HEIGHT
     let thirdWidth = RacerInputComponent.width / 3
     let halfSpacing = RacerInputComponent.inputWidthSpacing / 2
+    static let viewY = HeaderComponent.height + MenuComponent.height + (uiDef().ROW_HEIGHT)
     
     var currentInputY = 0
     
@@ -277,7 +278,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
         self.view = UIView(
             frame: CGRect(
                 x: getCenterX(width: RacerInputComponent.width),
-                y:  HeaderComponent.height + MenuComponent.height + (uiDef().ROW_HEIGHT),
+                y:  Self.viewY,
                 width: RacerInputComponent.width,
                 height: 0
             )
@@ -868,6 +869,7 @@ class RaceController {
     var trafficLightComponent: TrafficLightComponent!
     var informerController: InformerController?
     var commentsController: CommentsController?
+    var racerRecommendingController: RacerRecommendingController?
     
     var apiClient: RacingApiClient!
     var loadedRacers: [RacerModel] = []
@@ -893,6 +895,7 @@ class RaceController {
     }
     
     func reset() {
+        self.racerInputsComponent.view.endEditing(true)
         self.raceViewComponent.reset()
         self.raceResultsWindowComponent.reset()
     }
@@ -1007,6 +1010,22 @@ class RaceController {
             self.commentsController?.viewComments(uniqueRaceId: uniqueRaceId)
         }
     }
+    
+    func setKeyboardView() {
+        self.racerInputsComponent.view.frame.origin = CGPoint(
+            x: getCenterX(width: RacerInputComponent.width), y: 10
+        )
+        self.racerInputsComponent.updateFrames()
+        self.racerRecommendingController?.placeRecommender()
+    }
+    
+    func unsetKeyboardView() {
+        self.racerInputsComponent.view.frame.origin = CGPoint(
+            x: getCenterX(width: RacerInputComponent.width), y: RacerInputsComponent.viewY
+        )
+        self.racerInputsComponent.updateFrames()
+        self.racerRecommendingController?.placeRecommender()
+    }
 }
 
 
@@ -1060,6 +1079,7 @@ class RacingManager {
     ) {
         self.raceController.commentsController = commentsController
         self.raceController.informerController = informerController
+        self.raceController.racerRecommendingController = self.racerRecommendingController
         self.raceResultsWindowComponent.informer = informerController
     }
 

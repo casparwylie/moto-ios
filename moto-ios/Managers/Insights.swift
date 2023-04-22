@@ -15,7 +15,7 @@ class RaceLabelTapGesture: UITapGestureRecognizer {
 class RaceListingWindowComponent: WindowComponent {
     
     var raceButtons: [UIButton] = []
-    let buttonWidth = Double(global_width) * 0.8
+    let buttonWidth = global_width
     var insightController: InsightController?
     
     var noCommentsLabel: UILabel!

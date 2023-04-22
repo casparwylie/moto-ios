@@ -171,6 +171,16 @@ class MenuController {
                 print("Unexpected window name")
         }
     }
+    
+    func setKeyboardView() {
+        self.headerComponent.view.removeFromSuperview()
+        self.menuComponent.view.removeFromSuperview()
+    }
+    
+    func unsetKeyboardView() {
+        self.headerComponent.render(parentView: self.viewController.view)
+        self.menuComponent.render(parentView: self.viewController.view)
+    }
 }
 
 

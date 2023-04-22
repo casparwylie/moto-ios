@@ -62,8 +62,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "783"
-            endingLineNumber = "783"
+            startingLineNumber = "784"
+            endingLineNumber = "784"
             landmarkName = "onViewCommentsPress(button:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -568,8 +568,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "323"
-            endingLineNumber = "323"
+            startingLineNumber = "324"
+            endingLineNumber = "324"
             landmarkName = "recommend(inputComponent:)"
             landmarkType = "7">
             <Locations>
@@ -646,8 +646,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "325"
-            endingLineNumber = "325"
+            startingLineNumber = "326"
+            endingLineNumber = "326"
             landmarkName = "recommend(inputComponent:)"
             landmarkType = "7">
             <Locations>
@@ -694,8 +694,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "359"
-            endingLineNumber = "359"
+            startingLineNumber = "360"
+            endingLineNumber = "360"
             landmarkName = "setRacer(racer:)"
             landmarkType = "7">
             <Locations>
@@ -742,8 +742,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "360"
-            endingLineNumber = "360"
+            startingLineNumber = "361"
+            endingLineNumber = "361"
             landmarkName = "setRacer(racer:)"
             landmarkType = "7">
             <Locations>
@@ -790,8 +790,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "330"
-            endingLineNumber = "330"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
             landmarkName = "recommend(inputComponent:)"
             landmarkType = "7">
          </BreakpointContent>
