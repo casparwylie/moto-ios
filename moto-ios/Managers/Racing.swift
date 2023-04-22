@@ -475,7 +475,12 @@ class RacerComponent {
     static let labelHeight = 20
     let labelWidth = 200
     static let racerSpacing = 15
-    static let racerSize = Double(global_height) / 12
+    static let racerSize = Double(global_height) / 14
+    
+    // race constants
+    let startTorqueDivider = 25.0
+    let progressConstant = 0.3
+    let initialSpecDivider = 5.0
     
     var timer: Timer? = nil
     
@@ -485,8 +490,8 @@ class RacerComponent {
         self.racer = racer
         self.resolveWeight()
         
-        self.acc = Double(self.racer.torque)! / self.resolvedWeight
-        self.ptw = Double(self.racer.power)! / self.resolvedWeight
+        self.acc = Double(self.racer.torque)! / self.resolvedWeight / self.initialSpecDivider
+        self.ptw = Double(self.racer.power)! / self.resolvedWeight / self.initialSpecDivider
     }
     
     func resolveWeight() {
@@ -533,10 +538,10 @@ class RacerComponent {
     }
     
     func move(speed: Double, onFinish: @escaping (RacerModel) -> Void) {
-        var progress = Double(self.racer.torque)! / 25
+        var progress = Double(self.racer.torque)! / self.startTorqueDivider
         self.timer = Timer.scheduledTimer(withTimeInterval: speed / 1000, repeats: true, block: { _ in
-            let momentum = (self.acc * progress) + 1 + (self.ptw * 7)
-            progress += 0.01
+            let momentum = (self.ptw * progress) + (self.acc * progress) + 1
+            progress += self.progressConstant
             self.view.frame.origin.x += CGFloat(Int(momentum))
             if Double(self.view.frame.origin.x) >= Double(global_width) * 0.8 {
                 self.stopMove()

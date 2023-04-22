@@ -60,7 +60,7 @@ class RaceListingWindowComponent: WindowComponent {
         label.sizeToFit()
         label.frame.size.width = CGFloat(self.buttonWidth)
     
-        label.addBottomBorderWithColor(color: .gray, width: 1)
+        label.addBottomBorderWithColor(color: _DARK2_TBLUE, width: 1)
         
         let labelTapGesture = RaceLabelTapGesture(target: self, action: #selector(onRacePress))
         labelTapGesture.race = race
