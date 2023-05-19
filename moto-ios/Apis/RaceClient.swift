@@ -56,18 +56,30 @@ struct HasVotedResponseModel: Decodable {
     var voted: Bool
 }
 
+struct MakesSearchResponseModel: Decodable {
+    var makes: [String]
+}
+
 
 class RacingApiClient: BaseApiClient {
     func searchRacers(make: String, model: String, year: String) async -> [RacerModel]? {
-        let result = await self._make_get_request(
-            path: "/race/search", queryItems: [
+        return await self._make_get_request(
+            path: "/racer/search", queryItems: [
                 URLQueryItem(name: "make", value: make),
                 URLQueryItem(name: "model", value: model),
                 URLQueryItem(name: "year", value: year)
             ] , responseModel: [RacerModel].self
         )
-        return result
     }
+    
+    func searchRacerMakes(make: String) async -> MakesSearchResponseModel? {
+        return await self._make_get_request(
+            path: "/racer/makes/search", queryItems: [
+                URLQueryItem(name: "make", value: make),
+            ] , responseModel: MakesSearchResponseModel.self
+        )
+    }
+    
     func getRacer(make: String, model: String, year: String) async -> RacerModel? {
         let result = await self._make_get_request(
             path: "/racer", queryItems: [

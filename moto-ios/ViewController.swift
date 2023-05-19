@@ -13,7 +13,7 @@ import Reachability
 var global_width = Int(UIScreen.main.bounds.size.width)
 var global_height = Int(UIScreen.main.bounds.size.height)
 
-let BASE_DOMAIN = "https://whatbikeswin.com"
+let BASE_DOMAIN = "http://localhost:8000"
 
 
 func switchRenderOrientation() {

@@ -36,22 +36,34 @@ class RacerInputComponent: RacerInputOwnerComponent {
     var modelIn: UITextField!
     var yearIn: UITextField!
     
+    var makeLogoImageView: UIImageView?
+    
     static let width = Int(Double(global_width) * 0.8)
     static let inputHeight = uiDef().ROW_HEIGHT
     static let inputWidthSpacing = 2
-    static let inputHeightSpacing = 2
+    static let inputHeightSpacing = 4
+    let logoSpacing = 5
+    let logoImageSize = uiDef().ROW_HEIGHT
 
 
     var racerRecommendingController: RacerRecommendingController?
       
     @MainActor @objc func onModelChange(input: TextField) {
-        self.racerRecommendingController?.recommend(inputComponent: self)
+        self.racerRecommendingController?.recommendModel(inputComponent: self)
         self.yearIn.text = ""
     }
     
     @MainActor @objc func onMakeChange(input: TextField) {
+        self.racerRecommendingController?.recommendMake(inputComponent: self)
+        self.makeIn.frame.size.width = self.getInputWidth()
+        self.makeIn.frame.origin.x = 0
+        self.setMakeLogo(make: self.makeIn.text!)
         self.modelIn.text = ""
         self.yearIn.text = ""
+    }
+    
+    func getInputWidth() -> CGFloat {
+        return CGFloat((Int(Self.width + 1 ) / 3) - Self.inputWidthSpacing)
     }
     
     func reset() {
@@ -61,14 +73,16 @@ class RacerInputComponent: RacerInputOwnerComponent {
     }
 
     func makeInputs() {
-        let inputWidth = (Int(Self.width + 1 ) / 3) - Self.inputWidthSpacing
         self.view = UIView(frame: CGRect(x: 0, y: 0, width: Int(Self.width), height: Self.inputHeight))
-        let inputFrame = CGRect(x: 0, y: 0, width: inputWidth, height: Self.inputHeight)
+        let inputFrame = CGRect(x: 0, y: 0, width: Int(self.getInputWidth()), height: Self.inputHeight)
         
         self.makeIn = TextField().make(text: "Make...")
         self.makeIn.frame = inputFrame
         self.makeIn.addTarget(
             self, action: #selector(self.onMakeChange), for: .editingChanged
+        )
+        self.makeIn.addTarget(
+            self, action: #selector(self.onMakeChange), for: .editingDidBegin
         )
         self.modelIn = TextField().make(text: "Model...")
         self.modelIn.frame = inputFrame
@@ -92,7 +106,7 @@ class RacerInputComponent: RacerInputOwnerComponent {
             model: (self.modelIn.text?.trimmingCharacters(in: .whitespacesAndNewlines)) ?? "",
             year: (self.yearIn.text?.trimmingCharacters(in: .whitespacesAndNewlines)) ?? ""
         )
-        if racer.make.count > 0 && racer.model.count > 0  {
+        if racer.make.count > 0 {
             return racer
         } else {
             return nil
@@ -104,6 +118,25 @@ class RacerInputComponent: RacerInputOwnerComponent {
         self.makeIn.text = racer.make
         self.modelIn.text = racer.model
         self.yearIn.text = racer.year
+    }
+    
+    func setMake(make: String) {
+        self.makeIn.text = make
+        self.setMakeLogo(make: make)
+    }
+    
+    func setMakeLogo(make: String) {
+        self.makeLogoImageView?.removeFromSuperview()
+        let makeImageName = make.lowercased().replacingOccurrences(of: " ", with: "_")
+        if let url = URL(string: "\(BASE_DOMAIN)/static/images/make_logos/\(makeImageName)_make_logo.png") {
+            self.makeLogoImageView = UIImageView()
+            self.makeLogoImageView!.load(url: url) {
+                self.makeIn.frame.size.width = self.getInputWidth() - CGFloat(self.logoImageSize + self.logoSpacing)
+                self.makeIn.frame.origin.x = CGFloat(self.logoImageSize + self.logoSpacing)
+                self.makeLogoImageView!.frame = CGRect(x: 0, y: 0, width: self.logoImageSize, height: self.logoImageSize)
+                self.view.addSubview(self.makeLogoImageView!)
+            }
+        }
     }
     
     func render(parentView: UIView) {
@@ -216,7 +249,7 @@ class RacerInputsComponent: RacerInputOwnerComponent {
         self.allInputs.insert(input, at: 0)
         self.currentInputY = Int(
             expandDown(
-                views: self.allInputs.map{$0.view}, spacing: CGFloat(RacerInputComponent.inputWidthSpacing)
+                views: self.allInputs.map{$0.view}, spacing: CGFloat(RacerInputComponent.inputHeightSpacing)
             )
         )
         self.updateFrames()
@@ -315,8 +348,30 @@ class RacerRecommendingController {
         self.currentRacerRecommenderComponent?.racerRecommendingController = self
         raceInputOwner.racerRecommendingController = self
     }
+    
+    @MainActor func recommendMake(inputComponent: RacerInputComponent) {
+        self.currentInputComponent = inputComponent
+        self.placeRecommender()
+        Task {
+            self.currentRacerRecommenderComponent?.clear()
+            if let partialMake = self.currentInputComponent?.makeIn.text! {
+                if let result = await apiClient.searchRacerMakes(make: partialMake) {
+                    if result.makes.count == 1 && result.makes[0].lowercased() == partialMake.lowercased() {
+                        self.setMake(make: result.makes[0])
+                        return
+                    }
+                    
+                    for make in result.makes {
+                        self.currentRacerRecommenderComponent?.addRow(text: make) {
+                            self.setMake(make: make)
+                        }
+                    }
+                }
+            }
+        }
+    }
  
-    @MainActor func recommend(inputComponent: RacerInputComponent) {
+    @MainActor func recommendModel(inputComponent: RacerInputComponent) {
         self.currentInputComponent = inputComponent
         self.placeRecommender()
         Task {
@@ -356,7 +411,10 @@ class RacerRecommendingController {
             }
         }
     }
-
+    func setMake(make: String) {
+        self.currentRacerRecommenderComponent?.clear()
+        self.currentInputComponent?.setMake(make: make)
+    }
     func setRacer(racer: PartialRacer) {
         self.currentRacerRecommenderComponent?.clear()
         self.currentInputComponent?.setRacer(racer: racer)
@@ -539,16 +597,20 @@ class RacerComponent {
         )
     }
     
-    func move(speed: Double, onFinish: @escaping (RacerModel) -> Void) {
+    func move(speed: Double, onFinish: @escaping (RacerModel, Double) -> Void) {
         var progress = Double(self.racer.torque)! / self.startTorqueDivider
+        var milliseconds: Double = 0
         self.timer = Timer.scheduledTimer(withTimeInterval: speed / 1000, repeats: true, block: { _ in
             let momentum = (self.ptw * progress) + (self.acc * progress) + 1
             progress += self.progressConstant
             self.view.frame.origin.x += CGFloat(Int(momentum))
             if Double(self.view.frame.origin.x) >= Double(global_width) * 0.8 {
                 self.stopMove()
-                onFinish(self.racer)
+                
+                onFinish(self.racer, (milliseconds / 1000) * 3)
             }
+   
+            milliseconds += 40
         })
     }
     
@@ -609,7 +671,8 @@ class RacerResultComponent {
     var racer: RacerModel!
     var view: UIView!
     var finishPosition = 0
-    static let width = global_width / 3
+    var time = 0.0
+    static let width = global_width
     static let height = uiDef().FONT_SIZE * 6
     
     var positionLabel: UILabel!
@@ -617,9 +680,10 @@ class RacerResultComponent {
     var statsLabel: UILabel!
 
     
-    init (racer: RacerModel, finishPosition: Int) {
+    init (racer: RacerModel, finishPosition: Int, time: Double) {
         self.racer = racer
         self.finishPosition = finishPosition
+        self.time = time
     }
     
     func makeHeader() {
@@ -634,6 +698,10 @@ class RacerResultComponent {
             default:
                 positionText = String(self.finishPosition) + "th"
         }
+        
+        let roundedTime = Double(round(10000 * self.time) / 10000)
+        //let zeroSixtyTime = Double(round(((roundedTime / 3) - 0.5) * 10000) / 10000)
+        positionText += " @ \(roundedTime)s" // 0-60 \(zeroSixtyTime)"
         self.positionLabel = Label().make(text: positionText, size: CGFloat(uiDef().HEADER_FONT_SIZE), color: _YELLOW)
         self.racerLabel = Label().make(text: self.racer.full_name, color: _YELLOW)
     }
@@ -818,11 +886,12 @@ class RaceResultsWindowComponent: WindowComponent {
         
     }
     
-    func addFinishedRacer(racer: RacerModel) {
+    func addFinishedRacer(racer: RacerModel, time: Double) {
         self.racerResultComponents.append(
             RacerResultComponent(
                 racer: racer,
-                finishPosition: self.racerResultComponents.count + 1
+                finishPosition: self.racerResultComponents.count + 1,
+                time: time
             )
         )
     }
@@ -953,8 +1022,8 @@ class RaceController {
         }
         Timer.scheduledTimer(withTimeInterval: startDelay, repeats: false) { (timer) in
             for racerComponent in self.raceViewComponent.racerComponents {
-                racerComponent.move(speed: speed) { (racer) -> () in
-                    self.raceResultsWindowComponent.addFinishedRacer(racer: racer)
+                racerComponent.move(speed: speed) { (racer, time) -> () in
+                    self.raceResultsWindowComponent.addFinishedRacer(racer: racer, time: time)
                     if (
                         self.raceResultsWindowComponent.racerResultComponents.count
                         == self.loadedRacers.count)

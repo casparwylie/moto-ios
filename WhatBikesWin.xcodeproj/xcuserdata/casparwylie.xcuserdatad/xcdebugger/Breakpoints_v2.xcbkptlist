@@ -62,8 +62,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "785"
-            endingLineNumber = "785"
+            startingLineNumber = "853"
+            endingLineNumber = "853"
             landmarkName = "onViewCommentsPress(button:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -409,8 +409,8 @@
             filePath = "moto-ios/Apis/RaceClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "getRaceInsights(name:flags:)"
             landmarkType = "7">
             <Locations>
@@ -552,8 +552,8 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
             landmarkName = "onModelChange(input:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -568,9 +568,9 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "324"
-            endingLineNumber = "324"
-            landmarkName = "recommend(inputComponent:)"
+            startingLineNumber = "379"
+            endingLineNumber = "379"
+            landmarkName = "recommendModel(inputComponent:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -646,9 +646,9 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "326"
-            endingLineNumber = "326"
-            landmarkName = "recommend(inputComponent:)"
+            startingLineNumber = "381"
+            endingLineNumber = "381"
+            landmarkName = "recommendModel(inputComponent:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -694,10 +694,10 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "361"
-            endingLineNumber = "361"
+            startingLineNumber = "419"
+            endingLineNumber = "419"
             landmarkName = "setRacer(racer:)"
-            landmarkType = "9">
+            landmarkType = "7">
             <Locations>
                <Location
                   uuid = "BDC926EA-8E4C-4E72-9D5B-8754C30F344F - 92e6584bb0239cf8"
@@ -742,10 +742,10 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "362"
-            endingLineNumber = "362"
+            startingLineNumber = "420"
+            endingLineNumber = "420"
             landmarkName = "setRacer(racer:)"
-            landmarkType = "9">
+            landmarkType = "7">
             <Locations>
                <Location
                   uuid = "CC38C9B4-F0E3-4FCE-BC4A-8407CD1BFD1C - 92e6584bb0239cd7"
@@ -790,9 +790,9 @@
             filePath = "moto-ios/Managers/Racing.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "331"
-            endingLineNumber = "331"
-            landmarkName = "recommend(inputComponent:)"
+            startingLineNumber = "386"
+            endingLineNumber = "386"
+            landmarkName = "recommendModel(inputComponent:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -986,6 +986,198 @@
             endingLineNumber = "180"
             landmarkName = "unsetKeyboardView()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0F8D1D20-245D-4845-831F-7A9F8AAB1166"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Racing.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "onMakeChange(input:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "390DBDFE-00E4-4B88-8330-D2CC43F12072"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Racing.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
+            landmarkName = "recommendMake(inputComponent:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "390DBDFE-00E4-4B88-8330-D2CC43F12072 - 9b97442814dbe7f7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.RacerRecommendingController.recommendMake(inputComponent: WhatBikesWin.RacerInputComponent) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Racing.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "329"
+                  endingLineNumber = "329"
+                  offsetFromSymbolStart = "248">
+               </Location>
+               <Location
+                  uuid = "390DBDFE-00E4-4B88-8330-D2CC43F12072 - 70568548ae223e9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.RacerRecommendingController.recommendMake(inputComponent: WhatBikesWin.RacerInputComponent) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Racing.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "329"
+                  endingLineNumber = "329"
+                  offsetFromSymbolStart = "692">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "92FBDFEA-135C-40BA-A28F-B352E620AFC9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Racing.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "365"
+            endingLineNumber = "365"
+            landmarkName = "recommendMake(inputComponent:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "92FBDFEA-135C-40BA-A28F-B352E620AFC9 - 70568548ae22344"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.RacerRecommendingController.recommendMake(inputComponent: WhatBikesWin.RacerInputComponent) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Racing.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "332"
+                  endingLineNumber = "332"
+                  offsetFromSymbolStart = "368">
+               </Location>
+               <Location
+                  uuid = "92FBDFEA-135C-40BA-A28F-B352E620AFC9 - f188437fbdc91fb7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in closure #1 @Sendable () async -&gt; () in WhatBikesWin.RacerRecommendingController.recommendMake(inputComponent: WhatBikesWin.RacerInputComponent) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Racing.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "333"
+                  endingLineNumber = "333"
+                  offsetFromSymbolStart = "60">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C309BC61-0283-4157-A4AC-8D081E9FFA4D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Racing.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
+            landmarkName = "setMakeLogo(make:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6220B62F-9831-4832-A94B-EC936312180F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Racing.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
+            landmarkName = "setMakeLogo(make:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EDDEA31B-038D-45BB-A0FE-C8D605409C57"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "moto-ios/Managers/Racing.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "360"
+            endingLineNumber = "360"
+            landmarkName = "recommendMake(inputComponent:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EDDEA31B-038D-45BB-A0FE-C8D605409C57 - 70568548ae227e8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.RacerRecommendingController.recommendMake(inputComponent: WhatBikesWin.RacerInputComponent) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Racing.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "360"
+                  endingLineNumber = "360"
+                  offsetFromSymbolStart = "588">
+               </Location>
+               <Location
+                  uuid = "EDDEA31B-038D-45BB-A0FE-C8D605409C57 - 70568548ae227e8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in WhatBikesWin.RacerRecommendingController.recommendMake(inputComponent: WhatBikesWin.RacerInputComponent) -&gt; ()"
+                  moduleName = "WhatBikesWin"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/casparwylie/moto-ios/moto-ios/Managers/Racing.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "360"
+                  endingLineNumber = "360"
+                  offsetFromSymbolStart = "600">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
