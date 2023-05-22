@@ -13,7 +13,6 @@ class CommentComponent {
 
     var comment: CommentModel!
     var view: UIView!
-    let width = Int(Double(global_width) * 0.7)
     
     var mainLabel: UILabel!
     var mainInfo: UIView!
@@ -23,6 +22,10 @@ class CommentComponent {
     let topPadding: CGFloat = 10
     let infoLineSpacing = 10
     let deleteButtonSize = 15
+    
+    func getWidth() -> Int {
+        return Int(Double(globalWidth) * 0.7)
+    }
 
     init(comment: CommentModel) {
         self.comment = comment
@@ -36,11 +39,11 @@ class CommentComponent {
         self.mainLabel.frame = CGRect(
             x: 0,
             y: Int(self.topPadding),
-            width: self.width,
+            width: self.getWidth(),
             height: 0
         )
         self.mainLabel.sizeToFit()
-        self.mainLabel.frame.size.width = CGFloat(self.width)
+        self.mainLabel.frame.size.width = CGFloat(self.getWidth())
         self.view.frame.size.height = self.mainLabel.frame.size.height + self.topPadding + self.infoHeight
     }
     
@@ -49,7 +52,7 @@ class CommentComponent {
             frame: CGRect(
                 x: 0,
                 y: self.mainLabel.frame.size.height,
-                width: CGFloat(self.width),
+                width: CGFloat(self.getWidth()),
                 height: self.infoHeight
             )
         )
@@ -63,7 +66,7 @@ class CommentComponent {
         infoLabel.frame = CGRect(
             x: 0,
             y: self.infoLineSpacing,
-            width: self.width,
+            width: self.getWidth(),
             height: Int(self.infoHeight / 2)
         )
         self.mainInfo.addSubview(infoLabel)
@@ -79,7 +82,7 @@ class CommentComponent {
                 relationLabel.frame = CGRect(
                     x: 0,
                     y: self.infoLineSpacing + (Int(self.infoHeight) / 2),
-                    width: self.width,
+                    width: self.getWidth(),
                     height: Int(self.infoHeight / 2)
                 )
                 self.mainInfo.addSubview(relationLabel)
@@ -94,7 +97,7 @@ class CommentComponent {
         ) {
             self.deleteButton = Button().make(text: "✕", color: _RED, size: self.deleteButtonSize)
             self.deleteButton!.frame = CGRect(
-                x: Int(self.width - deleteButtonSize),
+                x: Int(self.getWidth() - deleteButtonSize),
                 y: 0,
                 width: self.deleteButtonSize,
                 height: self.deleteButtonSize
@@ -112,9 +115,9 @@ class CommentComponent {
     func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: getCenterX(width: self.width),
+                x: getCenterX(width: self.getWidth()),
                 y: 0,
-                width: self.width,
+                width: self.getWidth(),
                 height: 0
             )
         )
@@ -143,13 +146,19 @@ class CommentsWindowComponent: WindowComponent {
     
     var commentTextBox: UITextView!
     let commentTextBoxSpacing: CGFloat = 5
-    let commentTextBoxWidth = Int(Double(global_width) * 0.7)
     let commentTextBoxHeight = 100
 
     
     var commentButton: UIButton!
-    let commentButtonWidth = Int(Double(global_width) * 0.3)
     let commentButtonHeight = uiDef().ROW_HEIGHT
+    
+    func getCommentTextBoxWidth() -> Int {
+        return Int(Double(globalWidth) * 0.7)
+    }
+    
+    func getCommentButtonWidth() -> Int {
+        return Int(Double(globalWidth) * 0.3)
+    }
 
 
     override func setWindowMeta() {
@@ -191,7 +200,7 @@ class CommentsWindowComponent: WindowComponent {
             + self.commentTextBoxSpacing * 2
         )
         self.view.contentSize = CGSize(
-            width: CGFloat(global_width),
+            width: CGFloat(globalWidth),
             height: (
                 CGFloat(lastY)
                 + self.commentTextBox.frame.height * 3
@@ -204,10 +213,10 @@ class CommentsWindowComponent: WindowComponent {
     func makeCommentBox() {
         self.commentTextBox = TextBox().make()
         self.commentTextBox.frame = CGRect(
-            x: getCenterX(width: self.commentTextBoxWidth),
+            x: getCenterX(width: self.getCommentTextBoxWidth()),
             y: 0,
-            width: self.commentTextBoxWidth,
-            height: commentTextBoxHeight
+            width: self.getCommentTextBoxWidth(),
+            height: self.commentTextBoxHeight
         )
     }
     
@@ -216,7 +225,7 @@ class CommentsWindowComponent: WindowComponent {
         self.commentButton.frame = CGRect(
             x: Int(self.commentTextBox.frame.origin.x),
             y: 0,
-            width: self.commentButtonWidth,
+            width: self.getCommentButtonWidth(),
             height: self.commentButtonHeight
         )
         self.commentButton.addTarget(self, action: #selector(self.onAddCommentPress), for: .touchDown)
@@ -225,9 +234,9 @@ class CommentsWindowComponent: WindowComponent {
     func makeNoCommentsLabel() {
         self.noCommentsLabel = Label().make(text: "There are no comments for this race yet.", align: .center)
         self.noCommentsLabel.frame = CGRect(
-            x: getCenterX(width: global_width),
+            x: getCenterX(width: globalWidth),
             y: Self.headerOffset,
-            width: global_width,
+            width: globalWidth,
             height: uiDef().ROW_HEIGHT
         )
     }

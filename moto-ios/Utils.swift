@@ -22,8 +22,8 @@ let _LIGHT_GREY = UIColor(red: 0.72, green: 0.72, blue: 0.72, alpha: 1.00)
 class UIDefaults {
     var ROW_HEIGHT: Int { return 30 }
     var FONT_SIZE:  Int { return 15 }
-    var HEADER_FONT_SIZE: Int { return 25 }
-    var CORNER_RADIUS: CGFloat { return 5 }
+    var HEADER_FONT_SIZE: Int { return 30 }
+    var CORNER_RADIUS: CGFloat { return 7 }
     var MAX_RACERS_PER_RACE: Int { return 6 }
     var HEADER_IMAGE_SIZE: Int { return 130 }
 }
@@ -31,7 +31,7 @@ class UIDefaults {
 class iPadUIDefaults: UIDefaults {
     override var ROW_HEIGHT: Int { return 50 }
     override var FONT_SIZE:  Int { return 25 }
-    override var HEADER_FONT_SIZE: Int { return 35 }
+    override var HEADER_FONT_SIZE: Int { return 40 }
     override var MAX_RACERS_PER_RACE: Int { return 8 }
     override var HEADER_IMAGE_SIZE: Int { return 200 }
 }
@@ -45,12 +45,12 @@ func uiDef() -> UIDefaults {
 
 
 func getCenterX(width: Int) -> Int {
-    return (global_width / 2) - (width / 2)
+    return (globalWidth / 2) - (width / 2)
 }
 
 
 func getCenterY(height: Int) -> Int {
-    return (global_height / 2) - (height / 2)
+    return (globalHeight / 2) - (height / 2)
 }
 
 
@@ -166,3 +166,8 @@ func expandAcross(views: [UIView], startX: CGFloat = 0, spacing: CGFloat = 5) ->
     return lastX
 }
 
+
+func getMakeLogoURL(make: String) -> URL? {
+    let makeImageName = make.lowercased().replacingOccurrences(of: " ", with: "_")
+    return URL(string: "\(BASE_DOMAIN)/static/images/make_logos/\(makeImageName)_make_logo.png")
+}

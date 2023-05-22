@@ -14,7 +14,7 @@ class InformerComponent {
     
     func render(parentView: UIView) {
         self.view = Label().make(text: "", align: .center, color: .white)
-        self.view.frame = CGRect(x: 0, y: 0, width: global_width, height: uiDef().ROW_HEIGHT)
+        self.view.frame = CGRect(x: 0, y: 0, width: globalWidth, height: uiDef().ROW_HEIGHT)
         parentView.addSubview(self.view)
     }
     

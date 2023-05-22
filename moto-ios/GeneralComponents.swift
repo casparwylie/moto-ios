@@ -15,7 +15,6 @@ class WindowComponent: NSObject {
     var headerImageView: UIImageView!
     var closeButton: UIButton!
     let closeSize = uiDef().HEADER_FONT_SIZE
-    let titleWidth = global_width
     static let titleHeight = uiDef().HEADER_FONT_SIZE + 2
     
     static let headerImageSize = uiDef().HEADER_IMAGE_SIZE
@@ -28,16 +27,13 @@ class WindowComponent: NSObject {
     var backgroundColor = UIColor(
         red: 0.00, green: 0.55, blue: 0.55, alpha: 1.00
     )
-    
     var focusForm: UIView?
-    static let focusFormWidth = Int(Double(global_width) * 0.6)
+
     
-    let frame = CGRect(
-        x: 0,
-        y: 0,
-        width: global_width,
-        height: global_height
-    )
+    func getFocusFormWidth() -> Int {
+        return Int(Double(globalWidth) * 0.6)
+    }
+    
     
     func setKeyboardView() {
         self.titleLabel?.removeFromSuperview()
@@ -54,9 +50,9 @@ class WindowComponent: NSObject {
     func renderFocusForm() {
         self.focusForm = UIView(
             frame: CGRect(
-                x: getCenterX(width: Self.focusFormWidth),
+                x: getCenterX(width: self.getFocusFormWidth()),
                 y: Self.headerOffset,
-                width: Self.focusFormWidth,
+                width: self.getFocusFormWidth(),
                 height: 0
             )
         )
@@ -92,9 +88,9 @@ class WindowComponent: NSObject {
             color: self.titleColor
         )
         self.titleLabel.frame = CGRect(
-            x: getCenterX(width: self.titleWidth),
+            x: getCenterX(width: globalWidth),
             y: Self.headerImageSizeHeight,
-            width: self.titleWidth,
+            width: globalWidth,
             height: Self.titleHeight
         )
     }
@@ -113,7 +109,7 @@ class WindowComponent: NSObject {
     func makeClose() {
         self.closeButton = Button().make(text: "✕", color: .white, size: self.closeSize)
         self.closeButton.frame = CGRect(
-            x: global_width - self.closeSize * 2,
+            x: globalWidth - self.closeSize * 2,
             y: self.closeSize,
             width: self.closeSize,
             height: self.closeSize
@@ -135,7 +131,12 @@ class WindowComponent: NSObject {
         self.makeClose()
         self.makeTitle()
         self.makeHeaderImage()
-        self.view = UIScrollView(frame: self.frame)
+        self.view = UIScrollView(frame: CGRect(
+            x: 0,
+            y: 0,
+            width: globalWidth,
+            height: globalHeight
+        ))
         self.view.backgroundColor = self.backgroundColor
         self.view.addSubview(self.closeButton)
         self.view.addSubview(self.titleLabel)
@@ -150,13 +151,15 @@ class OptionListingComponent {
     var view: UIScrollView!
     var rows: [UIButton: () -> ()] = [:]
     let rowHeight = uiDef().ROW_HEIGHT
-    let width = global_width / 3
-    let maxHeight: CGFloat = 150
+    let maxHeight: CGFloat = 130
     
     var lastSelected: UIButton?
-    var rowBorderColor: UIColor = .black
+    var rowBorderColor: UIColor = .white
     let bottomBorderClip: CGFloat = 3
     
+    func getWidth () -> Int {
+        return globalWidth / 3
+    }
 
     func clear() {
         self.view.subviews.forEach {row in row.removeFromSuperview()}
@@ -185,7 +188,7 @@ class OptionListingComponent {
             (lastY > self.maxHeight) ? self.maxHeight : lastY
         ) - self.bottomBorderClip
         self.view.contentSize = (
-            CGSize(width: CGFloat(self.width), height: lastY - self.bottomBorderClip)
+            CGSize(width: CGFloat(self.getWidth()), height: lastY - self.bottomBorderClip)
         )
         self.view.addSubview(button)
     }
@@ -203,7 +206,7 @@ class OptionListingComponent {
     func render(parentView: UIView) {
         self.view = UIScrollView()
         self.view.layer.cornerRadius = uiDef().CORNER_RADIUS
-        self.view.backgroundColor = _DARK_BLUE
+        self.view.backgroundColor = _DARK_TBLUE
         parentView.addSubview(self.view)
     }
 }

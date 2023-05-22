@@ -10,18 +10,19 @@ import SwiftUI
 import Reachability
 
 
-var global_width = Int(UIScreen.main.bounds.size.width)
-var global_height = Int(UIScreen.main.bounds.size.height)
+var globalWidth = Int(UIScreen.main.bounds.size.width)
+var globalHeight = Int(UIScreen.main.bounds.size.height)
+
+let gw = Int(UIScreen.main.bounds.size.width)
+let gh = Int(UIScreen.main.bounds.size.height)
 
 let BASE_DOMAIN = "https://whatbikeswin.com"
 
-
-func switchRenderOrientation() {
-    if (global_width < global_height) {
-        let fwidth = global_width
-        global_width = global_height
-        global_height = fwidth
-    }
+func getFixWidth() -> Int {
+    return min(gw, gh)
+}
+func getFixHeight() -> Int {
+    return max(gw, gh)
 }
 
 
@@ -47,15 +48,21 @@ class ViewController: UIViewController {
         }
         return nil
     }
+    
+    deinit {
+       NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.makeApiClients()
         self.makeManagers()
         
         Task {
             await self.initialSetup()
+            
         }
     }
     
@@ -128,7 +135,7 @@ class ViewController: UIViewController {
     
     func initialSetup() async {
         // Ensure landscape orientation
-        switchRenderOrientation()
+        //switchRenderOrientation()
         
         // Events
         NotificationCenter.default.addObserver(
@@ -159,11 +166,33 @@ class ViewController: UIViewController {
             name: UIResponder.keyboardWillHideNotification ,
             object:nil
         )
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
+
+        
 
         await self.userManager.userStateController.setUser()
         self.injectDependencies()
         self.renderAll(isLoggedin: self.userManager.userStateController.isLoggedin())
         
+    }
+
+    
+    @objc func rotated() {
+        /*
+         TODO: Consider ways to support potrait
+        if UIDevice.current.orientation == .portraitUpsideDown {
+            return
+        }
+        if UIDevice.current.orientation.isLandscape {
+            globalWidth = getFixHeight()
+            globalHeight = getFixWidth()
+        } else {
+            globalHeight = getFixHeight()
+            globalWidth = getFixWidth()
+        }
+        self.view.subviews.forEach { subview in subview.removeFromSuperview()}
+        self.renderAll(isLoggedin: self.userManager.userStateController.isLoggedin())
+         */
     }
     
     @objc func keyboardWillShow() {

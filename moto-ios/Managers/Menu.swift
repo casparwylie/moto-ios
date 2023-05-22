@@ -11,9 +11,9 @@ import Foundation
 
 class HeaderComponent {
     var view: UIView!
-    let width = 300
+    static let y = 30
     let headerLabelSize = uiDef().HEADER_FONT_SIZE
-    let creditLabelSize = uiDef().FONT_SIZE
+    let creditLabelSize = uiDef().ROW_HEIGHT
     static let height = uiDef().HEADER_FONT_SIZE + uiDef().FONT_SIZE
     var headerLabel: UILabel!
     var creditLabel: UILabel!
@@ -22,28 +22,28 @@ class HeaderComponent {
 
     func makeHeaderLabel() {
         self.headerLabel = Label().make(
-            text: "What Bikes Win?", font: "Tourney", size: CGFloat(self.headerLabelSize)
+            text: "What Bikes Win?", font: "Faster One", size: CGFloat(self.headerLabelSize)
         )
-        self.headerLabel.frame = CGRect(x: 0, y: 0, width: self.width, height: self.headerLabelSize)
+        self.headerLabel.frame = CGRect(x: 0, y: 0, width: globalWidth, height: self.headerLabelSize)
     }
     
     func makeHeaderCreditLabel() {
-        var text = ""
+        var text = "Enter the make and models of the motorcycles you want to race..."
         if let username = self.menuController?.userStateController?.currentUser?.username {
             text = "Welcome, \(username)"
         }
-        self.creditLabel = Label().make(text: text, font: "Tourney", size: CGFloat(self.creditLabelSize), color: _LIGHT_GREY)
+        self.creditLabel = Label().make(text: text, font: "Tourney", size: CGFloat(uiDef().FONT_SIZE), color: _LIGHT_GREY)
         self.creditLabel.frame = CGRect(
-            x: 0, y: Int(self.headerLabel.frame.height), width: self.width, height: self.creditLabelSize
+            x: 0, y: Int(self.headerLabel.frame.height + 5), width: globalWidth, height: self.creditLabelSize
         )
     }
     
     func render(parentView: UIView) {
         self.view = UIView(
             frame: CGRect(
-                x: getCenterX(width: self.width),
-                y: 20,
-                width: self.width,
+                x: getCenterX(width: globalWidth),
+                y: Self.y,
+                width: globalWidth,
                 height: HeaderComponent.height
             )
         )
@@ -65,6 +65,7 @@ class MenuItemComponent {
         self.text = text
         self.button = Button().make(text: self.text)
         self.button.frame.size = self.button.intrinsicContentSize
+        self.button.frame.origin.x = 40
         self.button.addBottomBorderWithColor(color: .black, width: 1)
         self.button.addTarget(
             self, action: #selector(self.onPress), for: .touchDown
@@ -82,9 +83,15 @@ class MenuItemComponent {
 
 class MenuComponent {
     var view: UIView!
+    var menuOption: UIImageView!
+    var closeOption: Button!
+    
     static let height = uiDef().ROW_HEIGHT
     var menuItems: [MenuItemComponent] = []
     let spacing = 10
+    let menuWidth = 170
+    let menuOptionSize = 30
+    let closeSize = 20
     var menuController: MenuController?
     
     let menuItemNamesLoggedOut = [
@@ -114,19 +121,62 @@ class MenuComponent {
         }
     }
     
+    func renderCloseOption() {
+        self.closeOption = Button().make(text: "✕", size: 20)
+        self.closeOption.frame = CGRect(
+            x: self.menuWidth - self.closeSize - 5, y: 10, width: self.closeSize, height: self.closeSize
+        )
+        self.closeOption.addTarget(self, action: #selector(self.onMenuClosePress), for: .touchDown)
+        self.view.addSubview(self.closeOption)
+    }
+    
+    func renderMenuOption(parentView: UIView) {
+        self.menuOption = UIImageView()
+        self.menuOption.image = UIImage(named: "images/menu_icon")
+        self.menuOption.frame = CGRect(x: 20, y: 30, width: self.menuOptionSize, height: self.menuOptionSize)
+        self.menuOption.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.onMenuOptionPress))
+        self.menuOption.addGestureRecognizer(tap)
+        parentView.addSubview(self.menuOption)
+    }
+    
+    @objc func onMenuOptionPress() {
+        self.showMenu()
+    }
+    
+    @objc func onMenuClosePress() {
+        self.hideMenu()
+    }
+    
+    func showMenu() {
+        show(view: self.view)
+    }
+    
+    func hideMenu() {
+        hide(view: self.view)
+    }
 
     func render(parentView: UIView) {
         self.view = UIView()
+        self.view.layer.shadowOpacity = 0.5
+        self.view.layer.shadowColor = UIColor.gray.cgColor
+        self.view.layer.shadowOffset = CGSize(width: 2, height: 2)
+        self.view.backgroundColor = _YELLOW
+        self.view.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: self.menuWidth,
+            height: globalHeight
+        )
+        hide(view: self.view)
+        
         let isLoggedin = (self.menuController?.userStateController?.isLoggedin())!
         self.setMenuItems(isLoggedin: isLoggedin)
         self.menuItems.forEach { item in item.render(parentView: self.view) }
-        let lastX = expandAcross(views: self.menuItems.map {$0.button}, spacing: 15)
-        self.view.frame = CGRect(
-            x: getCenterX(width: Int(lastX)),
-            y: HeaderComponent.height + uiDef().ROW_HEIGHT / 2,
-            width: Int(lastX),
-            height: MenuComponent.height
-        )
+        _ = expandDown(views: self.menuItems.map {$0.button}, startY: 30, spacing: 15)
+
+        self.renderCloseOption()
+        self.renderMenuOption(parentView: parentView)
         parentView.addSubview(self.view)
     }
 }
@@ -172,13 +222,11 @@ class MenuController {
     }
     
     func setKeyboardView() {
-        self.headerComponent.view.removeFromSuperview()
-        self.menuComponent.view.removeFromSuperview()
+        hide(view: self.headerComponent.view)
     }
     
     func unsetKeyboardView() {
-        self.headerComponent.render(parentView: self.viewController.racingManager.controlPanelComponent.view)
-        self.menuComponent.render(parentView: self.viewController.racingManager.controlPanelComponent.view)
+        show(view: self.headerComponent.view)
     }
 }
 

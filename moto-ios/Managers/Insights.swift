@@ -15,11 +15,9 @@ class RaceLabelTapGesture: UITapGestureRecognizer {
 class RaceListingWindowComponent: WindowComponent {
     
     var raceButtons: [UIButton] = []
-    let buttonWidth = global_width
     var insightController: InsightController?
     
     var noCommentsLabel: UILabel!
-    
     
     @MainActor func populate(races: [RaceModel]) {
         self.noCommentsLabel.removeFromSuperview()
@@ -37,9 +35,9 @@ class RaceListingWindowComponent: WindowComponent {
     func makeNoCommentsLabel() {
         self.noCommentsLabel = Label().make(text: "There are no races yet.", align: .center)
         self.noCommentsLabel.frame = CGRect(
-            x: getCenterX(width: global_width),
+            x: getCenterX(width: globalWidth),
             y: Self.headerOffset,
-            width: global_width,
+            width: globalWidth,
             height: uiDef().ROW_HEIGHT
         )
     }
@@ -52,13 +50,13 @@ class RaceListingWindowComponent: WindowComponent {
         label.lineBreakMode = .byWordWrapping
         label.translatesAutoresizingMaskIntoConstraints = false
         label.frame = CGRect(
-            x: getCenterX(width: Int(self.buttonWidth)),
+            x: getCenterX(width: globalWidth),
             y: 0,
-            width: Int(self.buttonWidth),
+            width: globalWidth,
             height: 0
         )
         label.sizeToFit()
-        label.frame.size.width = CGFloat(self.buttonWidth)
+        label.frame.size.width = CGFloat(globalWidth)
     
         label.addBottomBorderWithColor(color: _DARK2_TBLUE, width: 1)
         

@@ -21,8 +21,8 @@ class IntroductionWindowComponent: WindowComponent, WKUIDelegate {
             frame: CGRect(
                 x: 0,
                 y: Self.headerOffset - Self.titleHeight,
-                width: global_width,
-                height: global_height - self.closeSize * 2
+                width: globalWidth,
+                height: globalHeight - self.closeSize * 2
             ),
             configuration: WKWebViewConfiguration()
         )

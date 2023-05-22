@@ -15,6 +15,7 @@
 	</array>
 	<key>UIAppFonts</key>
 	<array>
+		<string>fonts/RaceFont-Medium.ttf</string>
 		<string>fonts/ChakraPetch-Medium.ttf</string>
 		<string>fonts/Tourney.ttf</string>
 	</array>

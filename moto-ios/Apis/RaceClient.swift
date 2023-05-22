@@ -19,6 +19,14 @@ struct RacerModel: Decodable {
     var torque: String
     var weight: String
     var weight_type: String
+    
+    func resolvedWeight() -> Double {
+        if self.weight_type == "dry" {
+            return Double(self.weight)! + 20
+        } else {
+            return Double(self.weight)!
+        }
+    }
 }
 
 

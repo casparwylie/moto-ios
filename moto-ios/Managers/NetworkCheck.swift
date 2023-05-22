@@ -18,12 +18,12 @@ class BannerComponent {
             text: "Internet connection is required!", align: .center, size: 40, color: .black
         )
         self.mainLabel.frame = CGRect(
-            x: 0, y: global_height / 3, width: global_width, height: 100
+            x: 0, y: globalHeight / 3, width: globalWidth, height: 100
         )
     }
     
     func render (parentView: UIView) {
-        self.view = UIView(frame: CGRect(x: 0, y: 0, width: global_width, height: global_height))
+        self.view = UIView(frame: CGRect(x: 0, y: 0, width: globalWidth, height: globalHeight))
         self.view.backgroundColor = .white
         self.makeLabel()
         self.view.addSubview(self.mainLabel)

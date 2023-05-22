@@ -35,7 +35,7 @@ class SignUpWindowComponent: WindowComponent {
         self.renderFocusForm()
         
         let inputFrame = CGRect(
-            x: 0, y: 0, width: Self.focusFormWidth, height: uiDef().ROW_HEIGHT
+            x: 0, y: 0, width: self.getFocusFormWidth(), height: uiDef().ROW_HEIGHT
         )
 
         self.usernameIn = TextField().make(text: "Username...")
@@ -56,7 +56,7 @@ class SignUpWindowComponent: WindowComponent {
         self.submitButton.frame = CGRect(
             x: 0,
             y: 0,
-            width: Self.focusFormWidth / 3,
+            width: self.getFocusFormWidth() / 3,
             height: uiDef().ROW_HEIGHT
         )
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
@@ -139,7 +139,7 @@ class LoginWindowComponent: WindowComponent {
         self.renderFocusForm()
         
         let inputFrame = CGRect(
-            x: 0, y: 0, width: Self.focusFormWidth, height: self.inputHeight
+            x: 0, y: 0, width: self.getFocusFormWidth(), height: self.inputHeight
         )
         self.usernameIn = TextField().make(text: self.usernamePlaceholderText)
         self.usernameIn.frame = inputFrame
@@ -150,7 +150,7 @@ class LoginWindowComponent: WindowComponent {
 
         self.submitButton = Button().make(text: "Login", background: .black, color: .white)
         self.submitButton.frame = CGRect(
-            x: 0, y: 0, width: Self.focusFormWidth / 3, height: self.inputHeight
+            x: 0, y: 0, width: self.getFocusFormWidth() / 3, height: self.inputHeight
         )
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
@@ -345,6 +345,7 @@ class ProfileTabButtonComponent {
     
     var meController: MeController?
     
+    
     init(name: String, targetWindow: WindowComponent?) {
         self.name = name
         self.targetWindow = targetWindow
@@ -352,7 +353,7 @@ class ProfileTabButtonComponent {
     
     func makeTabButton() {
         self.button = Button().make(text: self.name, background: .black, color: .white)
-        self.button.frame = CGRect(x: 0, y: 0, width: global_width / 5, height: uiDef().ROW_HEIGHT * 2)
+        self.button.frame = CGRect(x: 0, y: 0, width: globalWidth / 5, height: uiDef().ROW_HEIGHT * 2)
         self.button.addTarget(self, action: #selector(self.openWindow), for: .touchDown)
     }
     
@@ -387,9 +388,6 @@ class MyGarageWindowComponent: WindowComponent {
     let inputHeight = uiDef().ROW_HEIGHT
     let garageItemDeleteButtonSize = uiDef().ROW_HEIGHT
     
-    let focusFormWidth = Int(CGFloat(global_width) * 0.8)
-    let garageListingViewWidth = Int(CGFloat(global_width) * 0.8)
-    let focusFormHeight = global_height
     let garageListingViewY = uiDef().ROW_HEIGHT * 3
     let garageListingViewHeight = uiDef().ROW_HEIGHT + 10
     let garageListingViewMaxHeight = 150
@@ -399,6 +397,18 @@ class MyGarageWindowComponent: WindowComponent {
     var garageListingLabels: [UILabel] = []
     
     var noGarageItemsLabel: UILabel!
+    
+    override func getFocusFormWidth() -> Int {
+        return Int(CGFloat(globalWidth) * 0.8)
+    }
+    
+    func getGarageListingViewWidth() -> Int {
+        return Int(CGFloat(globalWidth) * 0.8)
+    }
+    
+    func getFocusFormHeight() -> Int {
+        return globalHeight
+    }
     
     let garageItemRelationMap = [
         "Once sat on": "SAT_ON",
@@ -421,10 +431,10 @@ class MyGarageWindowComponent: WindowComponent {
     func makeGarageView() {
         self.focusForm = UIView(
             frame: CGRect(
-                x: getCenterX(width: self.focusFormWidth),
+                x: getCenterX(width: self.getFocusFormWidth()),
                 y:  Self.headerOffset,
-                width: self.focusFormWidth,
-                height: self.focusFormHeight
+                width: self.getFocusFormWidth(),
+                height: self.getFocusFormHeight()
             )
         )
     }
@@ -434,7 +444,7 @@ class MyGarageWindowComponent: WindowComponent {
             frame: CGRect(
                 x:  0,
                 y: garageListingViewY,
-                width: self.garageListingViewWidth,
+                width: self.getGarageListingViewWidth(),
                 height: self.garageListingViewHeight
             )
         )
@@ -457,7 +467,7 @@ class MyGarageWindowComponent: WindowComponent {
                 self.garageItemRelationMap.keys
             )[Array(self.garageItemRelationMap.values).firstIndex(of: item.relation)!]
             let row = Label().make(text: "\(item.make_name) \(item.name) - \(relation)", align: .center)
-            row.frame = CGRect(x: 0, y: 0, width: self.garageListingViewWidth, height: self.inputHeight)
+            row.frame = CGRect(x: 0, y: 0, width: self.getGarageListingViewWidth(), height: self.inputHeight)
             rows.append(row)
             let deleteButton = self.makeDeleteGarageItemOption(modelId: item.model_id)
             deleteButtons.append(deleteButton)
@@ -476,7 +486,7 @@ class MyGarageWindowComponent: WindowComponent {
             (lastY > self.garageListingViewMaxHeight) ? self.garageListingViewMaxHeight : lastY
         )
         self.garageListingView.contentSize = (
-            CGSize(width: self.garageListingViewWidth, height: lastY)
+            CGSize(width: self.getGarageListingViewWidth(), height: lastY)
         )
     }
     
@@ -486,9 +496,9 @@ class MyGarageWindowComponent: WindowComponent {
             align: .center
         )
         self.noGarageItemsLabel.frame = CGRect(
-            x: getCenterX(width: global_width),
+            x: getCenterX(width: globalWidth),
             y: 10,
-            width: self.garageListingViewWidth,
+            width: self.getGarageListingViewWidth(),
             height: self.inputHeight
         )
     }
@@ -502,7 +512,7 @@ class MyGarageWindowComponent: WindowComponent {
         let deleteButton = DeleteGarageItemButton().make(text: "✕", color: _RED) as! DeleteGarageItemButton
         deleteButton.modelId = modelId
         deleteButton.frame = CGRect(
-            x: self.garageListingViewWidth - self.garageItemDeleteButtonSize,
+            x: self.getGarageListingViewWidth() - self.garageItemDeleteButtonSize,
             y: 0,
             width: self.garageItemDeleteButtonSize,
             height: self.garageItemDeleteButtonSize
@@ -528,7 +538,7 @@ class MyGarageWindowComponent: WindowComponent {
     }
 
     func makeAddGarageInputs() {
-        let width: Int = (self.focusFormWidth / 2) - (self.inputSpacing / 2)
+        let width: Int = (self.getFocusFormWidth() / 2) - (self.inputSpacing / 2)
         let y = self.inputHeight + self.inputSpacing
     
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.closeDropDown))
@@ -660,9 +670,10 @@ class ChangePasswordWindowComponent: WindowComponent {
     var newPasswordIn: UITextField!
     var vPasswordIn: UITextField!
     var submitButton: UIButton!
-    
-    var inputWidth = Int(Double(global_width) * 0.7)
 
+    func getInputWidth() -> Int {
+        return Int(Double(globalWidth) * 0.7)
+    }
     
     override func setWindowMeta() {
         self.title = "Me > Change Password"
@@ -672,7 +683,7 @@ class ChangePasswordWindowComponent: WindowComponent {
         self.renderFocusForm()
         
         let inputFrame = CGRect(
-            x: 0, y: 0, width: Self.focusFormWidth, height: uiDef().ROW_HEIGHT
+            x: 0, y: 0, width: self.getFocusFormWidth(), height: uiDef().ROW_HEIGHT
         )
         self.oldPasswordIn = TextField().make(text: "Current Password...")
         self.oldPasswordIn.frame = inputFrame
@@ -688,7 +699,7 @@ class ChangePasswordWindowComponent: WindowComponent {
         
         self.submitButton = Button().make(text: "Change", background: .black, color: .white)
         self.submitButton.frame = inputFrame
-        self.submitButton.frame.size.width = CGFloat(self.inputWidth / 3)
+        self.submitButton.frame.size.width = CGFloat(self.getInputWidth() / 3)
         self.submitButton.addTarget(self, action: #selector(self.onSubmitPress), for: .touchDown)
         
         let lastY = expandDown(
@@ -730,10 +741,20 @@ class EditProfileWindowComponent: WindowComponent {
     var editUsernameIn: UITextField!
     var editEmailIn: UITextField!
     
-    let deleteAccountButtonWidth = global_width / 3
-    var inputWidth = Int(Double(global_width) * 0.5)
-    var submitButtonWidth = Int(Double(global_width) * 0.1)
+
     var submitSpacing = 5
+    
+    func getInputWidth() -> Int {
+        return Int(Double(globalWidth) * 0.5)
+    }
+    
+    func getSubmitButtonWidth() -> Int {
+        return  Int(Double(globalWidth) * 0.1)
+    }
+    
+    func getDeleteAccountButtonWidth() -> Int {
+        return globalWidth / 3
+    }
 
     
     override func setWindowMeta() {
@@ -744,12 +765,12 @@ class EditProfileWindowComponent: WindowComponent {
         self.renderFocusForm()
         
         let inputFrame = CGRect(
-            x: 0, y: 0, width: Self.focusFormWidth - self.submitButtonWidth, height: uiDef().ROW_HEIGHT
+            x: 0, y: 0, width: self.getFocusFormWidth() - self.getSubmitButtonWidth(), height: uiDef().ROW_HEIGHT
         )
         let submitFrame = CGRect(
-            x: self.inputWidth + self.submitSpacing,
+            x: self.getInputWidth() + self.submitSpacing,
             y: 0,
-            width: self.submitButtonWidth,
+            width: self.getSubmitButtonWidth(),
             height: uiDef().ROW_HEIGHT
         )
         self.editUsernameIn = TextField().make(text: "New username...")
@@ -787,9 +808,9 @@ class EditProfileWindowComponent: WindowComponent {
             color: .white
         )
         self.deleteAccountButton.frame = CGRect(
-            x: getCenterX(width: self.deleteAccountButtonWidth),
+            x: getCenterX(width: self.getDeleteAccountButtonWidth()),
             y: Self.headerOffset + Int(lastY) + uiDef().ROW_HEIGHT,
-            width: self.deleteAccountButtonWidth,
+            width: self.getDeleteAccountButtonWidth(),
             height: uiDef().ROW_HEIGHT
         )
         self.deleteAccountButton.addTarget(self, action: #selector(self.onDeleteAccountPress), for: .touchDownRepeat)
@@ -867,9 +888,9 @@ class ProfileWindowComponent: WindowComponent {
         self.userInfoLabel.numberOfLines = 0
         self.userInfoLabel.lineBreakMode = .byWordWrapping
         self.userInfoLabel.frame = CGRect(
-            x: getCenterX(width: global_width),
+            x: getCenterX(width: globalWidth),
             y: Self.headerOffset,
-            width: global_width,
+            width: globalWidth,
             height: self.userInfoHeight
         )
     }
